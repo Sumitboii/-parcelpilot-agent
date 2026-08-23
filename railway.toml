@@ -4,5 +4,5 @@ buildCommand = "pip install -r requirements.txt && python -c \"from sentence_tra
 
 [deploy]
 startCommand = "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"
-healthcheckPath = "/proactive"
+healthcheckPath = "/health"
 healthcheckTimeout = 300
