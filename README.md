@@ -1,125 +1,130 @@
-# ParcelPilot · Compass Support Copilot
+# ParcelPilot Internal Support Agent
 
-[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Click%20Here-2563eb?style=for-the-badge&logo=railway)](https://parcelpilot-agent-production.up.railway.app/showcase)
-[![Tests Passing](https://img.shields.io/badge/Tests-60%2F60%20Passing-16a34a?style=for-the-badge&logo=pytest)](https://github.com/Sumitboii/-parcelpilot-agent)
-[![Model](https://img.shields.io/badge/LLM-Groq%20Llama%203.3%20%2F%20GPT--OSS-7c3aed?style=for-the-badge&logo=groq)](https://groq.com)
+An AI-powered internal chatbot for ParcelPilot's support and operations team. Built for the ParcelPilot AI Agent assessment.
 
----
-
-### 🌐 **Live Interactive Application**
-👉 **[https://parcelpilot-agent-production.up.railway.app/showcase](https://parcelpilot-agent-production.up.railway.app/showcase)**
-
-*No installation or login required. Features full multi-step reasoning, CalQuity Compass cards, and instant query execution.*
+**Live demo:** [parcelpilot-agent-production.up.railway.app](https://parcelpilot-agent-production.up.railway.app/showcase)
 
 ---
 
-## 🌟 What It Does
+## What it does
 
-**ParcelPilot Compass** is an internal AI copilot built for Customer Support Agents and Customer Success Managers (CSMs). Internal staff can ask plain-language questions regarding orders, tickets, contracts, and policy edge cases.
+Internal staff ask questions in plain language about customer orders, accounts, tickets, and policies. The agent reasons across 6 source documents and a structured dataset, cites every factual claim, and surfaces the correct answer per a locked source-authority hierarchy — even when historical records are wrong.
 
-The agent orchestrates multi-step reasoning across **6 source documents** and structured data tables, generates precision citations, and strictly enforces the **Source-Authority Hierarchy** — even when historical ticket records are misleading.
+Key capabilities:
 
-### Key Capabilities:
-- ⚡ **CalQuity Compass UI**: Live execution metrics, step spinners, checkmarks, and source citation badges (`↳`).
-- 🔄 **Hierarchy-Aware RAG**: Automatically prioritizes signed customer enterprise agreements (e.g. *Northstar Enterprise Agreement §2*) over generic company SOPs.
-- 🚫 **Deprecation Filter**: Actively rejects deprecated policies (*Support Policy v2*) in favor of current authoritative standards (*Support Policy v3*).
-- 🛡️ **Human-in-the-Loop Confirmation**: Requires explicit staff confirmation before dispatching P1 incident escalations.
-- 👥 **Role-Based Access Control (RBAC)**: Role switcher for Support Agents (`Rohit`, `Maya`) vs CSMs (`Priya Mehta`, `Arjun Rao`, `Neha Kapoor`).
-- 🚨 **Proactive Live Issues Sweep**: Real-time monitoring sidebar for SLA breaches, approaching breaches, and Known Issue (KI) correlations.
-- 🔁 **Groq Multi-Key Pool**: Resilient failover pool that instantly rotates API keys on rate limits.
+- **Multi-step reasoning** — chains document search, data lookup, and credit/SLA calculations in a single query
+- **Source authority enforcement** — signed customer agreements override general policies; deprecated docs are filtered at ingest and never surfaced
+- **Proactive issue detection** — sidebar sweeps all open tickets for SLA breaches, KI-linked patterns, and account clusters without requiring a query
+- **Escalation with confirmation** — state-changing actions always require explicit staff approval via an inline confirmation card
+- **Role-based access** — CSM-only fields (`premium_support`, `notes`) are stripped at the data layer for Support Agent sessions
 
 ---
 
-## 🧭 Live Demo Showcase
-
-Try these scenarios directly in the **[Live Showcase](https://parcelpilot-agent-production.up.railway.app/showcase)**:
-
-| Scenario | What the Agent Does | Correct Resolution |
-|---|---|---|
-| **Northstar Cancellation** | Prioritizes *Northstar Enterprise Agreement §2* | **No cancellation fee** (Overrides SOP 30-min rule and wrong TKT-450) |
-| **LumenWorks CSV Limit** | Distinguishes product limit vs known issue | **5,000 row limit**; KI-208 workaround is 3,000 rows (Overrides wrong TKT-451) |
-| **SwiftShip BOOKED Delay** | Surfaces KI-211 webhook delay | Informs customer pickup occurred but webhook can take up to 20m |
-| **ORD-2002 Credit** | Applies custom agreement calculation | **INR 300 fixed credit** / 4h threshold (Not SOP default) |
-| **TKT-505 Axis Labs P1** | Enforces 30-min Enterprise SLA & Confirmation | Triggers **Interactive Confirmation Card** before escalating |
-
----
-
-## 🏗️ Architecture
-
-```mermaid
-graph TD
-    UI[CalQuity Compass UI] -->|SSE Stream / POST| API[FastAPI Backend]
-    API --> Agent[ReAct Agent Engine]
-    Agent -->|Semantic Search| Chroma[ChromaDB Vector Store]
-    Agent -->|Structured SQL / Filter| DS[Excel / Data Store]
-    Agent -->|Key Pool Failover| LLM[Groq LLM Engine]
-    Agent -->|Confirmation Required| Gate[Human Confirmation Gate]
-    Chroma --> PDFs[Policy & Agreement PDFs]
-    DS --> XLSX[Assessment Data Tables]
-```
-
----
-
-## 🛠️ Stack
+## Stack
 
 | Layer | Choice |
 |---|---|
-| **LLM Engine** | Groq (`openai/gpt-oss-120b` / `openai/gpt-oss-20b`) with Multi-Key Pool |
-| **Agent Core** | Hand-rolled Python ReAct tool router (no LangChain lock-in) |
-| **RAG Store** | ChromaDB + `sentence-transformers/all-MiniLM-L6-v2` |
-| **Backend API** | FastAPI + SSE streaming + Pydantic v2 |
-| **Frontend** | CalQuity Compass UI (Vanilla JS + Inter font) & React 18 + Tailwind |
-| **Cloud Hosting** | Railway (`https://parcelpilot-agent-production.up.railway.app`) |
+| LLM | Groq `openai/gpt-oss-120b` (free tier) |
+| Agent | Hand-rolled Python tool-router — no LangChain |
+| RAG | ChromaDB in-memory + `all-MiniLM-L6-v2` (local) |
+| Structured data | pandas DataFrames from XLSX |
+| Backend | FastAPI + SSE streaming |
+| Frontend | React 18 + Vite + Tailwind CSS |
+| Hosting | Railway (nixpacks monorepo) |
 
 ---
 
-## 🚀 Running Locally
+## Project structure
 
-### 1. Prerequisites
-- Python 3.10+
-- Free [Groq API Key](https://console.groq.com)
-
-### 2. Clone and Setup
-```bash
-git clone https://github.com/Sumitboii/-parcelpilot-agent.git
-cd -parcelpilot-agent
-
-# Create virtual environment
-python -m venv venv
-venv\Scripts\activate  # On Linux/macOS: source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
+```
+parcelpilot-agent/
+├── backend/
+│   ├── main.py               # FastAPI app, SSE endpoints
+│   ├── agent.py              # Hand-rolled tool-router loop
+│   ├── tools/
+│   │   ├── document_search.py
+│   │   ├── data_lookup.py    # SLA check, credit calc, proactive sweep
+│   │   └── escalate.py
+│   ├── data_loader.py        # Loads XLSX into DataFrames
+│   ├── vector_store.py       # ChromaDB init, PDF ingest
+│   └── confirmation_gate.py  # Single centralised confirmation gate
+├── frontend/                 # React 18 + Vite + Tailwind
+│   └── src/components/       # ChatPanel, ConfirmationCard, ProactivePanel…
+├── showcase/                 # Standalone HTML/CSS/JS demo UI
+├── sources/                  # Source PDFs + assessment XLSX
+├── tests/                    # pytest (49 tests) + Vitest (5 tests)
+├── data/
+│   └── escalations.jsonl     # Mocked escalation log
+├── PRODUCT_SHOWCASE.html     # Compass-style single-file demo
+├── requirements.txt
+├── nixpacks.toml             # Provisions nodejs_20 + python311
+└── railway.toml
 ```
 
-### 3. Environment Variables
-Copy `.env.example` to `.env`:
+---
+
+## Running locally
+
+**Prerequisites:** Python 3.11+, Node 20+, a free [Groq API key](https://console.groq.com)
+
 ```bash
+# 1. Clone
+git clone https://github.com/sumitboii/parcelpilot-agent.git
+cd parcelpilot-agent
+
+# 2. Backend
 cp .env.example .env
-```
-Add your Groq API key:
-```env
-GROQ_API_KEY=gsk_your_groq_key_here
+# Add your GROQ_API_KEY to .env
+pip install -r requirements.txt
+uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
+
+# 3. Frontend (separate terminal)
+cd frontend
+npm install
+npm run dev
+
+# 4. Or open the standalone demo
+# http://localhost:8000/showcase
 ```
 
-### 4. Start Backend Server
-```bash
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
-```
-Open **`http://localhost:8000/showcase`** in your browser.
+**Open the demo:** `http://localhost:8000` (React app) or `http://localhost:8000/showcase` (Compass-style single-page demo)
 
 ---
 
-## 🧪 Testing
+## Source authority hierarchy
 
-The repository includes a comprehensive 60-test suite covering data loaders, RAG search, RBAC, confirmation gates, and evaluation matrices:
+As defined in `01_Support_Policy_v3_CURRENT.pdf §1`:
 
-```bash
-pytest tests/ -v
-```
-*(All 60 tests pass with 100% success rate).*
+1. Signed customer agreement (highest — overrides everything for that account)
+2. Support Policy v3 — `01_Support_Policy_v3_CURRENT.pdf`
+3. Cancellation & Service Credit SOP v4 / Product Operations Guide
+4. Historical tickets — context only, may be wrong
+
+`02_Support_Policy_v2_DEPRECATED.pdf` is filtered at ingest and never retrievable.
 
 ---
 
-## 📜 License
-MIT License. Created for the ParcelPilot Assessment.
+## Key test scenarios (all pass)
+
+| Scenario | What the agent must do |
+|---|---|
+| Northstar cancel ORD-1001 | No fee — Agreement §2 overrides SOP 30-min rule; overrides wrong TKT-450 |
+| LumenWorks 4,200-row CSV | Product limit 5,000 rows; KI-208 workaround 3,000; overrides wrong TKT-451 |
+| TKT-504 SwiftShip BOOKED | Surface KI-211 webhook delay; don't say pickup didn't happen |
+| ORD-2002 LumenWorks credit | INR 300 fixed / 4h threshold (not SOP 2h / INR 500) |
+| TKT-505 Axis Labs P1 | 30-min Enterprise SLA (not Northstar's 15-min); 2h 30m breach |
+| ACCT-004 no agreement | Standard Enterprise policy; don't borrow Northstar's terms |
+
+---
+
+## Deploying to Railway
+
+```bash
+# Set secret
+railway variables set GROQ_API_KEY=<your-key>
+
+# Deploy
+railway up
+```
+
+`nixpacks.toml` explicitly provisions both `nodejs_20` and `python311` — required because `package.json` is in `frontend/`, not the repo root.
