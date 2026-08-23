@@ -28,8 +28,8 @@ from backend.tools.document_search import search as doc_search_fn
 logger = logging.getLogger(__name__)
 
 # ── Model config ──────────────────────────────────────────────────────────────
-PRIMARY_MODEL  = "openai/gpt-oss-20b"    # Ultra-fast (~500ms TTFT, >300 tps, high rate limits)
-FALLBACK_MODEL = "openai/gpt-oss-120b"   # Heavy fallback model
+PRIMARY_MODEL  = "llama-3.3-70b-versatile"    # Ultra-fast (~300 tps, high intelligence)
+FALLBACK_MODEL = "llama-3.1-8b-instant"       # Lightning fallback (~1,000 tps)
 
 # ── API Key Pool & Dynamic Key Rotator ────────────────────────────────────────
 _current_key_idx: int = 0
