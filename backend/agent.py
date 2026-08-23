@@ -28,8 +28,8 @@ from backend.tools.document_search import search as doc_search_fn
 logger = logging.getLogger(__name__)
 
 # ── Model config ──────────────────────────────────────────────────────────────
-PRIMARY_MODEL  = "llama3-70b-8192"     # Fast, high-quality Groq Llama 3 70B
-FALLBACK_MODEL = "llama3-8b-8192"     # Ultra-fast fallback Llama 3 8B
+PRIMARY_MODEL  = "openai/gpt-oss-20b"    # Fast model available on this Groq account
+FALLBACK_MODEL = "openai/gpt-oss-120b"   # Heavy fallback model
 
 # ── API Key Pool & Dynamic Key Rotator ────────────────────────────────────────
 _current_key_idx: int = 0
