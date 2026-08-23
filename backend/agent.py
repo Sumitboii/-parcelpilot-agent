@@ -28,8 +28,8 @@ from backend.tools.document_search import search as doc_search_fn
 logger = logging.getLogger(__name__)
 
 # ── Model config ──────────────────────────────────────────────────────────────
-PRIMARY_MODEL  = "llama-3.3-70b-versatile"    # Ultra-fast (~300 tps, high intelligence)
-FALLBACK_MODEL = "llama-3.1-8b-instant"       # Lightning fallback (~1,000 tps)
+PRIMARY_MODEL  = "llama3-70b-8192"     # Fast, high-quality Groq Llama 3 70B
+FALLBACK_MODEL = "llama3-8b-8192"     # Ultra-fast fallback Llama 3 8B
 
 # ── API Key Pool & Dynamic Key Rotator ────────────────────────────────────────
 _current_key_idx: int = 0
