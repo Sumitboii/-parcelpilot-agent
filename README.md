@@ -128,3 +128,9 @@ railway up
 ```
 
 `nixpacks.toml` explicitly provisions both `nodejs_20` and `python311` — required because `package.json` is in `frontend/`, not the repo root.
+
+---
+
+## Known deployment behaviour
+
+**`data/escalations.jsonl` is ephemeral on Railway.** Railway's filesystem resets on every redeploy, so any escalation confirmations logged during a session are lost when a new deploy is triggered. This is expected for a demo/assessment environment. In production, escalation logs should be written to a persistent store (e.g. PostgreSQL, Cloud Storage) via the `escalate.py` tool.

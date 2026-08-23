@@ -109,11 +109,16 @@ def search(
 
 def _detect_conflict(chunks: list[dict[str, Any]]) -> tuple[bool, str | None]:
     """
-    Detect if multiple sources are present and identify the highest-authority one.
+    Semantic conflict detection: compare chunks from different authority levels
+    using TF-IDF cosine similarity to determine if they genuinely address the
+    same topic with potentially contradictory information.
 
-    A conflict is flagged when chunks from more than one distinct document are
-    returned for the same query — the agent must then apply the hierarchy to
-    decide which source governs.
+    A conflict is flagged when:
+    1. Chunks from more than one distinct document are present, AND
+    2. At least one cross-source chunk pair has cosine similarity >= 0.25
+       (i.e. they are semantically related, not just incidentally co-retrieved).
+
+    Falls back to presence-based detection if sklearn is unavailable.
 
     Returns (conflict_detected: bool, winning_source: str | None).
     """
@@ -125,14 +130,47 @@ def _detect_conflict(chunks: list[dict[str, Any]]) -> tuple[bool, str | None]:
     if len(unique_sources) <= 1:
         return False, unique_sources[0] if unique_sources else None
 
-    # Multiple sources present — find the highest-authority one
-    winning_source = min(unique_sources, key=_authority_rank)
-    conflict_detected = True
+    # ── Semantic similarity check ────────────────────────────────────────────
+    try:
+        from sklearn.feature_extraction.text import TfidfVectorizer
+        from sklearn.metrics.pairwise import cosine_similarity
+        import numpy as np
 
-    logger.debug(
-        "Conflict detected: %d sources. Winner: %s",
-        len(unique_sources),
-        winning_source,
-    )
+        texts    = [c["text"] for c in chunks]
+        sources  = [c["filename"] for c in chunks]
+
+        vectorizer = TfidfVectorizer(stop_words="english", max_features=512)
+        tfidf = vectorizer.fit_transform(texts)
+        sim_matrix = cosine_similarity(tfidf)
+
+        # Check if any pair from DIFFERENT sources has similarity >= threshold
+        SIMILARITY_THRESHOLD = 0.25
+        conflict_detected = False
+        for i in range(len(chunks)):
+            for j in range(i + 1, len(chunks)):
+                if sources[i] != sources[j] and sim_matrix[i, j] >= SIMILARITY_THRESHOLD:
+                    conflict_detected = True
+                    logger.debug(
+                        "Semantic conflict: '%s' vs '%s' similarity=%.3f",
+                        sources[i], sources[j], sim_matrix[i, j],
+                    )
+                    break
+            if conflict_detected:
+                break
+
+    except ImportError:
+        # sklearn not available — fall back to presence-based detection
+        logger.debug("sklearn unavailable — using presence-based conflict detection")
+        conflict_detected = True  # multiple sources = assume conflict
+
+    # ── Authority resolution ─────────────────────────────────────────────────
+    winning_source = min(unique_sources, key=_authority_rank)
+
+    if conflict_detected:
+        logger.debug(
+            "Conflict detected: %d sources. Winner: %s",
+            len(unique_sources),
+            winning_source,
+        )
 
     return conflict_detected, winning_source

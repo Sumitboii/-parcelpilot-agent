@@ -264,7 +264,7 @@ def _proactive_sweep(data_store: DataStore) -> list[dict]:
                               "suggested_query": f"Is {t_id} related to {ki['ki_id']}? What should I tell the customer?"})
                 break
 
-    # Account clustering: 2+ open tickets in 7-day window
+    # ── Account clustering: 2+ open tickets in 7-day window ──────────────────
     cutoff = SNAPSHOT_TIME - timedelta(days=7)
     try:
         recent = open_tickets[open_tickets["created_at"] >= cutoff]
@@ -273,10 +273,57 @@ def _proactive_sweep(data_store: DataStore) -> list[dict]:
     groups = recent.groupby("account_id")["ticket_id"].apply(list)
     for acct_id, tkt_ids in groups.items():
         if len(tkt_ids) >= 2:
-            items.append({"category": "Account Cluster", "ticket_ids": list(tkt_ids),
-                          "account_id": acct_id, "account_name": _acct_name(acct_id),
-                          "recommended_action": f"{len(tkt_ids)} open tickets from this account in 7 days",
-                          "suggested_query": f"What open tickets does {_acct_name(acct_id)} have and is there a pattern?"})
+            items.append({
+                "category": "Account Cluster",
+                "ticket_ids": list(tkt_ids),
+                "account_id": acct_id,
+                "account_name": _acct_name(acct_id),
+                "recommended_action": f"{len(tkt_ids)} open tickets from this account in 7 days",
+                "suggested_query": f"What open tickets does {_acct_name(acct_id)} have and is there a pattern?",
+            })
+
+    # ── Semantic similarity clustering across all open tickets ────────────────
+    # Groups tickets by subject similarity (TF-IDF cosine ≥ 0.35) so agents
+    # can spot systemic issues that keyword matching alone misses.
+    try:
+        from sklearn.feature_extraction.text import TfidfVectorizer
+        from sklearn.metrics.pairwise import cosine_similarity
+
+        subjects   = [str(t.get("subject", "")) for _, t in open_tickets.iterrows()]
+        ticket_ids = [t.get("ticket_id", "") for _, t in open_tickets.iterrows()]
+        acct_ids   = [t.get("account_id", "") for _, t in open_tickets.iterrows()]
+
+        if len(subjects) >= 2:
+            vec = TfidfVectorizer(stop_words="english", min_df=1)
+            tfidf = vec.fit_transform(subjects)
+            sim = cosine_similarity(tfidf)
+
+            CLUSTER_THRESHOLD = 0.35
+            seen_pairs: set = set()
+            for i in range(len(ticket_ids)):
+                for j in range(i + 1, len(ticket_ids)):
+                    pair = tuple(sorted([ticket_ids[i], ticket_ids[j]]))
+                    if pair in seen_pairs:
+                        continue
+                    if (sim[i, j] >= CLUSTER_THRESHOLD
+                            and acct_ids[i] != acct_ids[j]):  # cross-account semantic match
+                        seen_pairs.add(pair)
+                        items.append({
+                            "category": "Semantic Cluster",
+                            "ticket_ids": [ticket_ids[i], ticket_ids[j]],
+                            "account_id": f"{acct_ids[i]}/{acct_ids[j]}",
+                            "account_name": f"{_acct_name(acct_ids[i])} + {_acct_name(acct_ids[j])}",
+                            "recommended_action": (
+                                f"Semantically similar tickets from different accounts "
+                                f"(similarity={sim[i,j]:.2f}) — possible systemic issue"
+                            ),
+                            "suggested_query": (
+                                f"Are {ticket_ids[i]} and {ticket_ids[j]} related to the same root cause?"
+                            ),
+                        })
+    except ImportError:
+        pass  # sklearn not available — account clusters above are sufficient
+
     return items
 
 
