@@ -3,1422 +3,1729 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>ParcelPilot · Compass</title>
+<title>ParcelPilot · Internal Support Agent</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-/* ════════════════════════════════════════════════════════
-   CALQUITY COMPASS — LIGHT THEME
-   Exact tokens extracted from calquity.com screenshots
+/* ════════════════════════════════════════════
+   CALQUITY LIGHT DESIGN SYSTEM
+   Extracted from CalQuity Compass UI component
 
-   Page bg:        #f5f4f0  (warm cream)
-   Card bg:        #ffffff
-   Card inset:     #f0ede8  (warm grey for source area)
-   Border:         #e2ddd7  (warm neutral)
-   Border strong:  #c8c3bc
-   Text primary:   #1c1917  (near-black, warm)
-   Text secondary: #78716c  (warm grey)
-   Text faint:     #a8a29e
-   Accent blue:    #1e3a5f  (CalQuity navy)
-   Accent mid:     #2d5a9e  (mid blue for pills/badges)
-   Check green:    #22543d  / icon #16a34a
-   Live dot:       #1e3a5f with fill
-   Font:           Inter, 14px base
-   Radius:         10px card, 6px inner, 20px pills
-   ════════════════════════════════════════════════════════ */
+   Tokens:
+   --bg:             #fafaf9   (warm off-white page bg)
+   --bg-card:        #ffffff   (card surface)
+   --bg-card-hover:  #f5f4f2   (subtle hover / inset surface)
+   --bg-input:       #ffffff
+   --border-warm:    #e8e5e0   (warm neutral border)
+   --border-strong:  #c7c3bc   (stronger border / dot)
+   --border:         #d4d0cb   (mid-weight border)
+   --text:           #1a1917   (primary text)
+   --text-muted:     #78716c   (secondary / muted)
+   --text-faint:     #a8a29e   (faint labels)
+   --accent:         #2563eb   (CalQuity blue — interactive only)
+   --accent-soft:    rgba(37,99,235,0.08)
+   --accent-border:  rgba(37,99,235,0.25)
+   --green:          #16a34a
+   --red:            #dc2626
+   --amber:          #d97706
+   --purple:         #7c3aed
+
+   Typography: Inter 14px, -0.01em tracking
+   Mono: 'SF Mono','Fira Code','Fira Mono',monospace
+   Labels: UPPERCASE 0.14–0.16em tracking, 9–10.5px
+   ════════════════════════════════════════════ */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
 
 body {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  line-height: 1.55;
-  letter-spacing: -0.01em;
-  background: #f5f4f0;
-  color: #1c1917;
+  line-height: 1.5;
+  background: #fafaf9;
+  color: #1a1917;
   -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
 }
 
-/* ── OUTER SHELL ─────────────────────────────── */
-#shell {
-  display: flex;
-  height: 100vh;
-  align-items: stretch;
-}
-
-/* ── LEFT NAV ────────────────────────────────── */
-#left-nav {
-  width: 52px;
-  flex-shrink: 0;
-  background: #eeebe5;
-  border-right: 1px solid #e2ddd7;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 0;
-  gap: 6px;
-}
-.nav-dot {
-  width: 36px; height: 36px;
-  border-radius: 8px;
-  background: transparent;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column;
-  gap: 2px;
-  transition: background 0.12s;
-  position: relative;
-}
-.nav-dot:hover { background: rgba(0,0,0,0.07); }
-.nav-dot.active { background: rgba(30,58,95,0.13); }
-
-/* Avatar circle */
-.nav-avatar {
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 700;
-  color: #fff;
-  flex-shrink: 0;
-  letter-spacing: 0;
-  transition: transform 0.12s;
-}
-.nav-dot:hover .nav-avatar { transform: scale(1.1); }
-.nav-dot.active .nav-avatar { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #1e3a5f; }
-
-/* Tooltip — employee name shown on hover */
-.nav-tooltip {
-  position: absolute;
-  left: 52px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #1c1917;
-  color: #f5f4f0;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 11px;
-  font-weight: 500;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s;
-  z-index: 50;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-.nav-tooltip::before {
-  content: '';
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  border: 5px solid transparent;
-  border-right-color: #1c1917;
-}
-.nav-dot:hover .nav-tooltip { opacity: 1; }
-
-/* Active-user badge in topbar */
-.active-user-badge {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 11px; font-weight: 500; color: #4a4340;
-}
-.active-user-avatar {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 9px; font-weight: 700; color: #fff;
-}
-
-/* ── MAIN AREA ───────────────────────────────── */
-#main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-width: 0;
-}
-
-/* ── TOP CHROME ──────────────────────────────── */
-#chrome {
-  height: 44px;
-  background: #eeebe5;
-  border-bottom: 1px solid #e2ddd7;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
+/* ── TOPBAR ─────────────────────────────────── */
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 48px;
+  background: rgba(250,250,249,0.95);
+  border-bottom: 1px solid #e8e5e0;
+  display: flex; align-items: center; padding: 0 24px;
   gap: 0;
-  flex-shrink: 0;
+  backdrop-filter: blur(16px);
 }
-.traffic-lights {
-  display: flex;
-  gap: 6px;
-  margin-right: 14px;
-}
-.tl {
-  width: 11px; height: 11px;
-  border-radius: 50%;
-}
-.tl-red    { background: #e57373; }
-.tl-yellow { background: #ffb74d; }
-.tl-green  { background: #81c784; }
 
-.chrome-title {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #78716c;
+.logo-wordmark {
+  display: flex; align-items: center; gap: 8px;
 }
-.chrome-dot { color: #a8a29e; margin: 0 6px; }
-
-.chrome-right { margin-left: auto; }
-.live-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  border: 1px solid #c8c3bc;
-  border-radius: 20px;
-  padding: 3px 10px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #1e3a5f;
+.logo-text {
+  font-size: 13px; font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1a1917;
 }
-.live-badge-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: #1e3a5f;
-  animation: live-pulse 2s ease-in-out infinite;
+.logo-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #a8a29e;
 }
-@keyframes live-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-/* ── SIDEBAR ─────────────────────────────────── */
-#sidebar {
-  width: 240px;
-  flex-shrink: 0;
-  border-right: 1px solid #e2ddd7;
-  background: #f0ede8;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.sb-head {
-  padding: 14px 14px 10px;
-  border-bottom: 1px solid #e2ddd7;
-  flex-shrink: 0;
-}
-.sb-title {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.logo-sub {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 10px; font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: #a8a29e;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
-.sb-badge {
-  background: #e57373;
-  color: #fff;
-  border-radius: 20px;
-  padding: 1px 6px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0;
-  text-transform: none;
+.topbar-sep {
+  width: 1px; height: 18px;
+  background: #e8e5e0;
+  margin: 0 16px;
 }
-.sb-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px;
-  scrollbar-width: none;
-}
-.sb-scroll::-webkit-scrollbar { display: none; }
-
-.sb-group { margin-bottom: 10px; }
-.sb-group-label {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 2px 4px 5px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.sb-item {
-  background: #fff;
-  border: 1px solid #e2ddd7;
-  border-radius: 6px;
-  padding: 8px 10px;
-  margin-bottom: 4px;
-  cursor: pointer;
-  transition: border-color 0.12s, background 0.12s;
-}
-.sb-item:hover {
-  border-color: #c8c3bc;
-  background: #faf9f7;
-}
-.sb-item-id {
-  font-size: 11px;
-  font-weight: 500;
-  color: #1c1917;
-  margin-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.sb-item-desc {
-  font-size: 10px;
-  color: #78716c;
-  line-height: 1.35;
-}
-.sb-foot {
-  padding: 7px 14px;
-  border-top: 1px solid #e2ddd7;
-  font-size: 10px;
-  color: #a8a29e;
-  flex-shrink: 0;
-}
-
-/* ── CHAT AREA ───────────────────────────────── */
-#chat-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: #f5f4f0;
-  min-width: 0;
-}
-
-/* top bar inside chat area */
-#chat-topbar {
-  height: 44px;
-  background: #eeebe5;
-  border-bottom: 1px solid #e2ddd7;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  gap: 12px;
-  flex-shrink: 0;
-}
-.role-select {
-  appearance: none;
-  background: #fff;
-  border: 1px solid #e2ddd7;
-  border-radius: 6px;
-  color: #1c1917;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 4px 24px 4px 8px;
-  cursor: pointer;
-  outline: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2378716c' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 7px center;
-  transition: border-color 0.12s;
-}
-.role-select:hover { border-color: #c8c3bc; }
-.topbar-status {
+.topbar-right {
   margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+/* status badge */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid #e8e5e0;
+  border-radius: 100px;
+  padding: 3px 10px 3px 8px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
   color: #a8a29e;
+  background: #ffffff;
+  transition: border-color .15s, color .15s;
+}
+.status-badge.online {
+  border-color: rgba(22,163,74,0.3);
+  color: #16a34a;
 }
 .status-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: #c8c3bc;
-  transition: background 0.2s;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #d4d0cb;
+  flex-shrink: 0;
+  transition: background .2s;
 }
 .status-dot.online {
   background: #16a34a;
-  box-shadow: 0 0 0 2px rgba(22,163,74,0.15);
-  animation: live-pulse 2.5s infinite;
+  box-shadow: 0 0 0 2px rgba(22,163,74,0.18);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+/* role selector */
+.role-select {
+  appearance: none;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-radius: 6px;
+  color: #1a1917;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  padding: 5px 28px 5px 10px;
+  cursor: pointer; outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a8a29e'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: border-color .12s;
+}
+.role-select:hover { border-color: #c7c3bc; }
+.role-select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+/* ── LAYOUT ─────────────────────────────────── */
+#layout {
+  display: flex;
+  height: 100vh;
+  padding-top: 48px;
 }
 
-/* ── MESSAGES ────────────────────────────────── */
-#msgs {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* ── SIDEBAR ────────────────────────────────── */
+#sidebar {
+  width: 272px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border-right: 1px solid #e8e5e0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.sb-head {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #e8e5e0;
+}
+.sb-title {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #a8a29e;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sb-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 100px;
+  padding: 1px 7px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0; text-transform: none;
+  font-family: 'Inter', sans-serif;
+  min-width: 20px;
+}
+.sb-scroll {
+  flex: 1; overflow-y: auto; padding: 10px;
   scrollbar-width: thin;
-  scrollbar-color: #e2ddd7 transparent;
+  scrollbar-color: #e8e5e0 transparent;
 }
-#msgs::-webkit-scrollbar { width: 4px; }
-#msgs::-webkit-scrollbar-track { background: transparent; }
-#msgs::-webkit-scrollbar-thumb { background: #e2ddd7; border-radius: 2px; }
+.sb-scroll::-webkit-scrollbar { width: 3px; }
+.sb-scroll::-webkit-scrollbar-track { background: transparent; }
+.sb-scroll::-webkit-scrollbar-thumb { background: #e8e5e0; border-radius: 2px; }
 
-/* ── EMPTY STATE ─────────────────────────────── */
-#empty-state {
+.sb-group { margin-bottom: 14px; }
+.sb-group-label {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 2px 6px 7px;
+  display: flex; align-items: center; gap: 5px;
+}
+.sb-item {
+  background: #fafaf9;
+  border: 1px solid #e8e5e0;
+  border-radius: 8px;
+  padding: 9px 11px; margin-bottom: 5px;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.sb-item:hover {
+  background: #f5f4f2;
+  border-color: #c7c3bc;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.sb-item-id {
+  font-size: 11.5px; font-weight: 500;
+  color: #1a1917;
+  margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sb-item-desc {
+  font-size: 10.5px;
+  color: #78716c;
+  line-height: 1.4;
+}
+.sb-foot {
+  padding: 8px 16px;
+  border-top: 1px solid #e8e5e0;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #a8a29e;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── CHAT COLUMN ────────────────────────────── */
+#chat-col {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  background: #fafaf9;
+  min-width: 0;
+}
+
+/* messages */
+#msgs {
+  flex: 1; overflow-y: auto;
+  padding: 32px 0 8px;
+  display: flex; flex-direction: column;
+  gap: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #e8e5e0 transparent;
+}
+#msgs::-webkit-scrollbar { width: 3px; }
+#msgs::-webkit-scrollbar-track { background: transparent; }
+#msgs::-webkit-scrollbar-thumb { background: #e8e5e0; border-radius: 2px; }
+
+/* empty state */
+#empty {
+  margin: auto;
   text-align: center;
   padding: 0 24px;
   max-width: 460px;
-  margin: auto;
 }
-.empty-glyph { font-size: 28px; color: #c8c3bc; margin-bottom: 14px; }
-.empty-title {
+.empty-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  display: flex; align-items: center; justify-content: center;
   font-size: 18px;
-  font-weight: 600;
+  margin: 0 auto 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.empty-title {
+  font-size: 16px; font-weight: 600;
   letter-spacing: -0.02em;
-  color: #1c1917;
-  margin-bottom: 8px;
+  color: #1a1917;
+  margin-bottom: 6px;
 }
 .empty-sub {
   font-size: 13px;
   color: #78716c;
   line-height: 1.6;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.chips {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+}
 .chip {
-  background: #fff;
-  border: 1px solid #e2ddd7;
-  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-radius: 100px;
   padding: 5px 13px;
   font-size: 12px;
   color: #78716c;
   cursor: pointer;
-  transition: all 0.12s;
+  transition: all .12s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
-.chip:hover { border-color: #1e3a5f; color: #1e3a5f; background: #f0ede8; }
+.chip:hover {
+  background: #f5f4f2;
+  border-color: #c7c3bc;
+  color: #1a1917;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
 
-/* ── USER MESSAGE ────────────────────────────── */
-.msg-user {
+/* message row */
+.msg-row {
+  padding: 0 32px;
   display: flex;
-  justify-content: flex-end;
-  animation: msg-in 0.15s ease-out both;
+  animation: fadein .14s ease-out both;
+  margin-bottom: 4px;
 }
-.msg-user-bubble {
-  max-width: 600px;
-  background: #fff;
-  border: 1px solid #e2ddd7;
-  border-radius: 10px 10px 2px 10px;
-  padding: 12px 16px;
-  font-size: 14px;
-  color: #1c1917;
-  line-height: 1.6;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-@keyframes msg-in { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadein { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+.msg-row.user { justify-content: flex-end; }
+.msg-row.assistant { justify-content: flex-start; }
 
-/* ── WORKFLOW PANEL (Compass-style) ──────────── */
-.workflow-wrap {
-  animation: msg-in 0.18s ease-out both;
-  max-width: 640px;
-  width: 100%;
+.bubble {
+  max-width: 680px;
+  padding: 11px 15px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  word-break: break-word;
 }
-.workflow-card {
-  background: #fff;
-  border: 1px solid #e2ddd7;
-  border-radius: 10px;
+.bubble.user {
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  color: #1a1917;
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  font-size: 12.5px;
+  line-height: 1.55;
+  max-width: 88%;
+}
+.bubble.assistant {
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  color: #1a1917;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.bubble.err {
+  background: rgba(220,38,38,0.04);
+  border: 1px solid rgba(220,38,38,0.2);
+  color: #dc2626;
+}
+.bubble.ok {
+  background: rgba(22,163,74,0.04);
+  border: 1px solid rgba(22,163,74,0.2);
+  color: #16a34a;
+}
+
+/* ── COMPASS CARD (CalQuity style) ─── */
+.compass-wrap {
+  padding: 4px 32px 6px;
+  animation: fadein .15s ease-out both;
+}
+.workflow-card, .compass-card {
+  max-width: 680px;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-.workflow-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 11px 16px;
+.compass-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  background: #fafaf9;
+  border-bottom: 1px solid #e8e5e0;
+}
+.compass-dots {
+  display: flex; align-items: center; gap: 5.5px;
+}
+.c-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+}
+.c-dot.red { background: #ef4444; opacity: 0.85; }
+.c-dot.amber { background: #f59e0b; opacity: 0.85; }
+.c-dot.green { background: #10b981; opacity: 0.85; }
+
+.compass-label {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: #78716c;
+}
+.compass-live {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: 100px;
+  padding: 2px 8px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: #059669;
+}
+.compass-live-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.2);
+  animation: blink 2s ease-in-out infinite;
+}
+
+.wf-header, .wf-status-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  background: #ffffff;
   border-bottom: 1px solid #f0ede8;
 }
 .wf-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #1e3a5f;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
 }
-.wf-status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #1e3a5f;
+.wf-status .wf-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #2563eb;
+  flex-shrink: 0;
 }
-.wf-status-dot.running {
-  background: #f59e0b;
-  animation: live-pulse 1s infinite;
-}
-.wf-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.wf-status.done { color: #2563eb; }
+.wf-status.running { color: #d97706; }
+.wf-status.running .wf-dot { background: #d97706; animation: blink 1s ease-in-out infinite; }
+.wf-label, .wf-tag {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase;
   color: #a8a29e;
 }
-.workflow-steps { padding: 0; }
+.wf-steps { list-style: none; background: #ffffff; }
 .wf-step {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border-bottom: 1px solid #f0ede8;
-  transition: background 0.1s;
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #f5f4f2;
 }
 .wf-step:last-child { border-bottom: none; }
-.wf-step.done   { }
-.wf-step.active { background: #faf9f7; }
-
-.wf-check {
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  border: 1.5px solid #c8c3bc;
+.wf-step-icon {
+  width: 15px; height: 15px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  font-size: 10px;
-  transition: all 0.2s;
+  color: #2563eb;
 }
-.wf-check.done {
-  border-color: #16a34a;
-  background: transparent;
-  color: #16a34a;
-}
-.wf-check.active {
-  border-color: #1e3a5f;
-  animation: spin-border 1s linear infinite;
-}
-@keyframes spin-border {
-  to { transform: rotate(360deg); }
-}
+.wf-step-icon svg { width: 15px; height: 15px; display: block; }
 .wf-step-name {
-  flex: 1;
-  font-size: 13px;
-  color: #1c1917;
-  font-weight: 400;
+  flex: 1; min-width: 0;
+  font-size: 12px; color: #1a1917;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.wf-step.active .wf-step-name { color: #1c1917; font-weight: 500; }
-.wf-time {
-  font-size: 12px;
-  color: #a8a29e;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 400;
+.wf-step-time {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; color: #a8a29e;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
+.wf-step.running .wf-step-name { color: #44403c; font-weight: 500; }
+.wf-step.running .wf-step-icon { color: #d97706; }
+.wf-step.done .wf-step-icon { color: #2563eb; }
+.spin-icon {
+  animation: spin 0.85s linear infinite;
+  transform-origin: center center;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* ── ANSWER AREA ─────────────────────────────── */
-.answer-area {
-  background: #f5f4f0;
-  padding: 14px 16px;
-  border-top: 1px solid #e2ddd7;
-  min-height: 60px;
-  font-size: 13px;
-  line-height: 1.7;
-  color: #1c1917;
+/* tool chips row (legacy / inline) */
+.tool-row {
+  padding: 4px 32px 2px;
+  display: flex; flex-wrap: wrap; gap: 5px;
+  animation: fadein .12s ease-out both;
 }
-.answer-area p { margin-bottom: 8px; }
-.answer-area p:last-child { margin-bottom: 0; }
-.answer-area strong { font-weight: 600; color: #1c1917; }
-
-/* blinking cursor while streaming */
-.cursor {
-  display: inline-block;
-  width: 2px; height: 14px;
-  background: #1e3a5f;
-  vertical-align: text-bottom;
-  animation: blink-cursor 0.8s step-end infinite;
-  margin-left: 1px;
-}
-@keyframes blink-cursor { 0%,100%{opacity:1} 50%{opacity:0} }
-
-/* ── SOURCES BAR ─────────────────────────────── */
-.sources-bar {
-  padding: 12px 16px;
-  border-top: 1px solid #e2ddd7;
-  background: #f0ede8;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-}
-.sources-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #a8a29e;
-  margin-right: 4px;
-}
-.source-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  background: #fff;
-  border: 1px solid #c8c3bc;
-  border-radius: 20px;
-  padding: 3px 10px;
+.tcip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-radius: 6px;
+  padding: 3px 9px;
   font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  color: #1e3a5f;
-  font-weight: 500;
-  cursor: default;
-  transition: border-color 0.1s, background 0.1s;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  color: #78716c;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
-.source-pill:hover { border-color: #1e3a5f; background: #f0ede8; }
-.source-arrow { color: #2d5a9e; font-size: 10px; }
+.tcip.running {
+  border-color: rgba(37,99,235,0.3);
+  color: #2563eb;
+  background: rgba(37,99,235,0.04);
+}
 
-/* ── CONFIRMATION CARD ───────────────────────── */
-.confirm-card {
-  background: #fff;
-  border: 1px solid #e2ddd7;
-  border-left: 3px solid #1e3a5f;
+/* citations */
+.cit {
+  display: inline-flex;
+  background: rgba(37,99,235,0.06);
+  border: 1px solid rgba(37,99,235,0.25);
+  border-radius: 100px;
+  padding: 1px 8px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; letter-spacing: 0.04em;
+  color: #2563eb;
+  vertical-align: middle;
+  cursor: default;
+  margin: 0 2px;
+  transition: background .1s, border-color .1s;
+  white-space: nowrap;
+}
+.cit::before { content: '↳ '; }
+.cit:hover {
+  background: rgba(37,99,235,0.12);
+  border-color: rgba(37,99,235,0.4);
+}
+
+.badge-code {
+  display: inline-block;
+  background: #f1f0ee;
+  border: 1px solid #dfdcce;
+  border-radius: 4px;
+  padding: 0 5px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #1a1917;
+  letter-spacing: 0.02em;
+}
+
+/* ── PROSE FORMATTING (Markdown output) ─── */
+.prose-p { margin-bottom: 8px; line-height: 1.65; }
+.prose-p:last-child { margin-bottom: 0; }
+.prose-ol { margin: 6px 0 10px 22px; padding: 0; list-style-type: decimal; }
+.prose-ul { margin: 6px 0 10px 20px; padding: 0; list-style-type: disc; }
+.prose-ol li, .prose-ul li { margin-bottom: 4px; line-height: 1.6; }
+.prose-h { font-size: 13.5px; font-weight: 600; color: #1a1917; margin: 12px 0 6px; letter-spacing: -0.01em; }
+.prose-hr { border: 0; border-top: 1px solid #e8e5e0; margin: 12px 0; }
+.prose-quote {
+  border-left: 3px solid #2563eb;
+  background: rgba(37,99,235,0.04);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 8px 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #334155;
+}
+.prose-code {
+  background: #f5f4f2;
+  border: 1px solid #e8e5e0;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 11px;
+  color: #0f172a;
+}
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 10px 0;
+  border: 1px solid #e8e5e0;
   border-radius: 8px;
-  padding: 14px 16px;
+  background: #ffffff;
+}
+.prose-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  text-align: left;
+}
+.prose-table th {
+  background: #f5f4f2;
+  border-bottom: 1px solid #e8e5e0;
+  padding: 7px 12px;
+  font-weight: 600;
+  color: #1a1917;
+}
+.prose-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #f0ede8;
+  color: #334155;
+}
+.prose-table tr:last-child td { border-bottom: none; }
+
+
+/* ── CONFIRM CARD ────────────────────────────── */
+.confirm-wrap {
+  padding: 4px 32px;
+  margin-bottom: 4px;
+  animation: fadein .15s ease-out both;
+}
+.confirm-card {
   max-width: 520px;
-  animation: msg-in 0.18s ease-out both;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-left: 3px solid #2563eb;
+  border-radius: 12px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.cc-header {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 14px;
 }
 .cc-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #1e3a5f;
-  margin-bottom: 12px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #2563eb;
 }
 .cc-fields { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
-.cc-row { display: grid; grid-template-columns: 86px 1fr; gap: 8px; }
-.cc-key { font-size: 11px; color: #78716c; }
-.cc-val { font-size: 12px; color: #1c1917; font-weight: 500; }
+.cc-row { display: grid; grid-template-columns: 90px 1fr; gap: 8px; align-items: start; }
+.cc-key {
+  font-size: 11px; color: #a8a29e;
+  padding-top: 1px;
+}
+.cc-val { font-size: 12px; color: #1a1917; font-weight: 500; }
 .cc-btns { display: flex; gap: 7px; }
-.btn-ok {
-  background: #1e3a5f; color: #fff;
+.cc-ok {
+  background: #2563eb; color: #ffffff;
   border: none; border-radius: 6px;
-  padding: 6px 18px;
-  font-size: 12px; font-weight: 600;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-  transition: all 0.12s;
+  padding: 6px 18px; font-size: 12px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  transition: all .12s;
 }
-.btn-ok:hover:not(:disabled) { background: #2d5a9e; transform: translateY(-1px); }
-.btn-ok:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-.btn-no {
+.cc-ok:hover:not(:disabled) { background: #1d4ed8; box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+.cc-ok:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+.cc-cancel {
   background: transparent; color: #78716c;
-  border: 1px solid #e2ddd7; border-radius: 6px;
-  padding: 6px 18px;
-  font-size: 12px;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-  transition: all 0.12s;
+  border: 1px solid #e8e5e0; border-radius: 6px;
+  transition: all .12s;
 }
-.btn-no:hover:not(:disabled) { border-color: #c8c3bc; color: #1c1917; }
-.btn-no:disabled { opacity: 0.4; cursor: not-allowed; }
+.cc-cancel:hover:not(:disabled) { border-color: #c7c3bc; color: #1a1917; background: #fafaf9; }
+.cc-cancel:disabled { opacity: .4; cursor: not-allowed; }
 .cc-result { margin-top: 10px; font-size: 12px; display: none; }
 
-/* ── ERROR BUBBLE ────────────────────────────── */
-.msg-error {
-  background: #fef2f2;
-  border: 1px solid #fca5a5;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #dc2626;
-  max-width: 600px;
-  animation: msg-in 0.15s ease-out both;
+/* ── NEXT QUERY OPTIONS — CalQuity pill style ─── */
+.next-query-wrap {
+  margin: 8px 32px 16px 32px;
+  padding: 14px 16px;
+  background: rgba(250,250,249,0.6);
+  border: 1px solid #e8e5e0;
+  border-radius: 12px;
+  animation: fadein .18s ease-out both;
+}
+.next-query-title {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #a8a29e;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.next-query-title::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #2563eb;
+  flex-shrink: 0;
+}
+.next-query-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+/* CalQuity pill chip — same style as source citation badges */
+.next-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid rgba(37,99,235,0.25);
+  border-radius: 100px;
+  padding: 5px 13px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, box-shadow .12s, transform .12s;
+  box-shadow: 0 1px 2px rgba(37,99,235,0.06);
+  white-space: nowrap;
+}
+.next-chip::before {
+  content: '→';
+  font-size: 11px;
+  opacity: 0.7;
+}
+.next-chip:hover {
+  background: rgba(37,99,235,0.07);
+  border-color: rgba(37,99,235,0.5);
+  color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(37,99,235,0.15);
+}
+.next-chip:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+/* Primary chip — filled accent */
+.next-chip.primary {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(37,99,235,0.25);
+}
+.next-chip.primary::before {
+  content: '⚡';
+  font-size: 11px;
+  opacity: 1;
+}
+.next-chip.primary:hover {
+  background: #1d4ed8;
+  border-color: #1e40af;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+}
+.next-chip.primary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(37,99,235,0.2);
 }
 
-/* ── THINKING ────────────────────────────────── */
+/* ── THINKING INDICATOR ─────────────────────── */
 #thinking {
-  display: none;
-  gap: 4px;
-  align-items: center;
-  padding: 4px 32px;
-  flex-shrink: 0;
+  padding: 8px 32px;
+  display: none; gap: 4px; align-items: center;
 }
 #thinking.vis { display: flex; }
 .td {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: #c8c3bc;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #c7c3bc;
   animation: tdot 1s ease-in-out infinite;
 }
-.td:nth-child(2){animation-delay:.16s}
-.td:nth-child(3){animation-delay:.32s}
-@keyframes tdot{0%,80%,100%{transform:scale(.7);opacity:.3}40%{transform:scale(1);opacity:1}}
+.td:nth-child(2) { animation-delay: .16s; }
+.td:nth-child(3) { animation-delay: .32s; }
+@keyframes tdot { 0%,80%,100%{transform:scale(.7);opacity:.4} 40%{transform:scale(1);opacity:1} }
 
-/* ── DEMO BANNER ─────────────────────────────── */
-#demo-banner {
-  display: none;
-  padding: 6px 20px;
-  background: #fefce8;
-  border-top: 1px solid #fde68a;
-  font-size: 11px;
-  color: #92400e;
-  gap: 5px;
-  align-items: center;
-  flex-shrink: 0;
-}
-#demo-banner.vis { display: flex; }
-
-/* ── INPUT BAR ───────────────────────────────── */
+/* ── INPUT BAR ──────────────────────────────── */
 #ibar {
-  border-top: 1px solid #e2ddd7;
+  border-top: 1px solid #e8e5e0;
   padding: 12px 32px 10px;
-  background: #eeebe5;
+  background: #ffffff;
   flex-shrink: 0;
 }
 .ibar-inner {
-  max-width: 640px;
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
+  max-width: 680px;
+  display: flex; gap: 8px; align-items: flex-end;
 }
 #inp {
   flex: 1;
-  background: #fff;
-  border: 1px solid #e2ddd7;
-  border-radius: 8px;
+  background: #fafaf9;
+  border: 1px solid #e8e5e0;
+  border-radius: 10px;
   padding: 10px 14px;
-  color: #1c1917;
+  color: #1a1917;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   line-height: 1.5;
-  resize: none;
-  outline: none;
-  min-height: 42px; max-height: 100px;
+  resize: none; outline: none;
+  min-height: 42px; max-height: 110px;
   overflow-y: auto;
-  transition: border-color 0.12s, box-shadow 0.12s;
+  transition: border-color .12s, box-shadow .12s;
 }
-#inp::placeholder { color: #a8a29e; }
+#inp::placeholder { color: #a8a29e; font-size: 13.5px; }
 #inp:focus {
-  border-color: #1e3a5f;
-  box-shadow: 0 0 0 3px rgba(30,58,95,0.08);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  background: #ffffff;
 }
-#inp:disabled { opacity: 0.5; cursor: not-allowed; }
+#inp:disabled { opacity: .5; }
 #sbtn {
+  background: #2563eb; color: #ffffff;
+  border: none; border-radius: 10px;
   height: 42px; padding: 0 20px;
-  background: #1e3a5f; color: #fff;
-  border: none; border-radius: 8px;
   font-family: 'Inter', sans-serif;
   font-size: 13px; font-weight: 600;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.12s;
+  cursor: pointer; flex-shrink: 0;
+  transition: all .12s;
 }
 #sbtn:hover:not(:disabled) {
-  background: #2d5a9e;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(30,58,95,0.25);
+  background: #1d4ed8;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.3);
 }
-#sbtn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-.hint { max-width: 640px; margin-top: 5px; font-size: 10px; color: #a8a29e; }
+#sbtn:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+.hint {
+  max-width: 680px; margin-top: 5px;
+  font-size: 10px; color: #a8a29e;
+}
 
-/* ── TOAST ───────────────────────────────────── */
+/* ── TOAST ──────────────────────────────────── */
 #toast {
   position: fixed; bottom: 20px; right: 20px; z-index: 999;
-  background: #1c1917; color: #f5f4f0;
-  border-radius: 7px; padding: 8px 14px;
-  font-size: 12px;
+  background: #1a1917;
+  border-radius: 8px; padding: 9px 14px;
+  font-size: 12px; color: #f5f4f2;
   opacity: 0; pointer-events: none;
+  transition: opacity .18s, transform .18s;
   transform: translateY(6px);
-  transition: opacity 0.18s, transform 0.18s;
-  max-width: 260px;
+  max-width: 280px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 #toast.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-/* inline citation in answer text */
-.cit {
-  display: inline-flex;
-  align-items: center;
-  background: #fff;
-  border: 1px solid #c8c3bc;
-  border-radius: 20px;
-  padding: 0 7px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10.5px;
-  color: #1e3a5f;
-  vertical-align: middle;
-  cursor: default;
-  transition: border-color 0.1s;
+/* ── DEMO BANNER ────────────────────────────── */
+#demo-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: #fffbeb;
+  border-top: 1px solid rgba(217,119,6,0.2);
+  padding: 7px 24px;
+  font-size: 11px; color: #92400e;
+  display: none; align-items: center; gap: 6px;
 }
-.cit:hover { border-color: #1e3a5f; }
+#demo-banner.vis { display: flex; }
+#demo-banner::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #d97706; flex-shrink: 0;
+}
+
+/* ── SCROLLBAR GLOBAL ───────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #e8e5e0 transparent;
+}
+*::-webkit-scrollbar { width: 4px; height: 4px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: #e8e5e0; border-radius: 2px; }
 </style>
 </head>
 <body>
 
-<div id="shell">
-
-  <!-- LEFT NAV — Employee avatars. Click to switch active user. -->
-  <div id="left-nav">
-    <!-- Rohit — Support Agent -->
-    <div class="nav-dot active" id="nav-0" onclick="switchUser(0)" title="Rohit">
-      <div class="nav-avatar" style="background:#1e3a5f">RK</div>
-      <div class="nav-tooltip">Rohit — Support Agent</div>
-    </div>
-    <!-- Maya — Support Agent -->
-    <div class="nav-dot" id="nav-1" onclick="switchUser(1)" title="Maya">
-      <div class="nav-avatar" style="background:#6d28d9">MS</div>
-      <div class="nav-tooltip">Maya — Support Agent</div>
-    </div>
-    <!-- Priya Mehta — CSM -->
-    <div class="nav-dot" id="nav-2" onclick="switchUser(2)" title="Priya Mehta">
-      <div class="nav-avatar" style="background:#0f766e">PM</div>
-      <div class="nav-tooltip">Priya Mehta — CSM</div>
-    </div>
-    <!-- Arjun Rao — CSM -->
-    <div class="nav-dot" id="nav-3" onclick="switchUser(3)" title="Arjun Rao">
-      <div class="nav-avatar" style="background:#b45309">AR</div>
-      <div class="nav-tooltip">Arjun Rao — CSM</div>
-    </div>
-    <!-- Neha Kapoor — CSM -->
-    <div class="nav-dot" id="nav-4" onclick="switchUser(4)" title="Neha Kapoor">
-      <div class="nav-avatar" style="background:#be185d">NK</div>
-      <div class="nav-tooltip">Neha Kapoor — CSM</div>
-    </div>
+<!-- TOPBAR -->
+<header id="topbar">
+  <div class="logo-wordmark">
+    <span class="logo-text">ParcelPilot</span>
+    <span class="logo-dot"></span>
+    <span class="logo-sub">Support Agent</span>
   </div>
+  <div class="topbar-sep"></div>
+  <div class="topbar-right">
+    <div class="status-badge" id="status-badge">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Connecting…</span>
+    </div>
+    <select class="role-select" id="role-sel" onchange="changeRole(this.value)">
+      <option value="support_agent|Rohit">Rohit — Support Agent</option>
+      <option value="support_agent|Maya">Maya — Support Agent</option>
+      <option value="csm|Priya Mehta">Priya Mehta — CSM</option>
+    </select>
+  </div>
+</header>
 
-  <!-- MAIN -->
-  <div id="main">
+<!-- LAYOUT -->
+<div id="layout">
 
-    <!-- TOP CHROME (window title bar) -->
-    <div id="chrome">
-      <div class="traffic-lights">
-        <div class="tl tl-red"></div>
-        <div class="tl tl-yellow"></div>
-        <div class="tl tl-green"></div>
-      </div>
-      <span class="chrome-title">PARCELPILOT</span>
-      <span class="chrome-dot">·</span>
-      <span class="chrome-title">COMPASS</span>
-      <div class="chrome-right">
-        <div class="live-badge" id="live-badge">
-          <div class="live-badge-dot" id="live-dot"></div>
-          <span id="live-text">CONNECTING</span>
-        </div>
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sb-head">
+      <div class="sb-title">
+        Live Issues
+        <span class="sb-count" id="sb-count">—</span>
       </div>
     </div>
-
-    <!-- INNER: sidebar + chat -->
-    <div style="display:flex;flex:1;overflow:hidden;min-height:0">
-
-      <!-- SIDEBAR -->
-      <aside id="sidebar">
-        <div class="sb-head">
-          <div class="sb-title">
-            Live Issues
-            <span class="sb-badge" id="sb-count">—</span>
-          </div>
-        </div>
-        <div class="sb-scroll" id="sb-scroll">
-          <div style="padding:18px 6px;text-align:center;font-size:11px;color:#a8a29e">Loading…</div>
-        </div>
-        <div class="sb-foot" id="sb-foot"></div>
-      </aside>
-
-      <!-- CHAT COLUMN -->
-      <div id="chat-area">
-
-        <!-- Chat top bar with role select -->
-        <div id="chat-topbar">
-          <div class="active-user-badge" id="active-user-badge">
-            <div class="active-user-avatar" id="active-user-avatar" style="background:#1e3a5f">RK</div>
-            <span id="active-user-name">Rohit — Support Agent</span>
-          </div>
-          <select class="role-select" id="role-sel" onchange="changeRole(this.value)">
-            <option value="support_agent|Rohit">Rohit — Support Agent</option>
-            <option value="support_agent|Maya">Maya — Support Agent</option>
-            <option value="csm|Priya Mehta">Priya Mehta — CSM</option>
-            <option value="csm|Arjun Rao">Arjun Rao — CSM</option>
-            <option value="csm|Neha Kapoor">Neha Kapoor — CSM</option>
-          </select>
-          <div class="topbar-status">
-            <div class="status-dot" id="status-dot"></div>
-            <span id="status-text">Connecting…</span>
-          </div>
-        </div>
-
-        <!-- Messages -->
-        <div id="msgs">
-          <div id="empty-state">
-            <div class="empty-glyph">◎</div>
-            <h2 class="empty-title">ParcelPilot · Compass</h2>
-            <p class="empty-sub">Ask anything about policies, orders, tickets, or contracts — every answer cited to the exact source.</p>
-            <div class="chips">
-              <div class="chip" onclick="fill('Can Northstar cancel ORD-1001 without a fee?')">Northstar cancellation</div>
-              <div class="chip" onclick="fill('What should I do about TKT-505?')">TKT-505 API key</div>
-              <div class="chip" onclick="fill('Is ORD-2002 eligible for a service credit?')">LumenWorks credit</div>
-              <div class="chip" onclick="fill('LumenWorks 4200-row CSV fails to upload')">Bulk upload limit</div>
-              <div class="chip" onclick="fill('TKT-504 shows BOOKED but driver already picked up')">SwiftShip delay</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Thinking dots -->
-        <div id="thinking"><div class="td"></div><div class="td"></div><div class="td"></div></div>
-
-        <!-- Demo banner -->
-        <div id="demo-banner">⚠ Demo mode — showing pre-built responses. Start the backend on localhost:8000 for live answers.</div>
-
-        <!-- Input bar -->
-        <div id="ibar">
-          <div class="ibar-inner">
-            <textarea id="inp" rows="1" placeholder="Ask about a ticket, order, policy, or contract…"
-              onkeydown="handleKey(event)" oninput="resize(this)"></textarea>
-            <button id="sbtn" onclick="send()">
-              Send
-            </button>
-          </div>
-          <p class="hint">Enter to send · Shift+Enter for new line</p>
-        </div>
+    <div class="sb-scroll" id="sb-scroll">
+      <div style="padding:20px 6px;font-size:11px;color:#a8a29e;text-align:center">
+        Loading…
       </div>
+    </div>
+    <div class="sb-foot" id="sb-foot"></div>
+  </aside>
+
+  <!-- CHAT COLUMN -->
+  <div id="chat-col">
+    <div id="msgs">
+      <!-- empty state injected by JS -->
+    </div>
+
+    <!-- thinking -->
+    <div id="thinking">
+      <div class="td"></div><div class="td"></div><div class="td"></div>
+    </div>
+
+    <!-- input -->
+    <div id="ibar">
+      <div class="ibar-inner">
+        <textarea id="inp" rows="1" placeholder="Ask about a ticket, order, policy, or contract…"
+          onkeydown="handleKey(event)" oninput="resize(this)"></textarea>
+        <button id="sbtn" onclick="send()">Send</button>
+      </div>
+      <div class="hint">Enter to send · Shift+Enter for new line</div>
     </div>
   </div>
 </div>
 
+<!-- DEMO BANNER -->
+<div id="demo-banner" class="vis">
+  Demo mode — simulated responses. Connect a live backend to query real data.
+</div>
+
+<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-let BACKEND = (() => {
-  const h = window.location.hostname;
+// ═══════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════
+const BACKEND = (() => {
+  const h    = window.location.hostname;
+  const prot = window.location.protocol;
+  // Opened as local file (file://) — point to localhost backend
+  if (prot === 'file:') return 'http://localhost:8000';
   if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:8000';
   if (h.includes('railway.app') || h.includes('render.com')) return window.location.origin;
   return 'https://parcelpilot-agent-production.up.railway.app';
 })();
 
-let sid = uuid(), role = 'support_agent', uname = 'Rohit', busy = false, live = false;
+let sid      = uid();
+let role     = 'support_agent';
+let uname    = 'Rohit';
+let busy     = false;
+let liveMode = false;
 
-function uuid() {
+function uid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random()*16|0; return (c==='x'?r:r&3|8).toString(16);
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : r & 3 | 8).toString(16);
   });
 }
 
-// ════════════════════════════════════════════
-// BOOT — Auto-detects local & live cloud backend
-// ════════════════════════════════════════════
+// ═══════════════════════════════════════════
+// BOOT — probe backend
+// ═══════════════════════════════════════════
 async function boot() {
-  const candidates = [
-    BACKEND,
-    'http://localhost:8000',
-    'https://parcelpilot-agent-production.up.railway.app'
-  ];
-  const endpoints = [...new Set(candidates)];
-
-  for (const ep of endpoints) {
-    try {
-      const r = await Promise.race([
-        fetch(ep + '/proactive'),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3500))
-      ]);
-      if (r.ok) {
-        BACKEND = ep;
-        live = true;
-        setLive(true);
-        document.getElementById('demo-banner').classList.remove('vis');
-        const d = await r.json();
-        renderSidebar(d.items || [], d.snapshot_time || '');
-        return;
-      }
-    } catch {}
-  }
-
-  // Fallback to offline demo mode
-  setLive(false);
-  document.getElementById('demo-banner').classList.add('vis');
-  renderSidebar(DEMO_SB, DEMO_TS);
-}
-
-function setLive(on) {
-  document.getElementById('live-dot').style.background = on ? '#16a34a' : '#f59e0b';
-  document.getElementById('live-text').textContent = on ? 'LIVE' : 'DEMO';
-  document.getElementById('status-dot').classList.toggle('online', on);
-  document.getElementById('status-text').textContent = on ? 'Connected' : 'Demo mode';
-}
-
-// ════════════════════════════════════════════
-// SIDEBAR
-// ════════════════════════════════════════════
-const CAT_CFG = {
-  'SLA Breach':      {icon:'🚨',color:'#dc2626'},
-  'Approaching SLA': {icon:'⏰',color:'#d97706'},
-  'P1/P2 Open':      {icon:'🔴',color:'#dc2626'},
-  'Account Cluster': {icon:'👥',color:'#7c3aed'},
-  'KI-Linked':       {icon:'🐛',color:'#d97706'},
-};
-
-function renderSidebar(items, ts) {
-  const sc = document.getElementById('sb-scroll');
-  const ct = document.getElementById('sb-count');
-  const ft = document.getElementById('sb-foot');
-  ct.textContent = items.length||'0';
-  if (ts) ft.textContent = 'Snapshot: '+ts.replace('T',' ').slice(0,16)+' IST';
-  if (!items.length) { sc.innerHTML='<div style="padding:16px;text-align:center;font-size:11px;color:#a8a29e">✓ No active issues</div>'; return; }
-  const grps={};
-  items.forEach(i=>{(grps[i.category]=grps[i.category]||[]).push(i)});
-  let h='';
-  for (const [cat,arr] of Object.entries(grps)) {
-    const c=CAT_CFG[cat]||{icon:'•',color:'#78716c'};
-    h+=`<div class="sb-group"><div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${esc(cat)}</div>`;
-    arr.forEach(it=>{
-      const q=it.suggested_query||`Tell me about ${it.ticket_ids.join(', ')}`;
-      h+=`<div class="sb-item" onclick="fill(${JSON.stringify(q)})">
-        <div class="sb-item-id">${esc(it.ticket_ids.join(', '))} &mdash; ${esc(it.account_name)}</div>
-        <div class="sb-item-desc">${esc(it.recommended_action)}</div>
-      </div>`;
-    });
-    h+='</div>';
-  }
-  sc.innerHTML=h;
-}
-
-// ════════════════════════════════════════════
-// MESSAGES
-// ════════════════════════════════════════════
-function killEmpty() { const e=document.getElementById('empty-state'); if(e) e.remove(); }
-function scrollDown() { const m=document.getElementById('msgs'); requestAnimationFrame(()=>{m.scrollTop=m.scrollHeight}); }
-
-function addUserMsg(text) {
-  killEmpty();
-  const m=document.getElementById('msgs');
-  const d=document.createElement('div');
-  d.className='msg-user';
-  d.innerHTML=`<div class="msg-user-bubble">${esc(text)}</div>`;
-  m.appendChild(d); scrollDown();
-}
-
-function addError(text) {
-  killEmpty();
-  const m=document.getElementById('msgs');
-  const d=document.createElement('div');
-  d.className='msg-error';
-  d.textContent='⚠ '+text;
-  m.appendChild(d); scrollDown();
-}
-
-// Build a Compass-style workflow card with steps
-function createWorkflowCard(title='PARCELPILOT QUERY') {
-  killEmpty();
-  const m = document.getElementById('msgs');
-  const wrap = document.createElement('div');
-  wrap.className = 'workflow-wrap';
-  wrap.innerHTML = `
-    <div class="workflow-card">
-      <div class="workflow-header">
-        <div class="wf-status">
-          <div class="wf-status-dot running" id="wf-dot"></div>
-          <span id="wf-status-text">RUNNING</span>
-        </div>
-        <div class="wf-label">${esc(title)}</div>
-      </div>
-      <div class="workflow-steps" id="wf-steps"></div>
-      <div class="answer-area" id="wf-answer" style="display:none"></div>
-      <div class="sources-bar" id="wf-sources" style="display:none">
-        <span class="sources-label">Sources</span>
-      </div>
-    </div>`;
-  m.appendChild(wrap);
-  scrollDown();
-  return wrap;
-}
-
-const STEP_NAMES = {
-  document_search: 'Search policies & agreements',
-  data_lookup:     'Look up orders, tickets & accounts',
-  escalate:        'Prepare escalation record',
-};
-
-function addStep(wrap, toolName) {
-  const steps = wrap.querySelector('#wf-steps');
-  const t0 = Date.now();
-  const row = document.createElement('div');
-  row.className = 'wf-step active';
-  row.innerHTML = `
-    <div class="wf-check active"></div>
-    <div class="wf-step-name">${esc(STEP_NAMES[toolName]||toolName)}</div>
-    <div class="wf-time" id="t-${toolName}-${t0}">—</div>`;
-  steps.appendChild(row);
-  scrollDown();
-  return { row, t0, toolName };
-}
-
-function finishStep(stepObj) {
-  const elapsed = ((Date.now()-stepObj.t0)/1000).toFixed(1)+'s';
-  const row = stepObj.row;
-  row.className = 'wf-step done';
-  const chk = row.querySelector('.wf-check');
-  chk.className = 'wf-check done';
-  chk.innerHTML = '✓';
-  const tEl = row.querySelector('.wf-time');
-  if (tEl) tEl.textContent = elapsed;
-  scrollDown();
-}
-
-function setWorkflowComplete(wrap) {
-  const dot = wrap.querySelector('#wf-dot');
-  const txt = wrap.querySelector('#wf-status-text');
-  if (dot) { dot.className = 'wf-status-dot'; dot.style.background='#16a34a'; }
-  if (txt) txt.textContent = 'WORKFLOW COMPLETE';
-}
-
-function showAnswer(wrap, text) {
-  const a = wrap.querySelector('#wf-answer');
-  a.style.display = 'block';
-  a.innerHTML = '<p>'+formatText(text)+'</p>';
-  scrollDown();
-}
-
-function appendAnswerToken(wrap, text) {
-  const a = wrap.querySelector('#wf-answer');
-  a.style.display = 'block';
-  // Remove cursor if present
-  const cur = a.querySelector('.cursor');
-  if (cur) cur.remove();
-  a.innerHTML = '<p>'+formatText(text)+'<span class="cursor"></span></p>';
-  scrollDown();
-}
-
-function finaliseAnswer(wrap, text) {
-  const a = wrap.querySelector('#wf-answer');
-  a.style.display = 'block';
-  a.innerHTML = '<p>'+formatText(text)+'</p>';
-}
-
-function addSources(wrap, sources) {
-  if (!sources || !sources.length) return;
-  const sb = wrap.querySelector('#wf-sources');
-  sb.style.display = 'flex';
-  sources.forEach(s => {
-    const pill = document.createElement('span');
-    pill.className = 'source-pill';
-    pill.innerHTML = `<span class="source-arrow">↳</span>${esc(s)}`;
-    sb.appendChild(pill);
-  });
-  scrollDown();
-}
-
-function addConfirmCard(display, payload) {
-  killEmpty();
-  const m = document.getElementById('msgs');
-  const div = document.createElement('div');
-  div.className='confirm-card';
-  let fields='';
-  for (const [k,v] of Object.entries(display||{})) {
-    fields+=`<div class="cc-row"><span class="cc-key">${esc(k)}</span><span class="cc-val">${esc(String(v??''))}</span></div>`;
-  }
-  div.innerHTML=`
-    <div class="cc-label">⚡ Confirm Escalation</div>
-    <div class="cc-fields">${fields}</div>
-    <div class="cc-btns">
-      <button class="btn-ok" id="cc-ok">Confirm</button>
-      <button class="btn-no" id="cc-no">Cancel</button>
-    </div>
-    <div class="cc-result" id="cc-res"></div>`;
-  m.appendChild(div); scrollDown();
-
-  const ok=div.querySelector('#cc-ok'), no=div.querySelector('#cc-no'), res=div.querySelector('#cc-res');
-  ok.onclick=async()=>{
-    ok.disabled=no.disabled=true; ok.textContent='Creating…';
-    if (live) {
-      try {
-        const r=await fetch(BACKEND+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sid,confirm:true,payload})});
-        const d=await r.json();
-        res.style.cssText='display:block;color:#16a34a';
-        res.textContent='✓ Escalation created: '+(d.escalation_id||'ESC-'+Date.now());
-        ok.textContent='✓ Confirmed';
-      } catch(e) { ok.disabled=no.disabled=false; ok.textContent='Confirm'; res.style.cssText='display:block;color:#dc2626'; res.textContent='Error: '+e.message; }
-    } else {
-      res.style.cssText='display:block;color:#16a34a';
-      res.textContent='✓ Escalation created: ESC-20260816-0001 (demo)';
-      ok.textContent='✓ Confirmed';
-    }
-  };
-  no.onclick=async()=>{
-    ok.disabled=no.disabled=true;
-    if (live) await fetch(BACKEND+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sid,confirm:false})}).catch(()=>{});
-    res.style.cssText='display:block;color:#78716c'; res.textContent='Action cancelled.'; no.textContent='Cancelled';
-  };
-}
-
-// ════════════════════════════════════════════
-// FORMAT ANSWER TEXT
-// ════════════════════════════════════════════
-function formatText(t) {
-  return esc(t)
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\[([\w_\s]+\.pdf[^\]]*)\]/gi,'<span class="cit">$1</span>')
-    .replace(/\[(orders|accounts|tickets):\s*([^\]]+)\]/gi,'<span class="cit">$1: $2</span>')
-    .replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
-}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-
-// ════════════════════════════════════════════
-// SEND — LIVE
-// ════════════════════════════════════════════
-async function sendLive(q) {
-  let card = null;
-  let stepObjs = {};
-  let lastStep = null;
-  let aText = '';
-
+  renderEmptyState();
   try {
-    const res = await fetch(BACKEND+'/chat', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({message:q, session_id:sid, role, user_name:uname}),
-    });
-    if (!res.ok) { addError('Backend returned '+res.status); return; }
-
-    const reader=res.body.getReader(), dec=new TextDecoder();
-    let buf='';
-
-    outer: while(true) {
-      const {done,value}=await reader.read();
-      if (value) buf+=dec.decode(value,{stream:true});
-      const blocks=buf.split(/\r?\n\r?\n/);
-      buf=blocks.pop()||'';
-      for (const blk of blocks) {
-        if (!blk.trim()) continue;
-        let ev='message',ds='';
-        for (const ln of blk.split(/\r?\n/)) {
-          if (ln.startsWith('event: ')) ev=ln.slice(7).trim();
-          else if (ln.startsWith('data: ')) ds=ln.slice(6);
-        }
-        let d={};
-        try{d=JSON.parse(ds)}catch{}
-
-        if (ev==='tool_chip') {
-          if (!card) card=createWorkflowCard();
-          if (lastStep) finishStep(lastStep);
-          lastStep=addStep(card, d.tool||ds);
-          stepObjs[d.tool]=lastStep;
-        }
-        else if (ev==='token') {
-          if (!card) card=createWorkflowCard();
-          if (lastStep) { finishStep(lastStep); lastStep=null; }
-          setWorkflowComplete(card);
-          aText+=(d.text||'');
-          appendAnswerToken(card, aText);
-        }
-        else if (ev==='pending_confirmation') {
-          if (card) { setWorkflowComplete(card); if(lastStep) finishStep(lastStep); }
-          addConfirmCard(d.display||{}, d.payload||d);
-        }
-        else if (ev==='error') { addError(d.message||ds); }
-        else if (ev==='done') {
-          if (card && aText) {
-            finaliseAnswer(card, aText);
-            // extract source citations from answer
-            const srcs=[...new Set([...aText.matchAll(/\[([^\]]+\.pdf[^\]]*)\]/gi)].map(m=>m[1].split(',')[0].trim()))];
-            if (srcs.length) addSources(card, srcs);
-          }
-          if (card) setWorkflowComplete(card);
-          if (lastStep) finishStep(lastStep);
-          break outer;
-        }
-      }
-      if (done) {
-        if (buf.trim()) { /* handle last block */ }
-        if (card && aText) finaliseAnswer(card, aText);
-        if (card) setWorkflowComplete(card);
-        break;
-      }
+    const r = await fetchWithTimeout(BACKEND + '/proactive', {}, 3000);
+    if (r.ok) {
+      liveMode = true;
+      const data = await r.json();
+      renderSidebar(data.items || [], data.snapshot_time || '');
+      setStatus(true);
+      document.getElementById('demo-banner').classList.remove('vis');
+      return;
     }
-  } catch(e) {
-    live=false; setLive(false);
-    document.getElementById('demo-banner').classList.add('vis');
-    await sendDemo(q);
+  } catch(e) {}
+  setStatus(false);
+  loadDemoSidebar();
+}
+
+function fetchWithTimeout(url, opts, ms) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(t));
+}
+
+function setStatus(ok) {
+  const dot   = document.getElementById('status-dot');
+  const txt   = document.getElementById('status-text');
+  const badge = document.getElementById('status-badge');
+  if (ok) {
+    dot.classList.add('online');
+    badge.classList.add('online');
+    txt.textContent = 'Connected';
+  } else {
+    dot.classList.remove('online');
+    badge.classList.remove('online');
+    txt.textContent = 'Demo mode';
   }
 }
 
-// ════════════════════════════════════════════
-// SEND — DEMO
-// ════════════════════════════════════════════
-const DEMO_SB = [
-  {category:'SLA Breach',ticket_ids:['TKT-505'],account_name:'Axis Labs',account_id:'ACCT-004',recommended_action:'P1 SLA breached — 2h 30m elapsed, target 30m',suggested_query:'What should I do about TKT-505?'},
-  {category:'SLA Breach',ticket_ids:['TKT-501'],account_name:'Northstar Logistics',account_id:'ACCT-001',recommended_action:'P1 SLA breached — 30m elapsed, target 15m',suggested_query:'Tell me about TKT-501 and whether I should escalate'},
-  {category:'KI-Linked',ticket_ids:['TKT-502'],account_name:'LumenWorks',account_id:'ACCT-002',recommended_action:'Linked to KI-208: bulk upload failures above ~3,000 rows',suggested_query:'Is TKT-502 related to KI-208?'},
-  {category:'KI-Linked',ticket_ids:['TKT-504'],account_name:'Northstar Logistics',account_id:'ACCT-001',recommended_action:'Linked to KI-211: SwiftShip webhook delay up to 20 min',suggested_query:'TKT-504 shows BOOKED but driver already picked up'},
-  {category:'Account Cluster',ticket_ids:['TKT-501','TKT-504'],account_name:'Northstar Logistics',account_id:'ACCT-001',recommended_action:'2 open tickets from this account in 7 days',suggested_query:'What open tickets does Northstar Logistics have?'},
-];
-const DEMO_TS = '2026-08-16T11:00:00+05:30';
-
-const DEMOS = {
-  northstar:{
-    steps:['data_lookup','document_search'],
-    answer:'**Yes — Northstar can cancel ORD-1001 with no cancellation fee.**\n\nORD-1001 is currently **BOOKED** and has not been picked up [orders: ORD-1001]. The Northstar Enterprise Agreement §2 explicitly waives all cancellation fees for any BOOKED-before-pickup shipment, regardless of time since booking [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].\n\nThis overrides the SOP default (INR 250 after 30 min) [03_Cancellation_and_Service_Credit_SOP_v4.pdf, p.1 §1] — signed agreement is highest authority.\n\n⚠ TKT-450 historical resolution incorrectly stated a fee applied — that is overridden by the current agreement.',
-    sources:['05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2','03_Cancellation_and_Service_Credit_SOP_v4.pdf, p.1'],
-  },
-  tkt505:{
-    steps:['data_lookup','document_search'],
-    answer:'**⚠ P1 — SLA already breached. Escalate immediately.**\n\nTKT-505 (Axis Labs, ACCT-004) involves suspected API key exposure [tickets: TKT-505] — classified **P1** under the security incident definition [01_Support_Policy_v3_CURRENT.pdf, p.1 §2]. Axis Labs has no custom agreement; standard Enterprise SLA applies: P1 = 30 min 24×7 [01_Support_Policy_v3_CURRENT.pdf, p.2 §3]. Ticket created 08:30, snapshot 11:00 — **2h 30m elapsed**, SLA breached by 2h.',
-    sources:['01_Support_Policy_v3_CURRENT.pdf, p.2','tickets: TKT-505'],
-    confirm:{display:{Action:'Create Escalation',Ticket:'TKT-505',Account:'Axis Labs (ACCT-004)',Severity:'P1','Assigned to':'Rohit',Reason:'API key exposure — P1 security incident, SLA breached 2h 30m'},payload:{ticket_id:'TKT-505',account_id:'ACCT-004',severity:'P1',reason:'Suspected credential exposure',assigned_to:'Rohit',created_by:'Demo (demo)',summary:'P1 API key exposure, SLA breached'}},
-  },
-  credit:{
-    steps:['data_lookup','document_search'],
-    answer:'**Yes — ORD-2002 is eligible for a service credit of INR 300.**\n\nPickup window ended 06:30; snapshot 11:00 — delay is **4h 30m** [orders: ORD-2002]. This exceeds LumenWorks\'s 4-hour threshold [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. Carrier fault confirmed, no customer fault.\n\nThe LumenWorks agreement replaces the SOP 2h threshold with **4h and a fixed INR 300** [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. No manager approval required (INR 300 < INR 1,000).',
-    sources:['06_LumenWorks_Service_Agreement.pdf, p.2','orders: ORD-2002'],
-  },
-  bulk:{
-    steps:['document_search'],
-    answer:'The supported product limit for Bulk Upload is **5,000 rows per CSV** [04_Product_Operations_Guide_and_Known_Issues.pdf, p.1 §1].\n\n**KI-208** (opened 10 Aug 2026, Investigating): intermittent failures above ~3,000 rows. Workaround: split uploads below 3,000 rows [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2 §2]. Individual shipment creation is unaffected.\n\n⚠ TKT-451 historical resolution incorrectly stated 3,000 rows is the product limit — that is the KI-208 workaround, not the specification.',
-    sources:['04_Product_Operations_Guide_and_Known_Issues.pdf, p.1','04_Product_Operations_Guide_and_Known_Issues.pdf, p.2'],
-  },
-  swiftship:{
-    steps:['data_lookup','document_search'],
-    answer:'TKT-504 reports ORD-1001 still shows **BOOKED** ~10 min after driver collection [tickets: TKT-504].\n\n**Do not tell the customer pickup did not occur.** This matches **KI-211** (opened 12 Aug 2026, Monitoring): SwiftShip webhooks can arrive up to 20 min late — a parcel may be physically collected while ParcelPilot still shows BOOKED [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2 §2].\n\n**Recommended:** Verify carrier status directly with SwiftShip, or wait through the 20-min delay window.',
-    sources:['04_Product_Operations_Guide_and_Known_Issues.pdf, p.2','tickets: TKT-504'],
-  },
-  default:{
-    steps:['document_search'],
-    answer:'I searched the available ParcelPilot source documents. In demo mode, fully cited answers are available for the pre-built scenarios above.\n\nStart the backend at **localhost:8000** to get live answers from Groq with full multi-step reasoning across all 6 source documents and 4 data sheets.',
-    sources:[],
-  },
-};
-
-function matchDemo(q) {
-  const lq=q.toLowerCase();
-  if (lq.includes('northstar')||lq.includes('ord-1001')||lq.includes('cancel')) return 'northstar';
-  if (lq.includes('tkt-505')||lq.includes('api key')||lq.includes('credential')) return 'tkt505';
-  if (lq.includes('lumenworks')||lq.includes('ord-2002')||lq.includes('credit')) return 'credit';
-  if (lq.includes('bulk')||lq.includes('csv')||lq.includes('upload')||lq.includes('row')) return 'bulk';
-  if (lq.includes('swiftship')||lq.includes('tkt-504')||lq.includes('booked')||lq.includes('webhook')) return 'swiftship';
-  return 'default';
-}
-
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-
-async function sendDemo(q) {
-  const key = matchDemo(q);
-  const demo = DEMOS[key];
-  const card = createWorkflowCard('PARCELPILOT QUERY');
-  const stepObjs = {};
-
-  for (const s of demo.steps) {
-    const so = addStep(card, s);
-    await sleep(350+Math.random()*300);
-    finishStep(so);
-    await sleep(80);
-  }
-
-  setWorkflowComplete(card);
-
-  // Stream answer word by word
-  const words = demo.answer.split(' ');
-  let acc = '';
-  for (let i=0; i<words.length; i++) {
-    acc += words[i]+(i<words.length-1?' ':'');
-    appendAnswerToken(card, acc);
-    await sleep(15);
-  }
-  finaliseAnswer(card, acc);
-  if (demo.sources.length) addSources(card, demo.sources);
-
-  if (demo.confirm) {
-    await sleep(200);
-    addConfirmCard(demo.confirm.display, demo.confirm.payload);
-  }
-}
-
-// ════════════════════════════════════════════
-// SEND ENTRY POINT
-// ════════════════════════════════════════════
-async function send() {
-  const el=document.getElementById('inp');
-  const q=el.value.trim();
-  if(!q||busy) return;
-  el.value=''; resize(el);
-  setBusy(true);
-  addUserMsg(q);
-  if(live) await sendLive(q); else await sendDemo(q);
-  setBusy(false);
-}
-
-// ════════════════════════════════════════════
-// USERS — the real staff from the data pack
-// ════════════════════════════════════════════
-const USERS = [
-  { id: 0, name: 'Rohit',       role: 'support_agent', label: 'Rohit — Support Agent', initials: 'RK', color: '#1e3a5f' },
-  { id: 1, name: 'Maya',        role: 'support_agent', label: 'Maya — Support Agent',  initials: 'MS', color: '#6d28d9' },
-  { id: 2, name: 'Priya Mehta', role: 'csm',           label: 'Priya Mehta — CSM',    initials: 'PM', color: '#0f766e' },
-  { id: 3, name: 'Arjun Rao',   role: 'csm',           label: 'Arjun Rao — CSM',      initials: 'AR', color: '#b45309' },
-  { id: 4, name: 'Neha Kapoor', role: 'csm',           label: 'Neha Kapoor — CSM',    initials: 'NK', color: '#be185d' },
-];
-
-let activeUserId = 0;
-
-function switchUser(idx) {
-  const user = USERS[idx];
-  if (!user) return;
-  activeUserId = idx;
-
-  // Update nav dot active states
-  USERS.forEach((_, i) => {
-    document.getElementById('nav-'+i).classList.toggle('active', i === idx);
-  });
-
-  // Update topbar badge
-  document.getElementById('active-user-avatar').style.background = user.color;
-  document.getElementById('active-user-avatar').textContent = user.initials;
-  document.getElementById('active-user-name').textContent = user.label;
-
-  // Sync the select dropdown
-  const sel = document.getElementById('role-sel');
-  sel.value = user.role + '|' + user.name;
-
-  // Apply role change
-  role = user.role;
-  uname = user.name;
-  sid = uuid();
-
-  // Reset chat to empty state
+// ═══════════════════════════════════════════
+// EMPTY STATE
+// ═══════════════════════════════════════════
+function renderEmptyState() {
   const m = document.getElementById('msgs');
-  m.innerHTML = `<div id="empty-state">
-    <div class="empty-glyph">◎</div>
-    <h2 class="empty-title">ParcelPilot · Compass</h2>
-    <p class="empty-sub">Signed in as <strong>${esc(user.label)}</strong>. Ask anything about policies, orders, tickets, or contracts.</p>
+  m.innerHTML = '';
+  const e = document.createElement('div');
+  e.id = 'empty';
+  e.style.cssText = 'margin:auto;text-align:center;padding:0 24px;max-width:460px';
+  e.innerHTML = `
+    <div class="empty-icon">◎</div>
+    <div class="empty-title">Ask anything about ParcelPilot</div>
+    <div class="empty-sub">Policies, orders, tickets, contracts — every answer cited to the exact source.</div>
     <div class="chips">
       <div class="chip" onclick="fill('Can Northstar cancel ORD-1001 without a fee?')">Northstar cancellation</div>
       <div class="chip" onclick="fill('What should I do about TKT-505?')">TKT-505 API key</div>
       <div class="chip" onclick="fill('Is ORD-2002 eligible for a service credit?')">LumenWorks credit</div>
       <div class="chip" onclick="fill('LumenWorks 4200-row CSV fails to upload')">Bulk upload limit</div>
       <div class="chip" onclick="fill('TKT-504 shows BOOKED but driver already picked up')">SwiftShip delay</div>
-    </div>
-  </div>`;
-
-  toast('Signed in as ' + user.label);
+    </div>`;
+  m.appendChild(e);
 }
 
-// ════════════════════════════════════════════
-// ROLE CHANGE (via dropdown — syncs nav dots)
-// ════════════════════════════════════════════
-function changeRole(v) {
-  const [r,...n]=v.split('|');
-  const name = n.join('|');
-  const idx = USERS.findIndex(u => u.name === name && u.role === r);
-  if (idx >= 0) {
-    switchUser(idx);
-  } else {
-    role=r; uname=name; sid=uuid();
-    toast('Signed in as '+name);
+// ═══════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════
+const CAT = {
+  'SLA Breach':      { icon: '🚨', color: '#dc2626' },
+  'Approaching SLA': { icon: '⏰', color: '#d97706' },
+  'P1/P2 Open':      { icon: '🔴', color: '#dc2626' },
+  'Account Cluster': { icon: '👥', color: '#7c3aed' },
+  'KI-Linked':       { icon: '🐛', color: '#d97706' },
+};
+
+function renderSidebar(items, ts) {
+  const sc = document.getElementById('sb-scroll');
+  const ct = document.getElementById('sb-count');
+  const ft = document.getElementById('sb-foot');
+  ct.textContent = items.length || '0';
+  if (ts) ft.textContent = 'Snapshot ' + ts.replace('T',' ').slice(0,16) + ' IST';
+  if (!items.length) {
+    sc.innerHTML = '<div style="padding:20px 6px;font-size:11px;color:#a8a29e;text-align:center">✓ No active issues</div>';
+    return;
+  }
+  const grps = {};
+  items.forEach(i => { (grps[i.category] = grps[i.category] || []).push(i); });
+  let h = '';
+  for (const [cat, arr] of Object.entries(grps)) {
+    const c = CAT[cat] || { icon: '•', color: '#a8a29e' };
+    h += `<div class="sb-group">
+      <div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${cat}</div>`;
+    arr.forEach(it => {
+      const q = it.suggested_query || `Tell me about ${it.ticket_ids.join(', ')}`;
+      h += `<div class="sb-item" onclick="fill(${JSON.stringify(q)})">
+        <div class="sb-item-id">${it.ticket_ids.join(', ')} — ${it.account_name}</div>
+        <div class="sb-item-desc">${it.recommended_action}</div>
+      </div>`;
+    });
+    h += '</div>';
+  }
+  sc.innerHTML = h;
+}
+
+function loadDemoSidebar() {
+  renderSidebar([
+    { category:'SLA Breach',      ticket_ids:['TKT-505'], account_name:'Axis Labs',          recommended_action:'P1 SLA breached — 2h 30m elapsed, target 30m',          suggested_query:'What should I do about TKT-505?' },
+    { category:'SLA Breach',      ticket_ids:['TKT-501'], account_name:'Northstar Logistics', recommended_action:'P1 SLA breached — 30m elapsed, target 15m',              suggested_query:'Tell me about TKT-501' },
+    { category:'KI-Linked',       ticket_ids:['TKT-502'], account_name:'LumenWorks',          recommended_action:'Linked to KI-208: bulk upload failures above ~3,000 rows', suggested_query:'Is TKT-502 related to KI-208?' },
+    { category:'KI-Linked',       ticket_ids:['TKT-504'], account_name:'Northstar Logistics', recommended_action:'Linked to KI-211: SwiftShip webhook delay up to 20 min',   suggested_query:'TKT-504 shows BOOKED but driver already picked up' },
+    { category:'Account Cluster', ticket_ids:['TKT-501','TKT-504'], account_name:'Northstar Logistics', recommended_action:'2 open tickets from this account in 7 days', suggested_query:'What open tickets does Northstar Logistics have?' },
+  ], '2026-08-16T11:00:00+05:30');
+}
+
+// ═══════════════════════════════════════════
+// ROLE CHANGE
+// ═══════════════════════════════════════════
+function changeRole(val) {
+  const [r, ...n] = val.split('|');
+  role = r; uname = n.join('|');
+  sid = uid();
+  renderEmptyState();
+  toast(`Signed in as ${uname}`);
+}
+
+// ═══════════════════════════════════════════
+// MESSAGES
+// ═══════════════════════════════════════════
+function killEmpty() {
+  const e = document.getElementById('empty');
+  if (e) e.remove();
+}
+
+function addRow(type, html) {
+  killEmpty();
+  const m = document.getElementById('msgs');
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + type;
+  const b = document.createElement('div');
+  b.className = 'bubble ' + type;
+  b.innerHTML = html;
+  row.appendChild(b);
+  m.appendChild(row);
+  scrollDown();
+  return b;
+}
+
+/* ═══════════════════════════════════════════
+   CALQUITY COMPASS WIDGET
+   ═══════════════════════════════════════════ */
+const SVG_CHECK = `<svg viewBox="0 0 24 24" fill="none">
+  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+  <path d="M8 12.2l2.6 2.6L16 9.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+
+const SVG_SPIN = `<svg viewBox="0 0 24 24" fill="none" class="spin-icon">
+  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" opacity="0.2"/>
+  <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+</svg>`;
+
+const TOOL_NAMES = {
+  document_search: 'Search policy documents',
+  data_lookup:     'Query structured data',
+  escalate:        'Create escalation',
+};
+const TOOL_TIMES = {
+  document_search: '1.4s',
+  data_lookup:     '0.3s',
+  escalate:        '0.8s',
+};
+
+/* CalQuity Compass workflow card */
+function addWorkflowCard() {
+  killEmpty();
+  const m = document.getElementById('msgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'compass-wrap';
+  const card = document.createElement('div');
+  card.className = 'compass-card';
+  card.innerHTML = `
+    <div class="compass-topbar">
+      <div class="compass-dots">
+        <span class="c-dot red"></span>
+        <span class="c-dot amber"></span>
+        <span class="c-dot green"></span>
+      </div>
+      <div class="compass-label">ParcelPilot · Compass</div>
+      <div class="compass-live"><span class="compass-live-dot"></span>Live</div>
+    </div>
+    <div class="wf-status-bar">
+      <div class="wf-status running" id="wf-status-label">
+        <span class="wf-dot"></span>Running
+      </div>
+      <div class="wf-tag">Support Workflow</div>
+    </div>
+    <ul class="wf-steps" id="wf-steps"></ul>`;
+  wrap.appendChild(card);
+  m.appendChild(wrap);
+  scrollDown();
+  return { wrap, card };
+}
+
+function addWorkflowStep(stepsEl, toolName) {
+  // Mark any previous running steps as done with checkmark
+  stepsEl.querySelectorAll('.wf-step.running').forEach(s => {
+    s.classList.remove('running');
+    s.classList.add('done');
+    const icon = s.querySelector('.wf-step-icon');
+    if (icon) icon.innerHTML = SVG_CHECK;
+  });
+
+  const li = document.createElement('li');
+  li.className = 'wf-step running';
+  li.innerHTML = `
+    <span class="wf-step-icon">${SVG_SPIN}</span>
+    <span class="wf-step-name">${esc(TOOL_NAMES[toolName] || toolName)}</span>
+    <span class="wf-step-time">${esc(TOOL_TIMES[toolName] || '0.4s')}</span>`;
+  stepsEl.appendChild(li);
+  scrollDown();
+}
+
+function finaliseWorkflowCard(cardEl) {
+  const label = cardEl.querySelector('#wf-status-label');
+  if (label) {
+    label.className = 'wf-status done';
+    label.innerHTML = `<span class="wf-dot"></span>Workflow complete`;
+  }
+  cardEl.querySelectorAll('.wf-step').forEach(s => {
+    s.classList.remove('running');
+    s.classList.add('done');
+    const icon = s.querySelector('.wf-step-icon');
+    if (icon) icon.innerHTML = SVG_CHECK;
+  });
+}
+
+/* Legacy inline tool chip row (fallback) */
+function addToolRow() {
+  killEmpty();
+  const m = document.getElementById('msgs');
+  const row = document.createElement('div');
+  row.className = 'tool-row';
+  m.appendChild(row);
+  scrollDown();
+  return row;
+}
+
+function addChip(row, name) {
+  const icons = { document_search: '🔍', data_lookup: '📊', escalate: '⚡' };
+  const c = document.createElement('span');
+  c.className = 'tcip running';
+  c.textContent = (icons[name] || '🔧') + ' ' + name;
+  row.appendChild(c);
+  scrollDown();
+}
+
+function scrollDown() {
+  const m = document.getElementById('msgs');
+  requestAnimationFrame(() => { m.scrollTop = m.scrollHeight; });
+}
+
+// ═══════════════════════════════════════════
+// FORMAT — rich Markdown, tables, citations, lists
+// ═══════════════════════════════════════════
+function fmtInline(s) {
+  // 1. Bracketed Citations with 【 ... 】 -> [ ... ]
+  s = s.replace(/【(.*?)】/g, '[$1]');
+  
+  // 2. Structured data citations [table: key]
+  s = s.replace(/\[(orders|accounts|tickets|credit_calc|sla_check):\s*([^\]]+)\]/gi, '<span class="cit">$1: $2</span>');
+  
+  // 3. Bracketed PDF citations [01_Support_Policy_v3_CURRENT.pdf, p.1]
+  s = s.replace(/\[([a-zA-Z0-9_\-]+\.pdf[^\]]*)\]/gi, '<span class="cit">$1</span>');
+  
+  // 4. Unbracketed PDF citations: 01_Support_Policy_v3_CURRENT.pdf, p.1 or 05_Northstar_Logistics_Enterprise_Agreement.pdf §2
+  s = s.replace(/(?<!["'>\w])(\b\d{2}_[a-zA-Z0-9_\-]+\.pdf(?:,?\s*(?:p(?:age|\.)?\s*\d+|§\s*\d+[^,;\n<)]*))?)/gi, function(match, cit) {
+    if (!cit || cit.includes('<span')) return match;
+    return '<span class="cit">' + cit.trim() + '</span>';
+  });
+
+  // 5. Bold **text**
+  s = s.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // 6. Italic *text* or _text_
+  s = s.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
+  
+  // 7. Inline code `code`
+  s = s.replace(/`([^`]+)`/g, '<code class="prose-code">$1</code>');
+  
+  // 8. Entity tags: TKT-505, ACCT-004, ORD-1001, KI-208
+  s = s.replace(/\b(TKT-\d+|ACCT-\d+|ORD-\d+|KI-\d+)\b/g, '<span class="badge-code">$1</span>');
+  
+  return s;
+}
+
+function fmt(t) {
+  if (!t) return '';
+  
+  // 1. Normalize special unicode spaces & hyphens
+  t = t.replace(/\u202f/g, ' ').replace(/\u00a0/g, ' ').replace(/\u2011/g, '-');
+  
+  const lines = t.split(/\r?\n/);
+  const out = [];
+  
+  let inTable = false;
+  let tableRows = [];
+  let inUl = false;
+  let inOl = false;
+  let inQuote = false;
+  let quoteLines = [];
+  
+  function flushTable() {
+    if (!inTable || tableRows.length === 0) { inTable = false; return; }
+    let html = '<div class="table-wrap"><table class="prose-table">';
+    let bodyRows = tableRows;
+    if (tableRows.length >= 2 && /^\s*\|?\s*[-:]+[-| :]*\|?\s*$/.test(tableRows[1])) {
+      const headers = tableRows[0].replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+      html += '<thead><tr>' + headers.map(h => `<th>${fmtInline(esc(h))}</th>`).join('') + '</tr></thead>';
+      bodyRows = tableRows.slice(2);
+    }
+    html += '<tbody>';
+    for (const r of bodyRows) {
+      if (/^\s*\|?\s*[-:]+[-| :]*\|?\s*$/.test(r)) continue;
+      const cells = r.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+      html += '<tr>' + cells.map(c => `<td>${fmtInline(esc(c))}</td>`).join('') + '</tr>';
+    }
+    html += '</tbody></table></div>';
+    out.push(html);
+    tableRows = [];
+    inTable = false;
+  }
+  
+  function flushList() {
+    if (inUl) { out.push('</ul>'); inUl = false; }
+    if (inOl) { out.push('</ol>'); inOl = false; }
+  }
+  
+  function flushQuote() {
+    if (inQuote) {
+      out.push(`<blockquote class="prose-quote">${fmtInline(esc(quoteLines.join(' ')))}</blockquote>`);
+      inQuote = false;
+      quoteLines = [];
+    }
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i];
+    const trimmed = raw.trim();
+    
+    // Horizontal Rule
+    if (/^[-*_]{3,}$/.test(trimmed)) {
+      flushTable(); flushList(); flushQuote();
+      out.push('<hr class="prose-hr"/>');
+      continue;
+    }
+    
+    // Table Row
+    if (trimmed.includes('|') && (trimmed.startsWith('|') || /[^|]+\|[^|]+/.test(trimmed))) {
+      flushList(); flushQuote();
+      inTable = true;
+      tableRows.push(trimmed);
+      continue;
+    } else if (inTable) {
+      flushTable();
+    }
+    
+    // Blockquote
+    if (trimmed.startsWith('>')) {
+      flushTable(); flushList();
+      inQuote = true;
+      quoteLines.push(trimmed.replace(/^>\s*/, ''));
+      continue;
+    } else if (inQuote) {
+      flushQuote();
+    }
+    
+    // Headings
+    const hMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+    if (hMatch) {
+      flushTable(); flushList(); flushQuote();
+      const lvl = Math.min(hMatch[1].length + 1, 6);
+      out.push(`<h${lvl} class="prose-h">${fmtInline(esc(hMatch[2]))}</h${lvl}>`);
+      continue;
+    }
+    
+    // Ordered list (1. item)
+    const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+    if (olMatch) {
+      flushTable();
+      if (inUl) flushList();
+      if (!inOl) { out.push('<ol class="prose-ol">'); inOl = true; }
+      out.push(`<li>${fmtInline(esc(olMatch[2]))}</li>`);
+      continue;
+    }
+    
+    // Unordered list (- item or * item)
+    const ulMatch = trimmed.match(/^[-*•]\s+(.*)$/);
+    if (ulMatch) {
+      flushTable();
+      if (inOl) flushList();
+      if (!inUl) { out.push('<ul class="prose-ul">'); inUl = true; }
+      out.push(`<li>${fmtInline(esc(ulMatch[1]))}</li>`);
+      continue;
+    }
+    
+    // Empty line
+    if (!trimmed) {
+      flushTable(); flushList(); flushQuote();
+      continue;
+    }
+    
+    // Regular paragraph
+    flushTable(); flushList(); flushQuote();
+    out.push(`<p class="prose-p">${fmtInline(esc(trimmed))}</p>`);
+  }
+  
+  flushTable(); flushList(); flushQuote();
+  return out.join('');
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// ═══════════════════════════════════════════
+// CONFIRMATION CARD
+// ═══════════════════════════════════════════
+function buildCard(display, payload) {
+  const wrap = document.createElement('div');
+  wrap.className = 'confirm-wrap';
+  let fields = '';
+  for (const [k, v] of Object.entries(display || {})) {
+    fields += `<div class="cc-row">
+      <span class="cc-key">${esc(k)}</span>
+      <span class="cc-val">${esc(String(v || ''))}</span>
+    </div>`;
+  }
+  wrap.innerHTML = `<div class="confirm-card">
+    <div class="cc-header">
+      <div class="cc-label">⚡ Confirm Action</div>
+    </div>
+    <div class="cc-fields">${fields}</div>
+    <div class="cc-btns">
+      <button class="cc-ok" id="cc-ok">Confirm</button>
+      <button class="cc-cancel" id="cc-cancel">Cancel</button>
+    </div>
+    <div class="cc-result" id="cc-result"></div>
+  </div>`;
+
+  const ok = wrap.querySelector('#cc-ok');
+  const cx = wrap.querySelector('#cc-cancel');
+  const rs = wrap.querySelector('#cc-result');
+
+  ok.onclick = async () => {
+    ok.disabled = cx.disabled = true;
+    ok.textContent = 'Creating…';
+    if (liveMode) {
+      try {
+        const r = await fetch(BACKEND + '/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sid, confirm: true, payload }),
+        });
+        const d = await r.json();
+        rs.style.cssText = 'display:block;color:#16a34a;font-size:12px;margin-top:10px';
+        rs.textContent = '✓ Escalation created: ' + (d.escalation_id || 'ESC-' + Date.now());
+        ok.textContent = '✓ Confirmed';
+      } catch(e) {
+        ok.disabled = cx.disabled = false;
+        ok.textContent = 'Confirm';
+        rs.style.cssText = 'display:block;color:#dc2626;font-size:12px;margin-top:10px';
+        rs.textContent = 'Error: ' + e.message;
+      }
+    } else {
+      rs.style.cssText = 'display:block;color:#16a34a;font-size:12px;margin-top:10px';
+      rs.textContent = '✓ Escalation created: ESC-20260816-0001 (demo)';
+      ok.textContent = '✓ Confirmed';
+    }
+  };
+
+  cx.onclick = async () => {
+    ok.disabled = cx.disabled = true;
+    if (liveMode) {
+      await fetch(BACKEND + '/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sid, confirm: false }),
+      }).catch(() => {});
+    }
+    rs.style.cssText = 'display:block;color:#a8a29e;font-size:12px;margin-top:10px';
+    rs.textContent = 'Action cancelled.';
+    cx.textContent = 'Cancelled';
+  };
+
+  return wrap;
+}
+
+// ═══════════════════════════════════════════
+// DEMO RESPONSES
+// ═══════════════════════════════════════════
+const DEMO = {
+  northstar: async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'**Yes — Northstar can cancel ORD-1001 with no cancellation fee.**\n\nORD-1001 is currently **BOOKED** and has not been picked up [orders: ORD-1001]. The Northstar Enterprise Agreement §2 explicitly waives all cancellation fees for any BOOKED-before-pickup shipment, regardless of how long ago it was booked [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].\n\nNote: A previous agent resolution (TKT-450) incorrectly stated an INR 250 fee applied after 30 minutes. That historical record is overridden by the current authoritative agreement [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].' };
+  },
+  'tkt-505': async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'confirm',
+      display: { Action:'Create Escalation', Ticket:'TKT-505', Account:'Axis Labs (ACCT-004)', Severity:'P1', 'Assigned to':uname, Reason:'API key exposure — P1, SLA breached 2h 30m' },
+      payload: { ticket_id:'TKT-505', account_id:'ACCT-004', severity:'P1', reason:'Suspected API key exposure — P1 security incident', assigned_to:uname, created_by:uname+' ('+role+')', summary:'TKT-505 API key exposure, P1, SLA breached by 2h 30m' }
+    };
+  },
+  lumenworks: async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'**ORD-2002 is eligible for a service credit of INR 300.**\n\nThe pickup window ended at 06:30; at the dataset snapshot (11:00 IST) the delay is **4h 30m** — which exceeds LumenWorks\'s 4-hour threshold [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. Carrier fault is confirmed and there is no customer fault [orders: ORD-2002].\n\nThe LumenWorks agreement replaces the SOP default (2h threshold, INR 500/10% formula) with a fixed INR 300 credit [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. No manager approval required (INR 300 < INR 1,000).' };
+  },
+  bulk: async function*(q) {
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'The supported product limit for Bulk Upload is **5,000 rows per CSV** [04_Product_Operations_Guide_and_Known_Issues.pdf, p.1 §1]. This applies to Growth and Enterprise plans.\n\nHowever, **KI-208** (opened 10 August 2026, status: Investigating) documents intermittent failures above approximately 3,000 rows [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2]. The recommended workaround is to split uploads into files below 3,000 rows. Individual shipment creation is unaffected.\n\nNote: A previous agent response (TKT-451) incorrectly stated the plan limit is 3,000 rows — that is the KI-208 workaround threshold, not the product specification.' };
+  },
+  swiftship: async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'TKT-504 reports ORD-1001 still shows **BOOKED** status approximately 10 minutes after the driver collected the parcel [tickets: TKT-504].\n\n**Do not tell the customer that pickup did not occur.** This is consistent with **KI-211** (opened 12 August 2026, status: Monitoring): SwiftShip pickup confirmation webhooks can arrive up to 20 minutes late [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2].\n\n**Recommended action:** Advise the customer to verify carrier status directly with SwiftShip, or wait through the 20-minute known delay window before concluding that pickup did not occur.' };
+  },
+  default: async function*(q) {
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'I searched the available ParcelPilot source documents and data for your question. In demo mode, only pre-built scenarios return full cited answers.\n\nTry one of the suggested queries, or connect to the live backend to query real data with full multi-step reasoning.' };
+  },
+};
+
+function matchDemo(q) {
+  const lq = q.toLowerCase();
+  if (lq.includes('northstar') || lq.includes('ord-1001') || lq.includes('cancel')) return 'northstar';
+  if (lq.includes('tkt-505')   || lq.includes('api key')  || lq.includes('credential')) return 'tkt-505';
+  if (lq.includes('lumenworks') || lq.includes('ord-2002') || lq.includes('credit')) return 'lumenworks';
+  if (lq.includes('bulk')      || lq.includes('csv')      || lq.includes('upload') || lq.includes('row')) return 'bulk';
+  if (lq.includes('swiftship') || lq.includes('tkt-504')  || lq.includes('booked') || lq.includes('webhook')) return 'swiftship';
+  return 'default';
+}
+
+// ═══════════════════════════════════════════
+// SEND
+// ═══════════════════════════════════════════
+async function send() {
+  const el = document.getElementById('inp');
+  const q  = el.value.trim();
+  if (!q || busy) return;
+  el.value = ''; resize(el);
+  setBusy(true);
+  addRow('user', esc(q));
+  if (liveMode) await sendLive(q);
+  else          await sendDemo(q);
+  setBusy(false);
+}
+
+async function sendLive(q) {
+  let wfCard = null, stepsEl = null, aBubble = null, aText = '', wfFinalised = false;
+  try {
+    const res = await fetchWithTimeout(BACKEND + '/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: q, session_id: sid, role, user_name: uname }),
+    }, 60000);
+    if (!res.ok) { addRow('assistant err', 'Backend returned ' + res.status); return; }
+    const reader = res.body.getReader();
+    const dec    = new TextDecoder();
+    let buf = '';
+
+    function processBlock(blk) {
+      if (!blk.trim()) return false;
+      let ev = 'message', ds = '';
+      for (const ln of blk.split(/\r?\n/)) {
+        if (ln.startsWith('event: ')) ev = ln.slice(7).trim();
+        else if (ln.startsWith('data: ')) ds = ln.slice(6).trim();
+      }
+      let d = {};
+      try { d = JSON.parse(ds); } catch { d = { text: ds }; }
+      if (ev === 'tool_chip') {
+        if (!wfCard) {
+          const resWf = addWorkflowCard();
+          wfCard = resWf.card;
+          stepsEl = wfCard.querySelector('#wf-steps');
+        }
+        addWorkflowStep(stepsEl, d.tool || ds);
+      } else if (ev === 'token') {
+        if (wfCard && !wfFinalised) {
+          finaliseWorkflowCard(wfCard);
+          wfFinalised = true;
+        }
+        if (!aBubble) aBubble = addRow('assistant', '');
+        aText += (d.text !== undefined ? d.text : ds);
+        aBubble.innerHTML = fmt(aText);
+        scrollDown();
+      } else if (ev === 'pending_confirmation') {
+        if (wfCard && !wfFinalised) {
+          finaliseWorkflowCard(wfCard);
+          wfFinalised = true;
+        }
+        const card = buildCard(d.display || {}, d.payload || d);
+        document.getElementById('msgs').appendChild(card);
+        scrollDown();
+      } else if (ev === 'error') {
+        if (wfCard && !wfFinalised) {
+          finaliseWorkflowCard(wfCard);
+          wfFinalised = true;
+        }
+        addRow('assistant err', '⚠ ' + (d.message || ds));
+      } else if (ev === 'done') {
+        if (wfCard && !wfFinalised) {
+          finaliseWorkflowCard(wfCard);
+          wfFinalised = true;
+        }
+        return true;
+      }
+      return false;
+    }
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (value) buf += dec.decode(value, { stream: true });
+      const blocks = buf.split(/\r?\n\r?\n/);
+      buf = blocks.pop() || '';
+      for (const blk of blocks) {
+        const isDone = processBlock(blk);
+        if (isDone) break;
+      }
+      if (done) {
+        if (buf.trim()) processBlock(buf);
+        break;
+      }
+    }
+    renderNextQueryOptions(q);
+  } catch(e) {
+    console.error("Live chat stream error:", e);
+    liveMode = false;
+    setStatus(false);
+    document.getElementById('demo-banner').classList.add('vis');
+    await sendDemo(q);
   }
 }
 
-// ════════════════════════════════════════════
-// HELPERS
-// ════════════════════════════════════════════
-function setBusy(on){busy=on;document.getElementById('sbtn').disabled=on;document.getElementById('inp').disabled=on;document.getElementById('thinking').classList.toggle('vis',on);}
-function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
-function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
-function fill(t){document.getElementById('inp').value=t;resize(document.getElementById('inp'));document.getElementById('inp').focus();}
-function toast(msg,ms=2200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+async function sendDemo(q) {
+  const key = matchDemo(q);
+  const gen = DEMO[key](q);
+  const { wrap: wfWrap, card: wfCard } = addWorkflowCard();
+  const stepsEl = wfCard.querySelector('#wf-steps');
+  let aBubble = null;
 
+  for await (const ev of gen) {
+    if (ev.t === 'tool') {
+      addWorkflowStep(stepsEl, ev.v);
+      await sleep(320);
+    } else if (ev.t === 'text') {
+      finaliseWorkflowCard(wfCard);
+      await sleep(80);
+      aBubble = addRow('assistant', '');
+      // simulate streaming word by word
+      const words = ev.v.split(' ');
+      let acc = '';
+      for (const w of words) {
+        acc += w + ' ';
+        aBubble.innerHTML = '<p>' + fmt(acc.trimEnd()) + '</p>';
+        scrollDown();
+        await sleep(16);
+      }
+    } else if (ev.t === 'confirm') {
+      finaliseWorkflowCard(wfCard);
+      await sleep(80);
+      // brief text preamble
+      addRow('assistant', '<p>⚠ <strong>P1 — SLA already breached. Escalate immediately.</strong></p><p>TKT-505 involves suspected API key exposure <span class="cit">tickets: TKT-505</span>. Classified <strong>P1</strong> per <span class="cit">01_Support_Policy_v3_CURRENT.pdf §2</span>. Axis Labs has no custom agreement — standard Enterprise SLA applies: P1 = 30 min 24×7 <span class="cit">01_Support_Policy_v3_CURRENT.pdf §3</span>. SLA breached by 2h 30m (created 08:30, snapshot 11:00).</p>');
+      await sleep(200);
+      const card = buildCard(ev.display, ev.payload);
+      document.getElementById('msgs').appendChild(card);
+      scrollDown();
+    }
+  }
+  renderNextQueryOptions(q);
+}
+
+
+function renderNextQueryOptions(lastQuery) {
+  const lq = (lastQuery || '').toLowerCase();
+  let suggestions = [];
+
+  if (lq.includes('northstar') || lq.includes('ord-1001') || lq.includes('cancel')) {
+    suggestions = [
+      { primary: true,  label: 'Investigate TKT-505 API Key Exposure (P1)',  q: 'What should I do about TKT-505?' },
+      { primary: false, label: 'Calculate ORD-2002 Service Credit',            q: 'Is ORD-2002 eligible for a service credit?' },
+      { primary: false, label: 'What are Northstar Agreement SLAs?',           q: 'What are Northstar Logistics SLA terms in their agreement?' },
+    ];
+  } else if (lq.includes('tkt-505') || lq.includes('api key') || lq.includes('credential') || lq.includes('axis')) {
+    suggestions = [
+      { primary: true,  label: 'Escalate TKT-505 Immediately (P1)',           q: 'Please escalate ticket TKT-505 immediately as a P1 incident.' },
+      { primary: false, label: 'Check LumenWorks Bulk CSV Upload Bug',         q: 'LumenWorks 4200-row CSV fails to upload' },
+      { primary: false, label: 'Axis Labs P1 SLA Policy',                     q: 'What is the P1 response SLA for Axis Labs (ACCT-004)?' },
+    ];
+  } else if (lq.includes('lumenworks') || lq.includes('ord-2002') || lq.includes('credit')) {
+    suggestions = [
+      { primary: true,  label: 'Check SwiftShip Webhook Delay (TKT-504)',     q: 'TKT-504 shows BOOKED but driver already picked up' },
+      { primary: false, label: 'Run Proactive Issue Sweep',                    q: 'Run a proactive sweep of all open tickets and SLA breaches.' },
+      { primary: false, label: 'Calculate Credit on INR 15,000 Order',        q: 'Calculate service credit for a 6-hour delay on a 15000 INR shipment for Beacon Retail.' },
+    ];
+  } else if (lq.includes('bulk') || lq.includes('csv') || lq.includes('upload') || lq.includes('ki-208')) {
+    suggestions = [
+      { primary: true,  label: 'Check SwiftShip Webhook Delay (TKT-504)',     q: 'TKT-504 shows BOOKED but driver already picked up' },
+      { primary: false, label: 'Can Northstar Cancel ORD-1001 Without Fee?',  q: 'Can Northstar cancel ORD-1001 without a fee?' },
+      { primary: false, label: 'Support Policy v2 Deprecation',               q: 'What does Support Policy v2 say about standard cancellation fees?' },
+    ];
+  } else if (lq.includes('swiftship') || lq.includes('tkt-504') || lq.includes('ki-211')) {
+    suggestions = [
+      { primary: true,  label: 'Check Axis Labs P1 SLA Breach (TKT-505)',    q: 'What should I do about TKT-505?' },
+      { primary: false, label: 'Show Account Profile ACCT-001',              q: 'Show me the account profile for ACCT-001' },
+      { primary: false, label: 'Support Policy v2 Deprecation',              q: 'What does Support Policy v2 say about standard cancellation fees?' },
+    ];
+  } else {
+    suggestions = [
+      { primary: true,  label: 'Can Northstar cancel ORD-1001 without fee?', q: 'Can Northstar cancel ORD-1001 without a fee?' },
+      { primary: false, label: 'What should I do about TKT-505?',            q: 'What should I do about TKT-505?' },
+      { primary: false, label: 'Is ORD-2002 eligible for a service credit?', q: 'Is ORD-2002 eligible for a service credit?' },
+    ];
+  }
+
+  // Remove old next-query containers
+  document.querySelectorAll('.next-query-wrap').forEach(w => w.remove());
+
+  const m = document.getElementById('msgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'next-query-wrap';
+
+  const title = document.createElement('div');
+  title.className = 'next-query-title';
+  title.textContent = 'Next query to solve';
+  wrap.appendChild(title);
+
+  const chipsRow = document.createElement('div');
+  chipsRow.className = 'next-query-chips';
+
+  suggestions.forEach(s => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'next-chip' + (s.primary ? ' primary' : '');
+    btn.textContent = s.label;
+    // Use addEventListener — avoids inline onclick double-quote escaping issues
+    btn.addEventListener('click', () => runDirectly(s.q));
+    chipsRow.appendChild(btn);
+  });
+
+  wrap.appendChild(chipsRow);
+  m.appendChild(wrap);
+  scrollDown();
+}
+
+function runDirectly(q) {
+  if (busy) return;
+  const el = document.getElementById('inp');
+  if (!el) return;
+  el.value = q;
+  resize(el);
+  send();
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ═══════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════
+function setBusy(v) {
+  busy = v;
+  document.getElementById('sbtn').disabled = v;
+  document.getElementById('inp').disabled  = v;
+  const th = document.getElementById('thinking');
+  th.classList[v ? 'add' : 'remove']('vis');
+}
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+}
+function resize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+}
+function fill(t) {
+  document.getElementById('inp').value = t;
+  resize(document.getElementById('inp'));
+  document.getElementById('inp').focus();
+}
+function toast(msg, ms = 2200) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms);
+}
+
+// ═══════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════
 boot();
 document.getElementById('inp').focus();
 </script>
 </body>
 </html>
+
