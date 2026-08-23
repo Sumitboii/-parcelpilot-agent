@@ -1,0 +1,138 @@
+/* ═══════════════════════════════════════
+   topbar.css — fixed navigation bar
+   CalQuity: black bg, hairline border,
+   blurred glass effect, Inter semibold logo
+   ═══════════════════════════════════════ */
+
+#topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  height: var(--topbar-height);
+  background: rgba(0, 0, 0, 0.94);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-8);
+  gap: 0;
+}
+
+/* ── Left: logo ─────────────────────── */
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.logo-wordmark {
+  font-size: 14px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.logo-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 14px;
+  flex-shrink: 0;
+}
+
+.logo-product {
+  font-size: var(--text-base-sm);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+/* ── Right: status + role ───────────── */
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+/* Status indicator */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(242, 242, 242, 0.18);
+  flex-shrink: 0;
+  transition: background var(--dur-base);
+}
+
+.status-dot.online {
+  background: var(--color-green);
+  box-shadow: 0 0 0 2px rgba(61, 220, 132, 0.18);
+  animation: status-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  letter-spacing: 0;
+}
+
+/* Role select */
+.role-wrapper {
+  position: relative;
+}
+
+.role-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-2);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: var(--text-base-sm);
+  font-weight: var(--weight-medium);
+  padding: 5px 28px 5px 10px;
+  cursor: pointer;
+  line-height: 1.4;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+
+  /* Custom arrow via background-image */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(242,242,242,0.3)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+.role-select:hover {
+  border-color: var(--color-border-hover);
+  background-color: var(--color-surface-2);
+}
+
+.role-select:focus {
+  border-color: var(--color-border-focus);
+}
+
+.role-select option {
+  background: #111;
+  color: var(--color-text);
+}

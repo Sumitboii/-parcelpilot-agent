@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ParcelPilot · Internal Support Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ════════════════════════════════════════════
+   CALQUITY DESIGN SYSTEM
+   bg: #000  surface: #0d0d0d  border: rgba(255,255,255,0.08)
+   text: #f2f2f2  muted: rgba(242,242,242,0.45)
+   accent: white  blue: #3b6bff  (only interactive)
+   font: Inter 14px  letter-spacing tight
+   ════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size:14px;
+  font-weight:400;
+  line-height:1.5;
+  background:#000;
+  color:#f2f2f2;
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.01em;
+}
+
+/* ── TOPBAR ─────────────────────────────────── */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:48px;
+  background:rgba(0,0,0,0.95);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  display:flex;align-items:center;padding:0 24px;
+  gap:0;
+  backdrop-filter:blur(16px);
+}
+.logo-text{
+  font-size:14px;font-weight:600;
+  letter-spacing:-0.02em;
+  color:#f2f2f2;
+}
+.logo-sep{
+  width:1px;height:16px;
+  background:rgba(255,255,255,0.12);
+  margin:0 14px;
+}
+.logo-sub{
+  font-size:12px;font-weight:400;
+  color:rgba(242,242,242,0.4);
+  letter-spacing:0;
+}
+.topbar-right{
+  margin-left:auto;
+  display:flex;align-items:center;gap:10px;
+}
+.status-dot{
+  display:flex;align-items:center;gap:5px;
+  font-size:11px;color:rgba(242,242,242,0.4);
+}
+.dot-circle{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(242,242,242,0.2);
+}
+.dot-circle.online{
+  background:#3ddc84;
+  box-shadow:0 0 0 2px rgba(61,220,132,0.2);
+  animation:blink 2s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+
+.role-select{
+  appearance:none;
+  background:#0d0d0d;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:5px;
+  color:#f2f2f2;
+  font-family:'Inter',sans-serif;
+  font-size:12px;
+  padding:5px 28px 5px 10px;
+  cursor:pointer;outline:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(242,242,242,0.3)'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 8px center;
+}
+.role-select:hover{border-color:rgba(255,255,255,0.18)}
+.role-select:focus{border-color:rgba(255,255,255,0.25)}
+
+/* ── LAYOUT ─────────────────────────────────── */
+#layout{
+  display:flex;
+  height:100vh;
+  padding-top:48px;
+}
+
+/* ── SIDEBAR ────────────────────────────────── */
+#sidebar{
+  width:272px;
+  flex-shrink:0;
+  background:#0a0a0a;
+  border-right:1px solid rgba(255,255,255,0.07);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.sb-head{
+  padding:16px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.sb-title{
+  font-size:10px;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:rgba(242,242,242,0.35);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sb-count{
+  background:#ff4d4d;color:#fff;
+  border-radius:8px;padding:1px 6px;
+  font-size:10px;font-weight:700;
+  letter-spacing:0;text-transform:none;
+}
+.sb-scroll{
+  flex:1;overflow-y:auto;padding:10px;
+  scrollbar-width:none;
+}
+.sb-scroll::-webkit-scrollbar{display:none}
+.sb-group{margin-bottom:12px}
+.sb-group-label{
+  font-size:10px;font-weight:500;
+  letter-spacing:0.06em;text-transform:uppercase;
+  padding:2px 6px 6px;
+  display:flex;align-items:center;gap:5px;
+}
+.sb-item{
+  background:#000;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:5px;
+  padding:9px 11px;margin-bottom:5px;
+  cursor:pointer;
+  transition:background .12s,border-color .12s;
+}
+.sb-item:hover{
+  background:#0f0f0f;
+  border-color:rgba(255,255,255,0.12);
+}
+.sb-item-id{
+  font-size:12px;font-weight:500;
+  margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sb-item-desc{
+  font-size:11px;
+  color:rgba(242,242,242,0.4);
+  line-height:1.35;
+}
+.sb-foot{
+  padding:9px 16px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  font-size:10px;
+  color:rgba(242,242,242,0.2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* ── CHAT COLUMN ────────────────────────────── */
+#chat-col{
+  flex:1;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  background:#000;
+  min-width:0;
+}
+
+/* messages */
+#msgs{
+  flex:1;overflow-y:auto;
+  padding:32px 0;
+  display:flex;flex-direction:column;
+  gap:0;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,0.06) transparent;
+}
+#msgs::-webkit-scrollbar{width:3px}
+#msgs::-webkit-scrollbar-track{background:transparent}
+#msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px}
+
+/* empty state */
+#empty{
+  margin:auto;
+  text-align:center;
+  padding:0 24px;
+  max-width:440px;
+}
+.empty-icon{
+  font-size:28px;
+  margin-bottom:16px;
+  opacity:.25;
+}
+.empty-title{
+  font-size:17px;font-weight:500;
+  letter-spacing:-0.02em;
+  color:#f2f2f2;
+  margin-bottom:8px;
+}
+.empty-sub{
+  font-size:13px;
+  color:rgba(242,242,242,0.4);
+  line-height:1.6;
+  margin-bottom:24px;
+}
+.chips{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+}
+.chip{
+  background:#0d0d0d;
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:20px;
+  padding:6px 13px;
+  font-size:12px;
+  color:rgba(242,242,242,0.5);
+  cursor:pointer;
+  transition:all .12s;
+}
+.chip:hover{
+  background:#141414;
+  border-color:rgba(255,255,255,0.16);
+  color:#f2f2f2;
+}
+
+/* message row */
+.msg-row{
+  padding:0 32px;
+  display:flex;
+  animation:fadein .14s ease-out both;
+  margin-bottom:4px;
+}
+@keyframes fadein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg-row.user{justify-content:flex-end}
+.msg-row.assistant{justify-content:flex-start}
+
+.bubble{
+  max-width:680px;
+  padding:12px 16px;
+  border-radius:8px;
+  font-size:13.5px;
+  line-height:1.65;
+  word-break:break-word;
+}
+.bubble.user{
+  background:#141414;
+  border:1px solid rgba(255,255,255,0.1);
+  color:#f2f2f2;
+}
+.bubble.assistant{
+  background:#0a0a0a;
+  border:1px solid rgba(255,255,255,0.07);
+  color:#e8e8e8;
+}
+.bubble.err{
+  background:rgba(255,77,77,0.05);
+  border:1px solid rgba(255,77,77,0.18);
+  color:#ff7070;
+}
+.bubble.ok{
+  background:rgba(61,220,132,0.05);
+  border:1px solid rgba(61,220,132,0.18);
+  color:#3ddc84;
+}
+
+/* tool chips row */
+.tool-row{
+  padding:6px 32px 2px;
+  display:flex;flex-wrap:wrap;gap:5px;
+  animation:fadein .12s ease-out both;
+}
+.tcip{
+  display:inline-flex;align-items:center;gap:4px;
+  background:#0d0d0d;
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:4px;
+  padding:3px 8px;
+  font-size:11px;
+  font-family:'SF Mono','Fira Code','Fira Mono',monospace;
+  color:rgba(242,242,242,0.45);
+  letter-spacing:0;
+}
+.tcip.running{
+  border-color:rgba(59,107,255,0.3);
+  color:rgba(140,170,255,0.9);
+  background:rgba(59,107,255,0.06);
+}
+
+/* citations */
+.cit{
+  display:inline-flex;
+  background:#111;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:3px;
+  padding:1px 5px;
+  font-family:'SF Mono','Fira Code',monospace;
+  font-size:10.5px;
+  color:rgba(242,242,242,0.5);
+  vertical-align:middle;
+  cursor:default;
+  transition:color .1s,border-color .1s;
+}
+.cit:hover{color:#f2f2f2;border-color:rgba(255,255,255,0.2)}
+
+/* confirm card */
+.confirm-wrap{
+  padding:0 32px;
+  margin-bottom:4px;
+  animation:fadein .15s ease-out both;
+}
+.confirm-card{
+  max-width:520px;
+  background:#0a0a0a;
+  border:1px solid rgba(255,255,255,0.1);
+  border-left:2px solid #3b6bff;
+  border-radius:8px;
+  padding:16px 18px;
+}
+.cc-label{
+  font-size:10px;font-weight:600;
+  letter-spacing:0.09em;text-transform:uppercase;
+  color:#3b6bff;margin-bottom:12px;
+}
+.cc-fields{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.cc-row{display:grid;grid-template-columns:88px 1fr;gap:8px;align-items:start}
+.cc-key{font-size:11px;color:rgba(242,242,242,0.38);padding-top:1px}
+.cc-val{font-size:12px;color:#f2f2f2}
+.cc-btns{display:flex;gap:7px}
+.cc-ok{
+  background:#f2f2f2;color:#000;
+  border:none;border-radius:5px;
+  padding:6px 18px;font-size:12px;font-weight:600;
+  font-family:inherit;cursor:pointer;
+  transition:all .12s;
+}
+.cc-ok:hover:not(:disabled){background:#fff;transform:translateY(-1px)}
+.cc-ok:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.cc-cancel{
+  background:transparent;color:rgba(242,242,242,0.6);
+  border:1px solid rgba(255,255,255,0.1);border-radius:5px;
+  padding:6px 18px;font-size:12px;
+  font-family:inherit;cursor:pointer;
+  transition:all .12s;
+}
+.cc-cancel:hover:not(:disabled){border-color:rgba(255,255,255,0.2);color:#f2f2f2}
+.cc-cancel:disabled{opacity:.35;cursor:not-allowed}
+.cc-result{margin-top:10px;font-size:12px;display:none}
+
+/* thinking */
+#thinking{
+  padding:8px 32px;
+  display:none;
+  gap:4px;align-items:center;
+}
+#thinking.vis{display:flex}
+.td{
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(242,242,242,0.25);
+  animation:tdot 1s ease-in-out infinite;
+}
+.td:nth-child(2){animation-delay:.16s}
+.td:nth-child(3){animation-delay:.32s}
+@keyframes tdot{0%,80%,100%{transform:scale(.7);opacity:.3}40%{transform:scale(1);opacity:1}}
+
+/* ── INPUT BAR ──────────────────────────────── */
+#ibar{
+  border-top:1px solid rgba(255,255,255,0.07);
+  padding:14px 32px 12px;
+  background:#000;
+  flex-shrink:0;
+}
+.ibar-inner{
+  max-width:680px;
+  display:flex;gap:8px;align-items:flex-end;
+}
+#inp{
+  flex:1;
+  background:#0d0d0d;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px;
+  padding:10px 14px;
+  color:#f2f2f2;
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  line-height:1.5;
+  resize:none;
+  outline:none;
+  min-height:42px;max-height:110px;
+  overflow-y:auto;
+  transition:border-color .12s;
+}
+#inp::placeholder{color:rgba(242,242,242,0.2);font-size:14px}
+#inp:focus{border-color:rgba(255,255,255,0.18)}
+#inp:disabled{opacity:.4}
+#sbtn{
+  background:#f2f2f2;color:#000;
+  border:none;border-radius:8px;
+  height:42px;padding:0 20px;
+  font-family:'Inter',sans-serif;
+  font-size:13px;font-weight:600;
+  cursor:pointer;flex-shrink:0;
+  transition:all .12s;
+}
+#sbtn:hover:not(:disabled){background:#fff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.4)}
+#sbtn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+.hint{
+  max-width:680px;margin-top:5px;
+  font-size:10px;color:rgba(242,242,242,0.18);
+}
+
+/* ── TOAST ──────────────────────────────────── */
+#toast{
+  position:fixed;bottom:20px;right:20px;z-index:999;
+  background:#141414;border:1px solid rgba(255,255,255,0.12);
+  border-radius:6px;padding:9px 14px;
+  font-size:12px;color:#f2f2f2;
+  opacity:0;pointer-events:none;
+  transition:opacity .18s,transform .18s;
+  transform:translateY(6px);
+  max-width:280px;
+}
+#toast.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+
+/* ── DEMO BANNER ────────────────────────────── */
+#demo-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:#0d0d0d;
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding:7px 24px;
+  font-size:11px;color:rgba(242,242,242,0.4);
+  display:flex;align-items:center;gap:6px;
+  display:none;
+}
+#demo-banner.vis{display:flex}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header id="topbar">
+  <span class="logo-text">ParcelPilot</span>
+  <div class="logo-sep"></div>
+  <span class="logo-sub">Internal Support Agent</span>
+  <div class="topbar-right">
+    <div class="status-dot">
+      <div class="dot-circle" id="status-dot"></div>
+      <span id="status-text">Connecting…</span>
+    </div>
+    <select class="role-select" id="role-sel" onchange="changeRole(this.value)">
+      <option value="support_agent|Rohit">Rohit — Support Agent</option>
+      <option value="support_agent|Maya">Maya — Support Agent</option>
+      <option value="csm|Priya Mehta">Priya Mehta — CSM</option>
+    </select>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div id="layout">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sb-head">
+      <div class="sb-title">
+        Live Issues
+        <span class="sb-count" id="sb-count">—</span>
+      </div>
+    </div>
+    <div class="sb-scroll" id="sb-scroll">
+      <div style="padding:20px 6px;font-size:11px;color:rgba(242,242,242,0.25);text-align:center">
+        Loading…
+      </div>
+    </div>
+    <div class="sb-foot" id="sb-foot"></div>
+  </aside>
+
+  <!-- CHAT COLUMN -->
+  <div id="chat-col">
+    <div id="msgs">
+      <!-- empty state -->
+      <div id="empty">
+        <div class="empty-icon">◎</div>
+        <div class="empty-title">Ask anything about ParcelPilot</div>
+        <div class="empty-sub">Policies, orders, tickets, contracts — every answer cited to the exact source.</div>
+        <div class="chips">
+          <div class="chip" onclick="fill('Can Northstar cancel ORD-1001 without a fee?')">Northstar cancellation</div>
+          <div class="chip" onclick="fill('What should I do about TKT-505?')">TKT-505 API key</div>
+          <div class="chip" onclick="fill('Is ORD-2002 eligible for a service credit?')">LumenWorks credit</div>
+          <div class="chip" onclick="fill('LumenWorks 4200-row CSV fails to upload')">Bulk upload limit</div>
+          <div class="chip" onclick="fill('TKT-504 shows BOOKED but driver already picked up')">SwiftShip delay</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- thinking -->
+    <div id="thinking"><div class="td"></div><div class="td"></div><div class="td"></div></div>
+
+    <!-- input -->
+    <div id="ibar">
+      <div class="ibar-inner">
+        <textarea id="inp" rows="1" placeholder="Ask a question…"
+          onkeydown="handleKey(event)" oninput="resize(this)"></textarea>
+        <button id="sbtn" onclick="send()">Send</button>
+      </div>
+      <div class="hint">Enter to send · Shift+Enter for new line</div>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO MODE BANNER -->
+<div id="demo-banner" class="vis">
+  ◎ Demo mode — showing simulated responses. Connect to a live backend to query real data.
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════
+const BACKEND = (() => {
+  const h = window.location.hostname;
+  if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:8000';
+  if (h.includes('railway.app')) return window.location.origin;
+  // opened as file:// — use Railway prod
+  return 'https://parcelpilot-agent-production.up.railway.app';
+})();
+
+let sid       = uid();
+let role      = 'support_agent';
+let uname     = 'Rohit';
+let busy      = false;
+let liveMode  = false;  // true once backend responds
+
+function uid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:r&3|8).toString(16)}); }
+
+// ═══════════════════════════════════════════
+// BOOT — probe backend
+// ═══════════════════════════════════════════
+async function boot() {
+  try {
+    const r = await fetchWithTimeout(BACKEND+'/proactive',{},3000);
+    if (r.ok) {
+      liveMode = true;
+      const data = await r.json();
+      renderSidebar(data.items||[], data.snapshot_time||'');
+      setStatus(true);
+      document.getElementById('demo-banner').classList.remove('vis');
+      return;
+    }
+  } catch(e){}
+  // Backend unreachable — load demo data
+  setStatus(false);
+  loadDemoSidebar();
+}
+
+function fetchWithTimeout(url,opts,ms){
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), ms);
+  return fetch(url,{...opts,signal:ctrl.signal}).finally(()=>clearTimeout(t));
+}
+
+function setStatus(ok){
+  const dot = document.getElementById('status-dot');
+  const txt = document.getElementById('status-text');
+  if(ok){ dot.classList.add('online'); txt.textContent='Connected'; }
+  else  { dot.classList.remove('online'); txt.textContent='Demo mode'; }
+}
+
+// ═══════════════════════════════════════════
+// SIDEBAR RENDER
+// ═══════════════════════════════════════════
+const CAT = {
+  'SLA Breach':      {icon:'🚨',color:'#ff4d4d'},
+  'Approaching SLA': {icon:'⏰',color:'#ffb84d'},
+  'P1/P2 Open':      {icon:'🔴',color:'#ff4d4d'},
+  'Account Cluster': {icon:'👥',color:'#a78bfa'},
+  'KI-Linked':       {icon:'🐛',color:'#ffb84d'},
+};
+
+function renderSidebar(items, ts) {
+  const sc = document.getElementById('sb-scroll');
+  const ct = document.getElementById('sb-count');
+  const ft = document.getElementById('sb-foot');
+  ct.textContent = items.length||'0';
+  if(ts) ft.textContent = 'Snapshot: '+ts.replace('T',' ').slice(0,16)+' IST';
+  if(!items.length){
+    sc.innerHTML='<div style="padding:20px 6px;font-size:11px;color:rgba(242,242,242,0.25);text-align:center">✓ No active issues</div>';
+    return;
+  }
+  const grps={};
+  items.forEach(i=>{(grps[i.category]=grps[i.category]||[]).push(i)});
+  let h='';
+  for(const[cat,arr] of Object.entries(grps)){
+    const c=CAT[cat]||{icon:'•',color:'rgba(242,242,242,0.4)'};
+    h+=`<div class="sb-group"><div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${cat}</div>`;
+    arr.forEach(it=>{
+      const q=it.suggested_query||`Tell me about ${it.ticket_ids.join(', ')}`;
+      h+=`<div class="sb-item" onclick="fill(${JSON.stringify(q)})">
+        <div class="sb-item-id">${it.ticket_ids.join(', ')} — ${it.account_name}</div>
+        <div class="sb-item-desc">${it.recommended_action}</div>
+      </div>`;
+    });
+    h+='</div>';
+  }
+  sc.innerHTML=h;
+}
+
+function loadDemoSidebar(){
+  renderSidebar([
+    {category:'SLA Breach',ticket_ids:['TKT-505'],account_name:'Axis Labs',recommended_action:'P1 SLA breached — 2h 30m elapsed, target 30m',suggested_query:'What should I do about TKT-505?'},
+    {category:'SLA Breach',ticket_ids:['TKT-501'],account_name:'Northstar Logistics',recommended_action:'P1 SLA breached — 30m elapsed, target 15m',suggested_query:'Tell me about TKT-501'},
+    {category:'KI-Linked',ticket_ids:['TKT-502'],account_name:'LumenWorks',recommended_action:'Linked to KI-208: bulk upload failures above ~3,000 rows',suggested_query:'Is TKT-502 related to KI-208?'},
+    {category:'KI-Linked',ticket_ids:['TKT-504'],account_name:'Northstar Logistics',recommended_action:'Linked to KI-211: SwiftShip webhook delay up to 20 min',suggested_query:'TKT-504 shows BOOKED but driver already picked up'},
+    {category:'Account Cluster',ticket_ids:['TKT-501','TKT-504'],account_name:'Northstar Logistics',recommended_action:'2 open tickets from this account in 7 days',suggested_query:'What open tickets does Northstar Logistics have?'},
+  ], '2026-08-16T11:00:00+05:30');
+}
+
+// ═══════════════════════════════════════════
+// ROLE CHANGE
+// ═══════════════════════════════════════════
+function changeRole(val){
+  const [r,...n]=val.split('|');
+  role=r; uname=n.join('|');
+  sid=uid();
+  clearMessages();
+  toast(`Signed in as ${uname}`);
+}
+
+// ═══════════════════════════════════════════
+// MESSAGES
+// ═══════════════════════════════════════════
+function clearMessages(){
+  const m=document.getElementById('msgs');
+  m.innerHTML='';
+  const e=document.createElement('div');
+  e.id='empty';e.className='';
+  e.innerHTML=`<div class="empty-icon">◎</div>
+    <div class="empty-title">Ask anything about ParcelPilot</div>
+    <div class="empty-sub">Policies, orders, tickets, contracts — every answer cited to the exact source.</div>
+    <div class="chips">
+      <div class="chip" onclick="fill('Can Northstar cancel ORD-1001 without a fee?')">Northstar cancellation</div>
+      <div class="chip" onclick="fill('What should I do about TKT-505?')">TKT-505 API key</div>
+      <div class="chip" onclick="fill('Is ORD-2002 eligible for a service credit?')">LumenWorks credit</div>
+      <div class="chip" onclick="fill('LumenWorks 4200-row CSV fails to upload')">Bulk upload limit</div>
+    </div>`;
+  // re-add empty state styles
+  e.style.cssText='margin:auto;text-align:center;padding:0 24px;max-width:440px';
+  m.appendChild(e);
+}
+
+function killEmpty(){const e=document.getElementById('empty');if(e)e.remove();}
+
+function addRow(type,html){
+  killEmpty();
+  const m=document.getElementById('msgs');
+  const row=document.createElement('div');
+  row.className='msg-row '+type;
+  const b=document.createElement('div');
+  b.className='bubble '+type;
+  b.innerHTML=html;
+  row.appendChild(b);
+  m.appendChild(row);
+  scrollDown();
+  return b;
+}
+
+function addToolRow(){
+  killEmpty();
+  const m=document.getElementById('msgs');
+  const row=document.createElement('div');
+  row.className='tool-row';
+  m.appendChild(row);
+  scrollDown();
+  return row;
+}
+
+function addChip(row,name){
+  const icons={document_search:'🔍',data_lookup:'📊',escalate:'⚡'};
+  const c=document.createElement('span');
+  c.className='tcip running';
+  c.textContent=(icons[name]||'🔧')+' '+name;
+  row.appendChild(c);
+  scrollDown();
+}
+
+function scrollDown(){
+  const m=document.getElementById('msgs');
+  requestAnimationFrame(()=>{m.scrollTop=m.scrollHeight});
+}
+
+// ═══════════════════════════════════════════
+// FORMAT TEXT — bold, citations, line breaks
+// ═══════════════════════════════════════════
+function fmt(t){
+  return esc(t)
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\[([\w_]+\.(pdf)[^\]]*)\]/gi,'<span class="cit">$1</span>')
+    .replace(/\[(orders|accounts|tickets):\s*([^\]]+)\]/gi,'<span class="cit mono">$1: $2</span>')
+    .replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function mono(s){return`<span style="font-family:'SF Mono','Fira Code',monospace;font-size:11px">${esc(s)}</span>`}
+
+// ═══════════════════════════════════════════
+// CONFIRMATION CARD
+// ═══════════════════════════════════════════
+function buildCard(display, payload){
+  const wrap=document.createElement('div');
+  wrap.className='confirm-wrap';
+  let fields='';
+  for(const[k,v] of Object.entries(display||{})){
+    fields+=`<div class="cc-row"><span class="cc-key">${esc(k)}</span><span class="cc-val">${esc(String(v||''))}</span></div>`;
+  }
+  wrap.innerHTML=`<div class="confirm-card">
+    <div class="cc-label">⚡ Confirm Action</div>
+    <div class="cc-fields">${fields}</div>
+    <div class="cc-btns">
+      <button class="cc-ok" id="cc-ok">Confirm</button>
+      <button class="cc-cancel" id="cc-cancel">Cancel</button>
+    </div>
+    <div class="cc-result" id="cc-result"></div>
+  </div>`;
+
+  const ok=wrap.querySelector('#cc-ok');
+  const cx=wrap.querySelector('#cc-cancel');
+  const rs=wrap.querySelector('#cc-result');
+
+  ok.onclick=async()=>{
+    ok.disabled=cx.disabled=true; ok.textContent='Creating…';
+    if(liveMode){
+      try{
+        const r=await fetch(BACKEND+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sid,confirm:true,payload})});
+        const d=await r.json();
+        rs.style.cssText='display:block;color:#3ddc84';
+        rs.textContent='✓ Escalation created: '+(d.escalation_id||'ESC-'+Date.now());
+        ok.textContent='✓ Confirmed';
+      }catch(e){
+        ok.disabled=cx.disabled=false; ok.textContent='Confirm';
+        rs.style.cssText='display:block;color:#ff4d4d';
+        rs.textContent='Error: '+e.message;
+      }
+    } else {
+      // demo mode
+      rs.style.cssText='display:block;color:#3ddc84';
+      rs.textContent='✓ Escalation created: ESC-20260816-0001 (demo)';
+      ok.textContent='✓ Confirmed';
+    }
+  };
+  cx.onclick=async()=>{
+    ok.disabled=cx.disabled=true;
+    if(liveMode) await fetch(BACKEND+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sid,confirm:false})}).catch(()=>{});
+    rs.style.cssText='display:block;color:rgba(242,242,242,0.35)';
+    rs.textContent='Action cancelled.';
+    cx.textContent='Cancelled';
+  };
+  return wrap;
+}
+
+// ═══════════════════════════════════════════
+// DEMO RESPONSES (offline / file:// mode)
+// ═══════════════════════════════════════════
+const DEMO = {
+  'northstar':  async function*(q){
+    yield {t:'tool',v:'data_lookup'};
+    yield {t:'tool',v:'document_search'};
+    yield {t:'text',v:'**Yes — Northstar can cancel ORD-1001 with no cancellation fee.**\n\nORD-1001 is currently **BOOKED** and has not been picked up [orders: ORD-1001]. The Northstar Enterprise Agreement §2 explicitly waives all cancellation fees for any BOOKED-before-pickup shipment, regardless of how long ago it was booked [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].\n\nNote: A previous agent resolution (TKT-450) incorrectly stated an INR 250 fee applied after 30 minutes. That historical record is overridden by the current authoritative agreement [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].'};
+  },
+  'tkt-505':   async function*(q){
+    yield {t:'tool',v:'data_lookup'};
+    yield {t:'tool',v:'document_search'};
+    yield {t:'confirm',display:{Action:'Create Escalation',Ticket:'TKT-505',Account:'Axis Labs (ACCT-004)',Severity:'P1',Assigned:'Rohit',Reason:'API key exposure — P1, SLA breached 2h 30m'},payload:{ticket_id:'TKT-505',account_id:'ACCT-004',severity:'P1',reason:'Suspected API key exposure — P1 security incident',assigned_to:uname,created_by:uname+' ('+role+')',summary:'TKT-505 API key exposure, P1, SLA breached by 2h 30m'}};
+  },
+  'lumenworks': async function*(q){
+    yield {t:'tool',v:'data_lookup'};
+    yield {t:'tool',v:'document_search'};
+    yield {t:'text',v:'**ORD-2002 is eligible for a service credit of INR 300.**\n\nThe pickup window ended at 06:30; at the dataset snapshot (11:00 IST) the delay is **4h 30m** — which exceeds LumenWorks\'s 4-hour threshold [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. Carrier fault is confirmed and there is no customer fault [orders: ORD-2002].\n\nThe LumenWorks agreement replaces the SOP default (2h threshold, INR 500/10% formula) with a fixed INR 300 credit [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. No manager approval required (INR 300 < INR 1,000).'};
+  },
+  'bulk':      async function*(q){
+    yield {t:'tool',v:'document_search'};
+    yield {t:'text',v:'The supported product limit for Bulk Upload is **5,000 rows per CSV** [04_Product_Operations_Guide_and_Known_Issues.pdf, p.1 §1]. This applies to Growth and Enterprise plans.\n\nHowever, **KI-208** (opened 10 August 2026, status: Investigating) documents intermittent failures above approximately 3,000 rows [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2]. The recommended workaround is to split uploads into files below 3,000 rows. Individual shipment creation is unaffected.\n\nNote: A previous agent response (TKT-451) incorrectly stated the plan limit is 3,000 rows — that is the KI-208 workaround threshold, not the product specification.'};
+  },
+  'swiftship': async function*(q){
+    yield {t:'tool',v:'data_lookup'};
+    yield {t:'tool',v:'document_search'};
+    yield {t:'text',v:'TKT-504 reports ORD-1001 still shows **BOOKED** status approximately 10 minutes after the driver collected the parcel [tickets: TKT-504].\n\n**Do not tell the customer that pickup did not occur.** This is consistent with **KI-211** (opened 12 August 2026, status: Monitoring): SwiftShip pickup confirmation webhooks can arrive up to 20 minutes late, meaning a parcel may be physically collected while ParcelPilot still shows BOOKED [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2].\n\n**Recommended action:** Advise the customer to verify carrier status directly with SwiftShip, or wait through the 20-minute known delay window before concluding that pickup did not occur.'};
+  },
+  'default':   async function*(q){
+    yield {t:'tool',v:'document_search'};
+    yield {t:'text',v:'I searched the available ParcelPilot source documents and data for your question. In demo mode, only pre-built scenarios are available with full cited answers.\n\nTry one of the suggested queries below, or connect to the live backend at **parcelpilot-agent-production.up.railway.app** to query real data with full multi-step reasoning.'};
+  },
+};
+
+function matchDemo(q){
+  const lq=q.toLowerCase();
+  if(lq.includes('northstar')||lq.includes('ord-1001')||lq.includes('cancel')) return 'northstar';
+  if(lq.includes('tkt-505')||lq.includes('api key')||lq.includes('credential')) return 'tkt-505';
+  if(lq.includes('lumenworks')||lq.includes('ord-2002')||lq.includes('credit')) return 'lumenworks';
+  if(lq.includes('bulk')||lq.includes('csv')||lq.includes('upload')||lq.includes('row')) return 'bulk';
+  if(lq.includes('swiftship')||lq.includes('tkt-504')||lq.includes('booked')||lq.includes('webhook')) return 'swiftship';
+  return 'default';
+}
+
+// ═══════════════════════════════════════════
+// SEND
+// ═══════════════════════════════════════════
+async function send(){
+  const el=document.getElementById('inp');
+  const q=el.value.trim();
+  if(!q||busy) return;
+  el.value=''; resize(el);
+  setBusy(true);
+  addRow('user',esc(q));
+
+  if(liveMode){
+    await sendLive(q);
+  } else {
+    await sendDemo(q);
+  }
+  setBusy(false);
+}
+
+async function sendLive(q){
+  let toolRow=null, aBubble=null, aText='';
+  try{
+    const res=await fetchWithTimeout(BACKEND+'/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:q,session_id:sid,role,user_name:uname}),
+    },30000);
+    if(!res.ok){ addRow('err','Backend returned '+res.status); return; }
+    const reader=res.body.getReader();
+    const dec=new TextDecoder();
+    let buf='';
+    while(true){
+      const {done,value}=await reader.read();
+      if(done) break;
+      buf+=dec.decode(value,{stream:true});
+      const blocks=buf.split('\n\n');
+      buf=blocks.pop()||'';
+      for(const blk of blocks){
+        if(!blk.trim()) continue;
+        let ev='message',ds='';
+        for(const ln of blk.split('\n')){
+          if(ln.startsWith('event: ')) ev=ln.slice(7).trim();
+          else if(ln.startsWith('data: ')) ds=ln.slice(6);
+        }
+        let d={};
+        try{d=JSON.parse(ds)}catch{}
+        if(ev==='tool_chip'){
+          if(!toolRow) toolRow=addToolRow();
+          addChip(toolRow,d.tool||ds);
+        }else if(ev==='token'){
+          if(!aBubble) aBubble=addRow('assistant','');
+          aText+=(d.text||'');
+          aBubble.innerHTML='<p>'+fmt(aText)+'</p>';
+          scrollDown();
+        }else if(ev==='pending_confirmation'){
+          const card=buildCard(d.display||{},d.payload||d);
+          document.getElementById('msgs').appendChild(card);
+          scrollDown();
+        }else if(ev==='error'){
+          addRow('err','⚠ '+(d.message||ds));
+        }else if(ev==='done') break;
+      }
+    }
+  }catch(e){
+    // fallback to demo on fetch error
+    liveMode=false;
+    setStatus(false);
+    document.getElementById('demo-banner').classList.add('vis');
+    await sendDemo(q);
+  }
+}
+
+async function sendDemo(q){
+  const key=matchDemo(q);
+  const gen=DEMO[key](q);
+  let toolRow=null, aBubble=null;
+  for await(const ev of gen){
+    if(ev.t==='tool'){
+      if(!toolRow) toolRow=addToolRow();
+      addChip(toolRow,ev.v);
+      await sleep(280);
+    }else if(ev.t==='text'){
+      aBubble=addRow('assistant','');
+      // simulate streaming word by word
+      const words=ev.v.split(' ');
+      let acc='';
+      for(const w of words){
+        acc+=w+' ';
+        aBubble.innerHTML='<p>'+fmt(acc.trimEnd())+'</p>';
+        scrollDown();
+        await sleep(18);
+      }
+    }else if(ev.t==='confirm'){
+      // add brief text first
+      addRow('assistant','<p>⚠ <strong>P1 — SLA already breached. Escalate immediately.</strong></p><p>TKT-505 involves suspected API key exposure <span class="cit">tickets: TKT-505</span>. Classified <strong>P1</strong> per <span class="cit">01_Support_Policy_v3_CURRENT.pdf §2</span>. Axis Labs has no custom agreement — standard Enterprise SLA applies: P1 = 30 min 24×7 <span class="cit">01_Support_Policy_v3_CURRENT.pdf §3</span>. SLA breached by 2h 30m (created 08:30, snapshot 11:00).</p>');
+      await sleep(200);
+      const card=buildCard(ev.display,ev.payload);
+      document.getElementById('msgs').appendChild(card);
+      scrollDown();
+    }
+  }
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+// ═══════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════
+function setBusy(v){
+  busy=v;
+  document.getElementById('sbtn').disabled=v;
+  document.getElementById('inp').disabled=v;
+  const th=document.getElementById('thinking');
+  th.classList[v?'add':'remove']('vis');
+}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function fill(t){document.getElementById('inp').value=t;resize(document.getElementById('inp'));document.getElementById('inp').focus();}
+function toast(msg,ms=2200){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),ms);
+}
+
+// ═══════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════
+boot();
+document.getElementById('inp').focus();
+</script>
+</body>
+</html>

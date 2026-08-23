@@ -1,0 +1,153 @@
+/* ═══════════════════════════════════════
+   tokens.css — CalQuity design tokens
+   Extracted from calquity.com
+
+   Palette:
+     Background:  #000000 (page), #0a0a0a (sidebar), #0d0d0d (cards)
+     Surfaces:    #111111, #141414, #1a1a1a
+     Borders:     rgba(255,255,255,0.07) standard
+                  rgba(255,255,255,0.12) hover/focus
+     Text:        #f2f2f2 primary, rgba(242,242,242,0.45) muted
+                  rgba(242,242,242,0.22) faint
+     Accent:      #f2f2f2 (white) — CTA buttons use white-on-black
+     Interactive: #3b6bff (blue) — ONLY for confirmation border + links
+     Status:      #3ddc84 green, #ff4d4d red, #ffb84d amber, #a78bfa purple
+
+   Typography:
+     Family:  Inter (text), JetBrains Mono (code/citations)
+     Size:    10px / 11px / 12px / 13px / 14px(base) / 15px / 17px / 20px / 28px / 40px
+     Weight:  300 / 400 / 500 / 600 / 700
+     Leading: 1.4 – 1.65 depending on context
+
+   Spacing:  4 / 8 / 10 / 12 / 14 / 16 / 20 / 24 / 28 / 32 / 40 / 48 / 64
+   Radius:   3px / 5px / 6px / 8px / 10px / 20px(pill)
+
+   Easing:   ease-out 150ms (micro), 200ms (cards), 300ms (page)
+   ═══════════════════════════════════════ */
+
+:root {
+  /* ── Colours ──────────────────────── */
+  --color-bg:           #000000;
+  --color-sidebar:      #0a0a0a;
+  --color-surface:      #0d0d0d;
+  --color-surface-2:    #111111;
+  --color-surface-3:    #141414;
+  --color-surface-4:    #1a1a1a;
+
+  --color-border:       rgba(255, 255, 255, 0.07);
+  --color-border-2:     rgba(255, 255, 255, 0.11);
+  --color-border-hover: rgba(255, 255, 255, 0.18);
+  --color-border-focus: rgba(255, 255, 255, 0.24);
+
+  --color-text:         #f2f2f2;
+  --color-text-muted:   rgba(242, 242, 242, 0.45);
+  --color-text-faint:   rgba(242, 242, 242, 0.22);
+  --color-text-ghost:   rgba(242, 242, 242, 0.12);
+
+  --color-white:        #ffffff;
+  --color-blue:         #3b6bff;
+  --color-blue-bg:      rgba(59, 107, 255, 0.08);
+  --color-blue-border:  rgba(59, 107, 255, 0.28);
+
+  --color-green:        #3ddc84;
+  --color-green-bg:     rgba(61, 220, 132, 0.07);
+  --color-green-border: rgba(61, 220, 132, 0.22);
+
+  --color-red:          #ff4d4d;
+  --color-red-bg:       rgba(255, 77, 77, 0.07);
+  --color-red-border:   rgba(255, 77, 77, 0.22);
+
+  --color-amber:        #ffb84d;
+  --color-purple:       #a78bfa;
+
+  /* ── Typography ───────────────────── */
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+
+  --text-xs:      10px;
+  --text-sm:      11px;
+  --text-base-sm: 12px;
+  --text-base:    13px;
+  --text-md:      14px;
+  --text-lg:      15px;
+  --text-xl:      17px;
+  --text-2xl:     20px;
+  --text-3xl:     28px;
+  --text-hero:    40px;
+
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  --leading-tight:   1.3;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+  --leading-loose:   1.75;
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal: -0.01em;
+  --tracking-wide:   0.04em;
+  --tracking-wider:  0.08em;
+  --tracking-caps:   0.10em;
+
+  /* ── Spacing ──────────────────────── */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   10px;
+  --space-4:   12px;
+  --space-5:   14px;
+  --space-6:   16px;
+  --space-7:   20px;
+  --space-8:   24px;
+  --space-9:   28px;
+  --space-10:  32px;
+  --space-11:  40px;
+  --space-12:  48px;
+  --space-14:  64px;
+
+  /* ── Borders ──────────────────────── */
+  --radius-xs:   3px;
+  --radius-sm:   5px;
+  --radius:      6px;
+  --radius-md:   8px;
+  --radius-lg:   10px;
+  --radius-pill: 20px;
+
+  /* ── Shadows ──────────────────────── */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.5);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.6);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.7);
+
+  /* ── Motion ───────────────────────── */
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:    cubic-bezier(0.4, 0, 1, 1);
+  --dur-micro:  120ms;
+  --dur-fast:   150ms;
+  --dur-base:   200ms;
+  --dur-slow:   300ms;
+
+  /* ── Layout constants ─────────────── */
+  --topbar-height:  48px;
+  --sidebar-width:  272px;
+  --chat-max-width: 780px;
+}
+
+/* ── Global base styles ─────────────── */
+html {
+  font-size: var(--text-md);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-normal);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParcelPilot · Internal Support Agent</title>
+
+  <!-- CalQuity uses Inter from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="reset.css" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="topbar.css" />
+  <link rel="stylesheet" href="sidebar.css" />
+  <link rel="stylesheet" href="chat.css" />
+  <link rel="stylesheet" href="animations.css" />
+</head>
+<body>
+
+  <!-- ── TOPBAR ──────────────────────────────────────── -->
+  <header id="topbar">
+    <div class="topbar-left">
+      <span class="logo-wordmark">ParcelPilot</span>
+      <div class="logo-divider"></div>
+      <span class="logo-product">Internal Support Agent</span>
+    </div>
+    <div class="topbar-right">
+      <div class="status-indicator" id="status-indicator">
+        <span class="status-dot" id="status-dot"></span>
+        <span class="status-text" id="status-text">Connecting…</span>
+      </div>
+      <div class="role-wrapper">
+        <select class="role-select" id="role-select" aria-label="Active user role">
+          <option value="support_agent|Rohit">Rohit — Support Agent</option>
+          <option value="support_agent|Maya">Maya — Support Agent</option>
+          <option value="csm|Priya Mehta">Priya Mehta — CSM</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── MAIN LAYOUT ─────────────────────────────────── -->
+  <div id="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Live Issues</span>
+        <span class="sidebar-count" id="sidebar-count">—</span>
+      </div>
+      <div class="sidebar-scroll" id="sidebar-scroll">
+        <div class="sidebar-loading">Loading…</div>
+      </div>
+      <div class="sidebar-footer" id="sidebar-footer"></div>
+    </aside>
+
+    <!-- CHAT COLUMN -->
+    <main id="chat-column">
+
+      <!-- Message list -->
+      <div id="message-list" role="log" aria-live="polite">
+        <div id="empty-state">
+          <div class="empty-glyph">◎</div>
+          <h2 class="empty-title">Ask anything about ParcelPilot</h2>
+          <p class="empty-sub">Policies, orders, tickets, and contracts — every answer cited to the exact source and page.</p>
+          <div class="suggestion-row" id="suggestion-row">
+            <button class="suggestion-chip" onclick="prefill('Can Northstar cancel ORD-1001 without a fee?')">Northstar cancellation</button>
+            <button class="suggestion-chip" onclick="prefill('What should I do about TKT-505?')">TKT-505 API key</button>
+            <button class="suggestion-chip" onclick="prefill('Is ORD-2002 eligible for a service credit?')">LumenWorks credit</button>
+            <button class="suggestion-chip" onclick="prefill('LumenWorks 4200-row CSV fails to upload')">Bulk upload limit</button>
+            <button class="suggestion-chip" onclick="prefill('TKT-504 shows BOOKED but driver already picked up')">SwiftShip delay</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thinking indicator -->
+      <div id="thinking" aria-hidden="true">
+        <span class="think-dot"></span>
+        <span class="think-dot"></span>
+        <span class="think-dot"></span>
+      </div>
+
+      <!-- Demo mode banner -->
+      <div id="demo-banner">
+        <span class="demo-icon">◎</span>
+        Demo mode — showing pre-built responses. Deploy to Railway or run the backend locally to query live data.
+      </div>
+
+      <!-- Input bar -->
+      <div id="input-bar">
+        <div class="input-inner">
+          <textarea
+            id="msg-input"
+            rows="1"
+            placeholder="Ask a question about orders, policies, tickets…"
+            aria-label="Chat input"
+          ></textarea>
+          <button id="send-btn" aria-label="Send message">
+            <span id="send-label">Send</span>
+            <svg id="send-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <p class="input-hint">Enter to send · Shift+Enter for new line</p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Scripts — order matters -->
+  <script src="config.js"></script>
+  <script src="demo-data.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="chat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

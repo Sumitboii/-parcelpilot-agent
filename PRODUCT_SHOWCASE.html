@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ParcelPilot · Compass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ════════════════════════════════════════════════════════
+   CALQUITY COMPASS — LIGHT THEME
+   Exact tokens extracted from calquity.com screenshots
+
+   Page bg:        #f5f4f0  (warm cream)
+   Card bg:        #ffffff
+   Card inset:     #f0ede8  (warm grey for source area)
+   Border:         #e2ddd7  (warm neutral)
+   Border strong:  #c8c3bc
+   Text primary:   #1c1917  (near-black, warm)
+   Text secondary: #78716c  (warm grey)
+   Text faint:     #a8a29e
+   Accent blue:    #1e3a5f  (CalQuity navy)
+   Accent mid:     #2d5a9e  (mid blue for pills/badges)
+   Check green:    #22543d  / icon #16a34a
+   Live dot:       #1e3a5f with fill
+   Font:           Inter, 14px base
+   Radius:         10px card, 6px inner, 20px pills
+   ════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  background: #f5f4f0;
+  color: #1c1917;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── OUTER SHELL ─────────────────────────────── */
+#shell {
+  display: flex;
+  height: 100vh;
+  align-items: stretch;
+}
+
+/* ── LEFT NAV ────────────────────────────────── */
+#left-nav {
+  width: 52px;
+  flex-shrink: 0;
+  background: #eeebe5;
+  border-right: 1px solid #e2ddd7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  gap: 6px;
+}
+.nav-dot {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  gap: 2px;
+  transition: background 0.12s;
+  position: relative;
+}
+.nav-dot:hover { background: rgba(0,0,0,0.07); }
+.nav-dot.active { background: rgba(30,58,95,0.13); }
+
+/* Avatar circle */
+.nav-avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  letter-spacing: 0;
+  transition: transform 0.12s;
+}
+.nav-dot:hover .nav-avatar { transform: scale(1.1); }
+.nav-dot.active .nav-avatar { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #1e3a5f; }
+
+/* Tooltip — employee name shown on hover */
+.nav-tooltip {
+  position: absolute;
+  left: 52px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1c1917;
+  color: #f5f4f0;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 50;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.nav-tooltip::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: #1c1917;
+}
+.nav-dot:hover .nav-tooltip { opacity: 1; }
+
+/* Active-user badge in topbar */
+.active-user-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500; color: #4a4340;
+}
+.active-user-avatar {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: #fff;
+}
+
+/* ── MAIN AREA ───────────────────────────────── */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ── TOP CHROME ──────────────────────────────── */
+#chrome {
+  height: 44px;
+  background: #eeebe5;
+  border-bottom: 1px solid #e2ddd7;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 0;
+  flex-shrink: 0;
+}
+.traffic-lights {
+  display: flex;
+  gap: 6px;
+  margin-right: 14px;
+}
+.tl {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+}
+.tl-red    { background: #e57373; }
+.tl-yellow { background: #ffb74d; }
+.tl-green  { background: #81c784; }
+
+.chrome-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #78716c;
+}
+.chrome-dot { color: #a8a29e; margin: 0 6px; }
+
+.chrome-right { margin-left: auto; }
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #c8c3bc;
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1e3a5f;
+}
+.live-badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #1e3a5f;
+  animation: live-pulse 2s ease-in-out infinite;
+}
+@keyframes live-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── SIDEBAR ─────────────────────────────────── */
+#sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid #e2ddd7;
+  background: #f0ede8;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sb-head {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid #e2ddd7;
+  flex-shrink: 0;
+}
+.sb-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a8a29e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sb-badge {
+  background: #e57373;
+  color: #fff;
+  border-radius: 20px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.sb-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  scrollbar-width: none;
+}
+.sb-scroll::-webkit-scrollbar { display: none; }
+
+.sb-group { margin-bottom: 10px; }
+.sb-group-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 4px 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sb-item {
+  background: #fff;
+  border: 1px solid #e2ddd7;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+.sb-item:hover {
+  border-color: #c8c3bc;
+  background: #faf9f7;
+}
+.sb-item-id {
+  font-size: 11px;
+  font-weight: 500;
+  color: #1c1917;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sb-item-desc {
+  font-size: 10px;
+  color: #78716c;
+  line-height: 1.35;
+}
+.sb-foot {
+  padding: 7px 14px;
+  border-top: 1px solid #e2ddd7;
+  font-size: 10px;
+  color: #a8a29e;
+  flex-shrink: 0;
+}
+
+/* ── CHAT AREA ───────────────────────────────── */
+#chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f5f4f0;
+  min-width: 0;
+}
+
+/* top bar inside chat area */
+#chat-topbar {
+  height: 44px;
+  background: #eeebe5;
+  border-bottom: 1px solid #e2ddd7;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.role-select {
+  appearance: none;
+  background: #fff;
+  border: 1px solid #e2ddd7;
+  border-radius: 6px;
+  color: #1c1917;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 24px 4px 8px;
+  cursor: pointer;
+  outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2378716c' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+  transition: border-color 0.12s;
+}
+.role-select:hover { border-color: #c8c3bc; }
+.topbar-status {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: #a8a29e;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #c8c3bc;
+  transition: background 0.2s;
+}
+.status-dot.online {
+  background: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22,163,74,0.15);
+  animation: live-pulse 2.5s infinite;
+}
+
+/* ── MESSAGES ────────────────────────────────── */
+#msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #e2ddd7 transparent;
+}
+#msgs::-webkit-scrollbar { width: 4px; }
+#msgs::-webkit-scrollbar-track { background: transparent; }
+#msgs::-webkit-scrollbar-thumb { background: #e2ddd7; border-radius: 2px; }
+
+/* ── EMPTY STATE ─────────────────────────────── */
+#empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 460px;
+  margin: auto;
+}
+.empty-glyph { font-size: 28px; color: #c8c3bc; margin-bottom: 14px; }
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1c1917;
+  margin-bottom: 8px;
+}
+.empty-sub {
+  font-size: 13px;
+  color: #78716c;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.chip {
+  background: #fff;
+  border: 1px solid #e2ddd7;
+  border-radius: 20px;
+  padding: 5px 13px;
+  font-size: 12px;
+  color: #78716c;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.chip:hover { border-color: #1e3a5f; color: #1e3a5f; background: #f0ede8; }
+
+/* ── USER MESSAGE ────────────────────────────── */
+.msg-user {
+  display: flex;
+  justify-content: flex-end;
+  animation: msg-in 0.15s ease-out both;
+}
+.msg-user-bubble {
+  max-width: 600px;
+  background: #fff;
+  border: 1px solid #e2ddd7;
+  border-radius: 10px 10px 2px 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #1c1917;
+  line-height: 1.6;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+@keyframes msg-in { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── WORKFLOW PANEL (Compass-style) ──────────── */
+.workflow-wrap {
+  animation: msg-in 0.18s ease-out both;
+  max-width: 640px;
+  width: 100%;
+}
+.workflow-card {
+  background: #fff;
+  border: 1px solid #e2ddd7;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.workflow-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  border-bottom: 1px solid #f0ede8;
+}
+.wf-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1e3a5f;
+}
+.wf-status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #1e3a5f;
+}
+.wf-status-dot.running {
+  background: #f59e0b;
+  animation: live-pulse 1s infinite;
+}
+.wf-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a8a29e;
+}
+.workflow-steps { padding: 0; }
+.wf-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f0ede8;
+  transition: background 0.1s;
+}
+.wf-step:last-child { border-bottom: none; }
+.wf-step.done   { }
+.wf-step.active { background: #faf9f7; }
+
+.wf-check {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #c8c3bc;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  transition: all 0.2s;
+}
+.wf-check.done {
+  border-color: #16a34a;
+  background: transparent;
+  color: #16a34a;
+}
+.wf-check.active {
+  border-color: #1e3a5f;
+  animation: spin-border 1s linear infinite;
+}
+@keyframes spin-border {
+  to { transform: rotate(360deg); }
+}
+.wf-step-name {
+  flex: 1;
+  font-size: 13px;
+  color: #1c1917;
+  font-weight: 400;
+}
+.wf-step.active .wf-step-name { color: #1c1917; font-weight: 500; }
+.wf-time {
+  font-size: 12px;
+  color: #a8a29e;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+}
+
+/* ── ANSWER AREA ─────────────────────────────── */
+.answer-area {
+  background: #f5f4f0;
+  padding: 14px 16px;
+  border-top: 1px solid #e2ddd7;
+  min-height: 60px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #1c1917;
+}
+.answer-area p { margin-bottom: 8px; }
+.answer-area p:last-child { margin-bottom: 0; }
+.answer-area strong { font-weight: 600; color: #1c1917; }
+
+/* blinking cursor while streaming */
+.cursor {
+  display: inline-block;
+  width: 2px; height: 14px;
+  background: #1e3a5f;
+  vertical-align: text-bottom;
+  animation: blink-cursor 0.8s step-end infinite;
+  margin-left: 1px;
+}
+@keyframes blink-cursor { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── SOURCES BAR ─────────────────────────────── */
+.sources-bar {
+  padding: 12px 16px;
+  border-top: 1px solid #e2ddd7;
+  background: #f0ede8;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.sources-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a8a29e;
+  margin-right: 4px;
+}
+.source-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #fff;
+  border: 1px solid #c8c3bc;
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: #1e3a5f;
+  font-weight: 500;
+  cursor: default;
+  transition: border-color 0.1s, background 0.1s;
+}
+.source-pill:hover { border-color: #1e3a5f; background: #f0ede8; }
+.source-arrow { color: #2d5a9e; font-size: 10px; }
+
+/* ── CONFIRMATION CARD ───────────────────────── */
+.confirm-card {
+  background: #fff;
+  border: 1px solid #e2ddd7;
+  border-left: 3px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 14px 16px;
+  max-width: 520px;
+  animation: msg-in 0.18s ease-out both;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.cc-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1e3a5f;
+  margin-bottom: 12px;
+}
+.cc-fields { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.cc-row { display: grid; grid-template-columns: 86px 1fr; gap: 8px; }
+.cc-key { font-size: 11px; color: #78716c; }
+.cc-val { font-size: 12px; color: #1c1917; font-weight: 500; }
+.cc-btns { display: flex; gap: 7px; }
+.btn-ok {
+  background: #1e3a5f; color: #fff;
+  border: none; border-radius: 6px;
+  padding: 6px 18px;
+  font-size: 12px; font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.btn-ok:hover:not(:disabled) { background: #2d5a9e; transform: translateY(-1px); }
+.btn-ok:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-no {
+  background: transparent; color: #78716c;
+  border: 1px solid #e2ddd7; border-radius: 6px;
+  padding: 6px 18px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.btn-no:hover:not(:disabled) { border-color: #c8c3bc; color: #1c1917; }
+.btn-no:disabled { opacity: 0.4; cursor: not-allowed; }
+.cc-result { margin-top: 10px; font-size: 12px; display: none; }
+
+/* ── ERROR BUBBLE ────────────────────────────── */
+.msg-error {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #dc2626;
+  max-width: 600px;
+  animation: msg-in 0.15s ease-out both;
+}
+
+/* ── THINKING ────────────────────────────────── */
+#thinking {
+  display: none;
+  gap: 4px;
+  align-items: center;
+  padding: 4px 32px;
+  flex-shrink: 0;
+}
+#thinking.vis { display: flex; }
+.td {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #c8c3bc;
+  animation: tdot 1s ease-in-out infinite;
+}
+.td:nth-child(2){animation-delay:.16s}
+.td:nth-child(3){animation-delay:.32s}
+@keyframes tdot{0%,80%,100%{transform:scale(.7);opacity:.3}40%{transform:scale(1);opacity:1}}
+
+/* ── DEMO BANNER ─────────────────────────────── */
+#demo-banner {
+  display: none;
+  padding: 6px 20px;
+  background: #fefce8;
+  border-top: 1px solid #fde68a;
+  font-size: 11px;
+  color: #92400e;
+  gap: 5px;
+  align-items: center;
+  flex-shrink: 0;
+}
+#demo-banner.vis { display: flex; }
+
+/* ── INPUT BAR ───────────────────────────────── */
+#ibar {
+  border-top: 1px solid #e2ddd7;
+  padding: 12px 32px 10px;
+  background: #eeebe5;
+  flex-shrink: 0;
+}
+.ibar-inner {
+  max-width: 640px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+#inp {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #e2ddd7;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #1c1917;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+  min-height: 42px; max-height: 100px;
+  overflow-y: auto;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+#inp::placeholder { color: #a8a29e; }
+#inp:focus {
+  border-color: #1e3a5f;
+  box-shadow: 0 0 0 3px rgba(30,58,95,0.08);
+}
+#inp:disabled { opacity: 0.5; cursor: not-allowed; }
+#sbtn {
+  height: 42px; padding: 0 20px;
+  background: #1e3a5f; color: #fff;
+  border: none; border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.12s;
+}
+#sbtn:hover:not(:disabled) {
+  background: #2d5a9e;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(30,58,95,0.25);
+}
+#sbtn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.hint { max-width: 640px; margin-top: 5px; font-size: 10px; color: #a8a29e; }
+
+/* ── TOAST ───────────────────────────────────── */
+#toast {
+  position: fixed; bottom: 20px; right: 20px; z-index: 999;
+  background: #1c1917; color: #f5f4f0;
+  border-radius: 7px; padding: 8px 14px;
+  font-size: 12px;
+  opacity: 0; pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.18s, transform 0.18s;
+  max-width: 260px;
+}
+#toast.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+/* inline citation in answer text */
+.cit {
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #c8c3bc;
+  border-radius: 20px;
+  padding: 0 7px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: #1e3a5f;
+  vertical-align: middle;
+  cursor: default;
+  transition: border-color 0.1s;
+}
+.cit:hover { border-color: #1e3a5f; }
+</style>
+</head>
+<body>
+
+<div id="shell">
+
+  <!-- LEFT NAV — Employee avatars. Click to switch active user. -->
+  <div id="left-nav">
+    <!-- Rohit — Support Agent -->
+    <div class="nav-dot active" id="nav-0" onclick="switchUser(0)" title="Rohit">
+      <div class="nav-avatar" style="background:#1e3a5f">RK</div>
+      <div class="nav-tooltip">Rohit — Support Agent</div>
+    </div>
+    <!-- Maya — Support Agent -->
+    <div class="nav-dot" id="nav-1" onclick="switchUser(1)" title="Maya">
+      <div class="nav-avatar" style="background:#6d28d9">MS</div>
+      <div class="nav-tooltip">Maya — Support Agent</div>
+    </div>
+    <!-- Priya Mehta — CSM -->
+    <div class="nav-dot" id="nav-2" onclick="switchUser(2)" title="Priya Mehta">
+      <div class="nav-avatar" style="background:#0f766e">PM</div>
+      <div class="nav-tooltip">Priya Mehta — CSM</div>
+    </div>
+    <!-- Arjun Rao — CSM -->
+    <div class="nav-dot" id="nav-3" onclick="switchUser(3)" title="Arjun Rao">
+      <div class="nav-avatar" style="background:#b45309">AR</div>
+      <div class="nav-tooltip">Arjun Rao — CSM</div>
+    </div>
+    <!-- Neha Kapoor — CSM -->
+    <div class="nav-dot" id="nav-4" onclick="switchUser(4)" title="Neha Kapoor">
+      <div class="nav-avatar" style="background:#be185d">NK</div>
+      <div class="nav-tooltip">Neha Kapoor — CSM</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- TOP CHROME (window title bar) -->
+    <div id="chrome">
+      <div class="traffic-lights">
+        <div class="tl tl-red"></div>
+        <div class="tl tl-yellow"></div>
+        <div class="tl tl-green"></div>
+      </div>
+      <span class="chrome-title">PARCELPILOT</span>
+      <span class="chrome-dot">·</span>
+      <span class="chrome-title">COMPASS</span>
+      <div class="chrome-right">
+        <div class="live-badge" id="live-badge">
+          <div class="live-badge-dot" id="live-dot"></div>
+          <span id="live-text">CONNECTING</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INNER: sidebar + chat -->
+    <div style="display:flex;flex:1;overflow:hidden;min-height:0">
+
+      <!-- SIDEBAR -->
+      <aside id="sidebar">
+        <div class="sb-head">
+          <div class="sb-title">
+            Live Issues
+            <span class="sb-badge" id="sb-count">—</span>
+          </div>
+        </div>
+        <div class="sb-scroll" id="sb-scroll">
+          <div style="padding:18px 6px;text-align:center;font-size:11px;color:#a8a29e">Loading…</div>
+        </div>
+        <div class="sb-foot" id="sb-foot"></div>
+      </aside>
+
+      <!-- CHAT COLUMN -->
+      <div id="chat-area">
+
+        <!-- Chat top bar with role select -->
+        <div id="chat-topbar">
+          <div class="active-user-badge" id="active-user-badge">
+            <div class="active-user-avatar" id="active-user-avatar" style="background:#1e3a5f">RK</div>
+            <span id="active-user-name">Rohit — Support Agent</span>
+          </div>
+          <select class="role-select" id="role-sel" onchange="changeRole(this.value)">
+            <option value="support_agent|Rohit">Rohit — Support Agent</option>
+            <option value="support_agent|Maya">Maya — Support Agent</option>
+            <option value="csm|Priya Mehta">Priya Mehta — CSM</option>
+            <option value="csm|Arjun Rao">Arjun Rao — CSM</option>
+            <option value="csm|Neha Kapoor">Neha Kapoor — CSM</option>
+          </select>
+          <div class="topbar-status">
+            <div class="status-dot" id="status-dot"></div>
+            <span id="status-text">Connecting…</span>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="msgs">
+          <div id="empty-state">
+            <div class="empty-glyph">◎</div>
+            <h2 class="empty-title">ParcelPilot · Compass</h2>
+            <p class="empty-sub">Ask anything about policies, orders, tickets, or contracts — every answer cited to the exact source.</p>
+            <div class="chips">
+              <div class="chip" onclick="fill('Can Northstar cancel ORD-1001 without a fee?')">Northstar cancellation</div>
+              <div class="chip" onclick="fill('What should I do about TKT-505?')">TKT-505 API key</div>
+              <div class="chip" onclick="fill('Is ORD-2002 eligible for a service credit?')">LumenWorks credit</div>
+              <div class="chip" onclick="fill('LumenWorks 4200-row CSV fails to upload')">Bulk upload limit</div>
+              <div class="chip" onclick="fill('TKT-504 shows BOOKED but driver already picked up')">SwiftShip delay</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thinking dots -->
+        <div id="thinking"><div class="td"></div><div class="td"></div><div class="td"></div></div>
+
+        <!-- Demo banner -->
+        <div id="demo-banner">⚠ Demo mode — showing pre-built responses. Start the backend on localhost:8000 for live answers.</div>
+
+        <!-- Input bar -->
+        <div id="ibar">
+          <div class="ibar-inner">
+            <textarea id="inp" rows="1" placeholder="Ask about a ticket, order, policy, or contract…"
+              onkeydown="handleKey(event)" oninput="resize(this)"></textarea>
+            <button id="sbtn" onclick="send()">
+              Send
+            </button>
+          </div>
+          <p class="hint">Enter to send · Shift+Enter for new line</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+let BACKEND = (() => {
+  const h = window.location.hostname;
+  if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:8000';
+  if (h.includes('railway.app') || h.includes('render.com')) return window.location.origin;
+  return 'https://parcelpilot-agent-production.up.railway.app';
+})();
+
+let sid = uuid(), role = 'support_agent', uname = 'Rohit', busy = false, live = false;
+
+function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random()*16|0; return (c==='x'?r:r&3|8).toString(16);
+  });
+}
+
+// ════════════════════════════════════════════
+// BOOT — Auto-detects local & live cloud backend
+// ════════════════════════════════════════════
+async function boot() {
+  const candidates = [
+    BACKEND,
+    'http://localhost:8000',
+    'https://parcelpilot-agent-production.up.railway.app'
+  ];
+  const endpoints = [...new Set(candidates)];
+
+  for (const ep of endpoints) {
+    try {
+      const r = await Promise.race([
+        fetch(ep + '/proactive'),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3500))
+      ]);
+      if (r.ok) {
+        BACKEND = ep;
+        live = true;
+        setLive(true);
+        document.getElementById('demo-banner').classList.remove('vis');
+        const d = await r.json();
+        renderSidebar(d.items || [], d.snapshot_time || '');
+        return;
+      }
+    } catch {}
+  }
+
+  // Fallback to offline demo mode
+  setLive(false);
+  document.getElementById('demo-banner').classList.add('vis');
+  renderSidebar(DEMO_SB, DEMO_TS);
+}
+
+function setLive(on) {
+  document.getElementById('live-dot').style.background = on ? '#16a34a' : '#f59e0b';
+  document.getElementById('live-text').textContent = on ? 'LIVE' : 'DEMO';
+  document.getElementById('status-dot').classList.toggle('online', on);
+  document.getElementById('status-text').textContent = on ? 'Connected' : 'Demo mode';
+}
+
+// ════════════════════════════════════════════
+// SIDEBAR
+// ════════════════════════════════════════════
+const CAT_CFG = {
+  'SLA Breach':      {icon:'🚨',color:'#dc2626'},
+  'Approaching SLA': {icon:'⏰',color:'#d97706'},
+  'P1/P2 Open':      {icon:'🔴',color:'#dc2626'},
+  'Account Cluster': {icon:'👥',color:'#7c3aed'},
+  'KI-Linked':       {icon:'🐛',color:'#d97706'},
+};
+
+function renderSidebar(items, ts) {
+  const sc = document.getElementById('sb-scroll');
+  const ct = document.getElementById('sb-count');
+  const ft = document.getElementById('sb-foot');
+  ct.textContent = items.length||'0';
+  if (ts) ft.textContent = 'Snapshot: '+ts.replace('T',' ').slice(0,16)+' IST';
+  if (!items.length) { sc.innerHTML='<div style="padding:16px;text-align:center;font-size:11px;color:#a8a29e">✓ No active issues</div>'; return; }
+  const grps={};
+  items.forEach(i=>{(grps[i.category]=grps[i.category]||[]).push(i)});
+  let h='';
+  for (const [cat,arr] of Object.entries(grps)) {
+    const c=CAT_CFG[cat]||{icon:'•',color:'#78716c'};
+    h+=`<div class="sb-group"><div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${esc(cat)}</div>`;
+    arr.forEach(it=>{
+      const q=it.suggested_query||`Tell me about ${it.ticket_ids.join(', ')}`;
+      h+=`<div class="sb-item" onclick="fill(${JSON.stringify(q)})">
+        <div class="sb-item-id">${esc(it.ticket_ids.join(', '))} &mdash; ${esc(it.account_name)}</div>
+        <div class="sb-item-desc">${esc(it.recommended_action)}</div>
+      </div>`;
+    });
+    h+='</div>';
+  }
+  sc.innerHTML=h;
+}
+
+// ════════════════════════════════════════════
+// MESSAGES
+// ════════════════════════════════════════════
+function killEmpty() { const e=document.getElementById('empty-state'); if(e) e.remove(); }
+function scrollDown() { const m=document.getElementById('msgs'); requestAnimationFrame(()=>{m.scrollTop=m.scrollHeight}); }
+
+function addUserMsg(text) {
+  killEmpty();
+  const m=document.getElementById('msgs');
+  const d=document.createElement('div');
+  d.className='msg-user';
+  d.innerHTML=`<div class="msg-user-bubble">${esc(text)}</div>`;
+  m.appendChild(d); scrollDown();
+}
+
+function addError(text) {
+  killEmpty();
+  const m=document.getElementById('msgs');
+  const d=document.createElement('div');
+  d.className='msg-error';
+  d.textContent='⚠ '+text;
+  m.appendChild(d); scrollDown();
+}
+
+// Build a Compass-style workflow card with steps
+function createWorkflowCard(title='PARCELPILOT QUERY') {
+  killEmpty();
+  const m = document.getElementById('msgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'workflow-wrap';
+  wrap.innerHTML = `
+    <div class="workflow-card">
+      <div class="workflow-header">
+        <div class="wf-status">
+          <div class="wf-status-dot running" id="wf-dot"></div>
+          <span id="wf-status-text">RUNNING</span>
+        </div>
+        <div class="wf-label">${esc(title)}</div>
+      </div>
+      <div class="workflow-steps" id="wf-steps"></div>
+      <div class="answer-area" id="wf-answer" style="display:none"></div>
+      <div class="sources-bar" id="wf-sources" style="display:none">
+        <span class="sources-label">Sources</span>
+      </div>
+    </div>`;
+  m.appendChild(wrap);
+  scrollDown();
+  return wrap;
+}
+
+const STEP_NAMES = {
+  document_search: 'Search policies & agreements',
+  data_lookup:     'Look up orders, tickets & accounts',
+  escalate:        'Prepare escalation record',
+};
+
+function addStep(wrap, toolName) {
+  const steps = wrap.querySelector('#wf-steps');
+  const t0 = Date.now();
+  const row = document.createElement('div');
+  row.className = 'wf-step active';
+  row.innerHTML = `
+    <div class="wf-check active"></div>
+    <div class="wf-step-name">${esc(STEP_NAMES[toolName]||toolName)}</div>
+    <div class="wf-time" id="t-${toolName}-${t0}">—</div>`;
+  steps.appendChild(row);
+  scrollDown();
+  return { row, t0, toolName };
+}
+
+function finishStep(stepObj) {
+  const elapsed = ((Date.now()-stepObj.t0)/1000).toFixed(1)+'s';
+  const row = stepObj.row;
+  row.className = 'wf-step done';
+  const chk = row.querySelector('.wf-check');
+  chk.className = 'wf-check done';
+  chk.innerHTML = '✓';
+  const tEl = row.querySelector('.wf-time');
+  if (tEl) tEl.textContent = elapsed;
+  scrollDown();
+}
+
+function setWorkflowComplete(wrap) {
+  const dot = wrap.querySelector('#wf-dot');
+  const txt = wrap.querySelector('#wf-status-text');
+  if (dot) { dot.className = 'wf-status-dot'; dot.style.background='#16a34a'; }
+  if (txt) txt.textContent = 'WORKFLOW COMPLETE';
+}
+
+function showAnswer(wrap, text) {
+  const a = wrap.querySelector('#wf-answer');
+  a.style.display = 'block';
+  a.innerHTML = '<p>'+formatText(text)+'</p>';
+  scrollDown();
+}
+
+function appendAnswerToken(wrap, text) {
+  const a = wrap.querySelector('#wf-answer');
+  a.style.display = 'block';
+  // Remove cursor if present
+  const cur = a.querySelector('.cursor');
+  if (cur) cur.remove();
+  a.innerHTML = '<p>'+formatText(text)+'<span class="cursor"></span></p>';
+  scrollDown();
+}
+
+function finaliseAnswer(wrap, text) {
+  const a = wrap.querySelector('#wf-answer');
+  a.style.display = 'block';
+  a.innerHTML = '<p>'+formatText(text)+'</p>';
+}
+
+function addSources(wrap, sources) {
+  if (!sources || !sources.length) return;
+  const sb = wrap.querySelector('#wf-sources');
+  sb.style.display = 'flex';
+  sources.forEach(s => {
+    const pill = document.createElement('span');
+    pill.className = 'source-pill';
+    pill.innerHTML = `<span class="source-arrow">↳</span>${esc(s)}`;
+    sb.appendChild(pill);
+  });
+  scrollDown();
+}
+
+function addConfirmCard(display, payload) {
+  killEmpty();
+  const m = document.getElementById('msgs');
+  const div = document.createElement('div');
+  div.className='confirm-card';
+  let fields='';
+  for (const [k,v] of Object.entries(display||{})) {
+    fields+=`<div class="cc-row"><span class="cc-key">${esc(k)}</span><span class="cc-val">${esc(String(v??''))}</span></div>`;
+  }
+  div.innerHTML=`
+    <div class="cc-label">⚡ Confirm Escalation</div>
+    <div class="cc-fields">${fields}</div>
+    <div class="cc-btns">
+      <button class="btn-ok" id="cc-ok">Confirm</button>
+      <button class="btn-no" id="cc-no">Cancel</button>
+    </div>
+    <div class="cc-result" id="cc-res"></div>`;
+  m.appendChild(div); scrollDown();
+
+  const ok=div.querySelector('#cc-ok'), no=div.querySelector('#cc-no'), res=div.querySelector('#cc-res');
+  ok.onclick=async()=>{
+    ok.disabled=no.disabled=true; ok.textContent='Creating…';
+    if (live) {
+      try {
+        const r=await fetch(BACKEND+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sid,confirm:true,payload})});
+        const d=await r.json();
+        res.style.cssText='display:block;color:#16a34a';
+        res.textContent='✓ Escalation created: '+(d.escalation_id||'ESC-'+Date.now());
+        ok.textContent='✓ Confirmed';
+      } catch(e) { ok.disabled=no.disabled=false; ok.textContent='Confirm'; res.style.cssText='display:block;color:#dc2626'; res.textContent='Error: '+e.message; }
+    } else {
+      res.style.cssText='display:block;color:#16a34a';
+      res.textContent='✓ Escalation created: ESC-20260816-0001 (demo)';
+      ok.textContent='✓ Confirmed';
+    }
+  };
+  no.onclick=async()=>{
+    ok.disabled=no.disabled=true;
+    if (live) await fetch(BACKEND+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sid,confirm:false})}).catch(()=>{});
+    res.style.cssText='display:block;color:#78716c'; res.textContent='Action cancelled.'; no.textContent='Cancelled';
+  };
+}
+
+// ════════════════════════════════════════════
+// FORMAT ANSWER TEXT
+// ════════════════════════════════════════════
+function formatText(t) {
+  return esc(t)
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\[([\w_\s]+\.pdf[^\]]*)\]/gi,'<span class="cit">$1</span>')
+    .replace(/\[(orders|accounts|tickets):\s*([^\]]+)\]/gi,'<span class="cit">$1: $2</span>')
+    .replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ════════════════════════════════════════════
+// SEND — LIVE
+// ════════════════════════════════════════════
+async function sendLive(q) {
+  let card = null;
+  let stepObjs = {};
+  let lastStep = null;
+  let aText = '';
+
+  try {
+    const res = await fetch(BACKEND+'/chat', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message:q, session_id:sid, role, user_name:uname}),
+    });
+    if (!res.ok) { addError('Backend returned '+res.status); return; }
+
+    const reader=res.body.getReader(), dec=new TextDecoder();
+    let buf='';
+
+    outer: while(true) {
+      const {done,value}=await reader.read();
+      if (value) buf+=dec.decode(value,{stream:true});
+      const blocks=buf.split(/\r?\n\r?\n/);
+      buf=blocks.pop()||'';
+      for (const blk of blocks) {
+        if (!blk.trim()) continue;
+        let ev='message',ds='';
+        for (const ln of blk.split(/\r?\n/)) {
+          if (ln.startsWith('event: ')) ev=ln.slice(7).trim();
+          else if (ln.startsWith('data: ')) ds=ln.slice(6);
+        }
+        let d={};
+        try{d=JSON.parse(ds)}catch{}
+
+        if (ev==='tool_chip') {
+          if (!card) card=createWorkflowCard();
+          if (lastStep) finishStep(lastStep);
+          lastStep=addStep(card, d.tool||ds);
+          stepObjs[d.tool]=lastStep;
+        }
+        else if (ev==='token') {
+          if (!card) card=createWorkflowCard();
+          if (lastStep) { finishStep(lastStep); lastStep=null; }
+          setWorkflowComplete(card);
+          aText+=(d.text||'');
+          appendAnswerToken(card, aText);
+        }
+        else if (ev==='pending_confirmation') {
+          if (card) { setWorkflowComplete(card); if(lastStep) finishStep(lastStep); }
+          addConfirmCard(d.display||{}, d.payload||d);
+        }
+        else if (ev==='error') { addError(d.message||ds); }
+        else if (ev==='done') {
+          if (card && aText) {
+            finaliseAnswer(card, aText);
+            // extract source citations from answer
+            const srcs=[...new Set([...aText.matchAll(/\[([^\]]+\.pdf[^\]]*)\]/gi)].map(m=>m[1].split(',')[0].trim()))];
+            if (srcs.length) addSources(card, srcs);
+          }
+          if (card) setWorkflowComplete(card);
+          if (lastStep) finishStep(lastStep);
+          break outer;
+        }
+      }
+      if (done) {
+        if (buf.trim()) { /* handle last block */ }
+        if (card && aText) finaliseAnswer(card, aText);
+        if (card) setWorkflowComplete(card);
+        break;
+      }
+    }
+  } catch(e) {
+    live=false; setLive(false);
+    document.getElementById('demo-banner').classList.add('vis');
+    await sendDemo(q);
+  }
+}
+
+// ════════════════════════════════════════════
+// SEND — DEMO
+// ════════════════════════════════════════════
+const DEMO_SB = [
+  {category:'SLA Breach',ticket_ids:['TKT-505'],account_name:'Axis Labs',account_id:'ACCT-004',recommended_action:'P1 SLA breached — 2h 30m elapsed, target 30m',suggested_query:'What should I do about TKT-505?'},
+  {category:'SLA Breach',ticket_ids:['TKT-501'],account_name:'Northstar Logistics',account_id:'ACCT-001',recommended_action:'P1 SLA breached — 30m elapsed, target 15m',suggested_query:'Tell me about TKT-501 and whether I should escalate'},
+  {category:'KI-Linked',ticket_ids:['TKT-502'],account_name:'LumenWorks',account_id:'ACCT-002',recommended_action:'Linked to KI-208: bulk upload failures above ~3,000 rows',suggested_query:'Is TKT-502 related to KI-208?'},
+  {category:'KI-Linked',ticket_ids:['TKT-504'],account_name:'Northstar Logistics',account_id:'ACCT-001',recommended_action:'Linked to KI-211: SwiftShip webhook delay up to 20 min',suggested_query:'TKT-504 shows BOOKED but driver already picked up'},
+  {category:'Account Cluster',ticket_ids:['TKT-501','TKT-504'],account_name:'Northstar Logistics',account_id:'ACCT-001',recommended_action:'2 open tickets from this account in 7 days',suggested_query:'What open tickets does Northstar Logistics have?'},
+];
+const DEMO_TS = '2026-08-16T11:00:00+05:30';
+
+const DEMOS = {
+  northstar:{
+    steps:['data_lookup','document_search'],
+    answer:'**Yes — Northstar can cancel ORD-1001 with no cancellation fee.**\n\nORD-1001 is currently **BOOKED** and has not been picked up [orders: ORD-1001]. The Northstar Enterprise Agreement §2 explicitly waives all cancellation fees for any BOOKED-before-pickup shipment, regardless of time since booking [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].\n\nThis overrides the SOP default (INR 250 after 30 min) [03_Cancellation_and_Service_Credit_SOP_v4.pdf, p.1 §1] — signed agreement is highest authority.\n\n⚠ TKT-450 historical resolution incorrectly stated a fee applied — that is overridden by the current agreement.',
+    sources:['05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2','03_Cancellation_and_Service_Credit_SOP_v4.pdf, p.1'],
+  },
+  tkt505:{
+    steps:['data_lookup','document_search'],
+    answer:'**⚠ P1 — SLA already breached. Escalate immediately.**\n\nTKT-505 (Axis Labs, ACCT-004) involves suspected API key exposure [tickets: TKT-505] — classified **P1** under the security incident definition [01_Support_Policy_v3_CURRENT.pdf, p.1 §2]. Axis Labs has no custom agreement; standard Enterprise SLA applies: P1 = 30 min 24×7 [01_Support_Policy_v3_CURRENT.pdf, p.2 §3]. Ticket created 08:30, snapshot 11:00 — **2h 30m elapsed**, SLA breached by 2h.',
+    sources:['01_Support_Policy_v3_CURRENT.pdf, p.2','tickets: TKT-505'],
+    confirm:{display:{Action:'Create Escalation',Ticket:'TKT-505',Account:'Axis Labs (ACCT-004)',Severity:'P1','Assigned to':'Rohit',Reason:'API key exposure — P1 security incident, SLA breached 2h 30m'},payload:{ticket_id:'TKT-505',account_id:'ACCT-004',severity:'P1',reason:'Suspected credential exposure',assigned_to:'Rohit',created_by:'Demo (demo)',summary:'P1 API key exposure, SLA breached'}},
+  },
+  credit:{
+    steps:['data_lookup','document_search'],
+    answer:'**Yes — ORD-2002 is eligible for a service credit of INR 300.**\n\nPickup window ended 06:30; snapshot 11:00 — delay is **4h 30m** [orders: ORD-2002]. This exceeds LumenWorks\'s 4-hour threshold [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. Carrier fault confirmed, no customer fault.\n\nThe LumenWorks agreement replaces the SOP 2h threshold with **4h and a fixed INR 300** [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. No manager approval required (INR 300 < INR 1,000).',
+    sources:['06_LumenWorks_Service_Agreement.pdf, p.2','orders: ORD-2002'],
+  },
+  bulk:{
+    steps:['document_search'],
+    answer:'The supported product limit for Bulk Upload is **5,000 rows per CSV** [04_Product_Operations_Guide_and_Known_Issues.pdf, p.1 §1].\n\n**KI-208** (opened 10 Aug 2026, Investigating): intermittent failures above ~3,000 rows. Workaround: split uploads below 3,000 rows [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2 §2]. Individual shipment creation is unaffected.\n\n⚠ TKT-451 historical resolution incorrectly stated 3,000 rows is the product limit — that is the KI-208 workaround, not the specification.',
+    sources:['04_Product_Operations_Guide_and_Known_Issues.pdf, p.1','04_Product_Operations_Guide_and_Known_Issues.pdf, p.2'],
+  },
+  swiftship:{
+    steps:['data_lookup','document_search'],
+    answer:'TKT-504 reports ORD-1001 still shows **BOOKED** ~10 min after driver collection [tickets: TKT-504].\n\n**Do not tell the customer pickup did not occur.** This matches **KI-211** (opened 12 Aug 2026, Monitoring): SwiftShip webhooks can arrive up to 20 min late — a parcel may be physically collected while ParcelPilot still shows BOOKED [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2 §2].\n\n**Recommended:** Verify carrier status directly with SwiftShip, or wait through the 20-min delay window.',
+    sources:['04_Product_Operations_Guide_and_Known_Issues.pdf, p.2','tickets: TKT-504'],
+  },
+  default:{
+    steps:['document_search'],
+    answer:'I searched the available ParcelPilot source documents. In demo mode, fully cited answers are available for the pre-built scenarios above.\n\nStart the backend at **localhost:8000** to get live answers from Groq with full multi-step reasoning across all 6 source documents and 4 data sheets.',
+    sources:[],
+  },
+};
+
+function matchDemo(q) {
+  const lq=q.toLowerCase();
+  if (lq.includes('northstar')||lq.includes('ord-1001')||lq.includes('cancel')) return 'northstar';
+  if (lq.includes('tkt-505')||lq.includes('api key')||lq.includes('credential')) return 'tkt505';
+  if (lq.includes('lumenworks')||lq.includes('ord-2002')||lq.includes('credit')) return 'credit';
+  if (lq.includes('bulk')||lq.includes('csv')||lq.includes('upload')||lq.includes('row')) return 'bulk';
+  if (lq.includes('swiftship')||lq.includes('tkt-504')||lq.includes('booked')||lq.includes('webhook')) return 'swiftship';
+  return 'default';
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function sendDemo(q) {
+  const key = matchDemo(q);
+  const demo = DEMOS[key];
+  const card = createWorkflowCard('PARCELPILOT QUERY');
+  const stepObjs = {};
+
+  for (const s of demo.steps) {
+    const so = addStep(card, s);
+    await sleep(350+Math.random()*300);
+    finishStep(so);
+    await sleep(80);
+  }
+
+  setWorkflowComplete(card);
+
+  // Stream answer word by word
+  const words = demo.answer.split(' ');
+  let acc = '';
+  for (let i=0; i<words.length; i++) {
+    acc += words[i]+(i<words.length-1?' ':'');
+    appendAnswerToken(card, acc);
+    await sleep(15);
+  }
+  finaliseAnswer(card, acc);
+  if (demo.sources.length) addSources(card, demo.sources);
+
+  if (demo.confirm) {
+    await sleep(200);
+    addConfirmCard(demo.confirm.display, demo.confirm.payload);
+  }
+}
+
+// ════════════════════════════════════════════
+// SEND ENTRY POINT
+// ════════════════════════════════════════════
+async function send() {
+  const el=document.getElementById('inp');
+  const q=el.value.trim();
+  if(!q||busy) return;
+  el.value=''; resize(el);
+  setBusy(true);
+  addUserMsg(q);
+  if(live) await sendLive(q); else await sendDemo(q);
+  setBusy(false);
+}
+
+// ════════════════════════════════════════════
+// USERS — the real staff from the data pack
+// ════════════════════════════════════════════
+const USERS = [
+  { id: 0, name: 'Rohit',       role: 'support_agent', label: 'Rohit — Support Agent', initials: 'RK', color: '#1e3a5f' },
+  { id: 1, name: 'Maya',        role: 'support_agent', label: 'Maya — Support Agent',  initials: 'MS', color: '#6d28d9' },
+  { id: 2, name: 'Priya Mehta', role: 'csm',           label: 'Priya Mehta — CSM',    initials: 'PM', color: '#0f766e' },
+  { id: 3, name: 'Arjun Rao',   role: 'csm',           label: 'Arjun Rao — CSM',      initials: 'AR', color: '#b45309' },
+  { id: 4, name: 'Neha Kapoor', role: 'csm',           label: 'Neha Kapoor — CSM',    initials: 'NK', color: '#be185d' },
+];
+
+let activeUserId = 0;
+
+function switchUser(idx) {
+  const user = USERS[idx];
+  if (!user) return;
+  activeUserId = idx;
+
+  // Update nav dot active states
+  USERS.forEach((_, i) => {
+    document.getElementById('nav-'+i).classList.toggle('active', i === idx);
+  });
+
+  // Update topbar badge
+  document.getElementById('active-user-avatar').style.background = user.color;
+  document.getElementById('active-user-avatar').textContent = user.initials;
+  document.getElementById('active-user-name').textContent = user.label;
+
+  // Sync the select dropdown
+  const sel = document.getElementById('role-sel');
+  sel.value = user.role + '|' + user.name;
+
+  // Apply role change
+  role = user.role;
+  uname = user.name;
+  sid = uuid();
+
+  // Reset chat to empty state
+  const m = document.getElementById('msgs');
+  m.innerHTML = `<div id="empty-state">
+    <div class="empty-glyph">◎</div>
+    <h2 class="empty-title">ParcelPilot · Compass</h2>
+    <p class="empty-sub">Signed in as <strong>${esc(user.label)}</strong>. Ask anything about policies, orders, tickets, or contracts.</p>
+    <div class="chips">
+      <div class="chip" onclick="fill('Can Northstar cancel ORD-1001 without a fee?')">Northstar cancellation</div>
+      <div class="chip" onclick="fill('What should I do about TKT-505?')">TKT-505 API key</div>
+      <div class="chip" onclick="fill('Is ORD-2002 eligible for a service credit?')">LumenWorks credit</div>
+      <div class="chip" onclick="fill('LumenWorks 4200-row CSV fails to upload')">Bulk upload limit</div>
+      <div class="chip" onclick="fill('TKT-504 shows BOOKED but driver already picked up')">SwiftShip delay</div>
+    </div>
+  </div>`;
+
+  toast('Signed in as ' + user.label);
+}
+
+// ════════════════════════════════════════════
+// ROLE CHANGE (via dropdown — syncs nav dots)
+// ════════════════════════════════════════════
+function changeRole(v) {
+  const [r,...n]=v.split('|');
+  const name = n.join('|');
+  const idx = USERS.findIndex(u => u.name === name && u.role === r);
+  if (idx >= 0) {
+    switchUser(idx);
+  } else {
+    role=r; uname=name; sid=uuid();
+    toast('Signed in as '+name);
+  }
+}
+
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+function setBusy(on){busy=on;document.getElementById('sbtn').disabled=on;document.getElementById('inp').disabled=on;document.getElementById('thinking').classList.toggle('vis',on);}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+function fill(t){document.getElementById('inp').value=t;resize(document.getElementById('inp'));document.getElementById('inp').focus();}
+function toast(msg,ms=2200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+
+boot();
+document.getElementById('inp').focus();
+</script>
+</body>
+</html>
