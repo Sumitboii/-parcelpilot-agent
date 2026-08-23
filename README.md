@@ -1,12 +1,15 @@
 # ParcelPilot · Compass Support Copilot
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Online-brightgreen?style=for-the-badge&logo=railway)](https://parcelpilot-agent-production.up.railway.app/showcase)
-[![Tests Passing](https://img.shields.io/badge/Tests-60%2F60%20Passing-success?style=for-the-badge&logo=pytest)](https://github.com/Sumitboii/-parcelpilot-agent)
-[![Model](https://img.shields.io/badge/LLM-Groq%20Llama%203.3%20%2F%20GPT--OSS-blue?style=for-the-badge&logo=groq)](https://groq.com)
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Click%20Here-2563eb?style=for-the-badge&logo=railway)](https://parcelpilot-agent-production.up.railway.app/showcase)
+[![Tests Passing](https://img.shields.io/badge/Tests-60%2F60%20Passing-16a34a?style=for-the-badge&logo=pytest)](https://github.com/Sumitboii/-parcelpilot-agent)
+[![Model](https://img.shields.io/badge/LLM-Groq%20Llama%203.3%20%2F%20GPT--OSS-7c3aed?style=for-the-badge&logo=groq)](https://groq.com)
 
-> 🚀 **Interactive Live Demo:**  
-> 👉 **[https://parcelpilot-agent-production.up.railway.app/showcase](https://parcelpilot-agent-production.up.railway.app/showcase)**  
-> *(No login required — runs 24/7 with real-time AI reasoning, multi-key failover, and interactive CalQuity Compass UI).*
+---
+
+### 🌐 **Live Interactive Application**
+👉 **[https://parcelpilot-agent-production.up.railway.app/showcase](https://parcelpilot-agent-production.up.railway.app/showcase)**
+
+*No installation or login required. Features full multi-step reasoning, CalQuity Compass cards, and instant query execution.*
 
 ---
 
