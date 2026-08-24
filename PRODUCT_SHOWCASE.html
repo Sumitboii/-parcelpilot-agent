@@ -205,6 +205,39 @@ body {
   border-color: #c7c3bc;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
+.sb-item.resolved {
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+  opacity: 0.9;
+}
+.sb-item.resolved:hover {
+  background: #dcfce7 !important;
+}
+.sb-item.resolved .sb-item-id {
+  text-decoration: line-through;
+  color: #166534 !important;
+}
+.sb-item.resolved .sb-item-desc {
+  color: #15803d !important;
+}
+.sb-resolved-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+  font-size: 8.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+#sb-count.all-done {
+  background: #16a34a !important;
+  color: #ffffff !important;
+}
 .sb-item-id {
   font-size: 11.5px; font-weight: 500;
   color: #1a1917;
@@ -997,19 +1030,103 @@ const CAT = {
   'KI-Linked':       { icon: '🐛', color: '#d97706' },
 };
 
+let allProactiveItems = [];
+let proactiveSnapshot = '';
+let resolvedIssueKeys = new Set();
+
+function getIssueKey(it) {
+  return (it.category || '') + '_' + (it.ticket_ids || []).join('_');
+}
+
+function matchIssueKeyFromQuery(q) {
+  const lq = (q || '').toLowerCase();
+  for (const it of allProactiveItems) {
+    const ids = (it.ticket_ids || []).map(x => x.toLowerCase());
+    if (it.category === 'Account Cluster') {
+      if ((lq.includes('cluster') || lq.includes('pattern') || (lq.includes('open tickets') && lq.includes('northstar'))) ||
+          (ids.every(id => lq.includes(id)))) {
+        return getIssueKey(it);
+      }
+    } else {
+      if (ids.some(id => lq.includes(id))) {
+        return getIssueKey(it);
+      }
+    }
+    if (it.suggested_query && lq.includes(it.suggested_query.toLowerCase().slice(0, 18))) {
+      return getIssueKey(it);
+    }
+  }
+  return null;
+}
+
+function markIssueResolved(key) {
+  if (!key) return;
+  resolvedIssueKeys.add(key);
+  updateSidebarState();
+}
+
+function markIssueResolvedByQuery(q) {
+  const k = matchIssueKeyFromQuery(q);
+  if (k) markIssueResolved(k);
+}
+
+function updateSidebarState() {
+  const ct = document.getElementById('sb-count');
+  if (!ct) return;
+  const remaining = Math.max(0, allProactiveItems.length - resolvedIssueKeys.size);
+  ct.textContent = remaining;
+  if (remaining === 0) {
+    ct.classList.add('all-done');
+    toast('🎉 All 5 Live Issues Resolved!');
+  } else {
+    ct.classList.remove('all-done');
+  }
+
+  allProactiveItems.forEach(it => {
+    const k = getIssueKey(it);
+    const safeId = 'sb-item-' + k.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const el = document.getElementById(safeId);
+    if (el) {
+      if (resolvedIssueKeys.has(k)) {
+        el.classList.add('resolved');
+        if (!el.querySelector('.sb-resolved-tag')) {
+          const tag = document.createElement('div');
+          tag.className = 'sb-resolved-tag';
+          tag.innerHTML = '✓ RESOLVED';
+          el.prepend(tag);
+        }
+      } else {
+        el.classList.remove('resolved');
+        const tag = el.querySelector('.sb-resolved-tag');
+        if (tag) tag.remove();
+      }
+    }
+  });
+}
+
 function renderSidebar(items, ts) {
+  allProactiveItems = items || [];
+  proactiveSnapshot = ts || '';
   const sc = document.getElementById('sb-scroll');
   const ct = document.getElementById('sb-count');
   const ft = document.getElementById('sb-foot');
-  ct.textContent = items.length || '0';
+  
+  const remaining = Math.max(0, allProactiveItems.length - resolvedIssueKeys.size);
+  ct.textContent = remaining;
+  if (remaining === 0 && allProactiveItems.length > 0) {
+    ct.classList.add('all-done');
+  } else {
+    ct.classList.remove('all-done');
+  }
+
   if (ts) ft.textContent = 'Snapshot ' + ts.replace('T',' ').slice(0,16) + ' IST';
-  if (!items.length) {
+  if (!allProactiveItems.length) {
     sc.innerHTML = '<div style="padding:20px 6px;font-size:11px;color:#a8a29e;text-align:center">✓ No active issues</div>';
     return;
   }
   sc.innerHTML = '';
   const grps = {};
-  items.forEach(i => { (grps[i.category] = grps[i.category] || []).push(i); });
+  allProactiveItems.forEach(i => { (grps[i.category] = grps[i.category] || []).push(i); });
   for (const [cat, arr] of Object.entries(grps)) {
     const c = CAT[cat] || { icon: '•', color: '#a8a29e' };
     const grp = document.createElement('div');
@@ -1017,11 +1134,17 @@ function renderSidebar(items, ts) {
     grp.innerHTML = `<div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${esc(cat)}</div>`;
     arr.forEach(it => {
       const q = it.suggested_query || `Tell me about ${it.ticket_ids.join(', ')}`;
+      const k = getIssueKey(it);
+      const safeId = 'sb-item-' + k.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const isResolved = resolvedIssueKeys.has(k);
+
       const itemEl = document.createElement('div');
-      itemEl.className = 'sb-item';
+      itemEl.id = safeId;
+      itemEl.className = 'sb-item' + (isResolved ? ' resolved' : '');
       itemEl.tabIndex = 0;
       itemEl.style.cursor = 'pointer';
       itemEl.innerHTML = `
+        ${isResolved ? '<div class="sb-resolved-tag">✓ RESOLVED</div>' : ''}
         <div class="sb-item-id">${esc(it.ticket_ids.join(', '))} — ${esc(it.account_name)}</div>
         <div class="sb-item-desc">${esc(it.recommended_action)}</div>`;
       itemEl.addEventListener('click', () => fill(q));
@@ -1614,6 +1737,7 @@ async function sendLive(q) {
 
     // Final flush — ensure the last tokens are rendered
     if (aBubble && aText) { aBubble.innerHTML = fmt(aText); scrollDown(); }
+    markIssueResolvedByQuery(q);
     renderNextQueryOptions(q);
   } catch(e) {
     console.error('Live chat stream error:', e);
@@ -1650,6 +1774,7 @@ async function sendDemo(q) {
       scrollDown();
     }
   }
+  markIssueResolvedByQuery(q);
   renderNextQueryOptions(q);
 }
 
