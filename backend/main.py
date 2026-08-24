@@ -31,6 +31,7 @@ from backend.data_loader import load_data, DataStore
 from backend.key_manager import key_pool
 from backend.tools.data_lookup import lookup as data_lookup_fn
 from backend.vector_store import init_vector_store
+from backend._showcase_html import get_showcase_html as _get_showcase_html
 
 
 # Load .env if present (override=True so uploaded .env updates runtime env)
@@ -307,11 +308,18 @@ def _load_patched_showcase() -> str:
 
 @app.get("/")
 async def root_ui():
-    return HTMLResponse(content=_load_patched_showcase())
+    # Primary: serve from embedded Python constant (immune to file-cache issues)
+    # Falls back to runtime file patch if constant unavailable
+    try:
+        return HTMLResponse(content=_get_showcase_html())
+    except Exception:
+        return HTMLResponse(content=_load_patched_showcase())
 
 
 @app.get("/showcase")
 async def showcase_patched():
-    """Serve PRODUCT_SHOWCASE.html with runtime patches applied."""
-    return HTMLResponse(content=_load_patched_showcase())
-
+    """Serve fixed PRODUCT_SHOWCASE.html (embedded as Python constant)."""
+    try:
+        return HTMLResponse(content=_get_showcase_html())
+    except Exception:
+        return HTMLResponse(content=_load_patched_showcase())
