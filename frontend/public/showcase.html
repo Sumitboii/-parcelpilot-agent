@@ -9,447 +9,832 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ════════════════════════════════════════════
-   CALQUITY DESIGN SYSTEM
-   bg: #000  surface: #0d0d0d  border: rgba(255,255,255,0.08)
-   text: #f2f2f2  muted: rgba(242,242,242,0.45)
-   accent: white  blue: #3b6bff  (only interactive)
-   font: Inter 14px  letter-spacing tight
-   ════════════════════════════════════════════ */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
+   CALQUITY LIGHT DESIGN SYSTEM
+   Extracted from CalQuity Compass UI component
 
-body{
-  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  font-size:14px;
-  font-weight:400;
-  line-height:1.5;
-  background:#000;
-  color:#f2f2f2;
-  -webkit-font-smoothing:antialiased;
-  letter-spacing:-0.01em;
+   Tokens:
+   --bg:             #fafaf9   (warm off-white page bg)
+   --bg-card:        #ffffff   (card surface)
+   --bg-card-hover:  #f5f4f2   (subtle hover / inset surface)
+   --bg-input:       #ffffff
+   --border-warm:    #e8e5e0   (warm neutral border)
+   --border-strong:  #c7c3bc   (stronger border / dot)
+   --border:         #d4d0cb   (mid-weight border)
+   --text:           #1a1917   (primary text)
+   --text-muted:     #78716c   (secondary / muted)
+   --text-faint:     #a8a29e   (faint labels)
+   --accent:         #2563eb   (CalQuity blue — interactive only)
+   --accent-soft:    rgba(37,99,235,0.08)
+   --accent-border:  rgba(37,99,235,0.25)
+   --green:          #16a34a
+   --red:            #dc2626
+   --amber:          #d97706
+   --purple:         #7c3aed
+
+   Typography: Inter 14px, -0.01em tracking
+   Mono: 'SF Mono','Fira Code','Fira Mono',monospace
+   Labels: UPPERCASE 0.14–0.16em tracking, 9–10.5px
+   ════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  background: #fafaf9;
+  color: #1a1917;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
 }
 
 /* ── TOPBAR ─────────────────────────────────── */
-#topbar{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  height:48px;
-  background:rgba(0,0,0,0.95);
-  border-bottom:1px solid rgba(255,255,255,0.07);
-  display:flex;align-items:center;padding:0 24px;
-  gap:0;
-  backdrop-filter:blur(16px);
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 48px;
+  background: rgba(250,250,249,0.95);
+  border-bottom: 1px solid #e8e5e0;
+  display: flex; align-items: center; padding: 0 24px;
+  gap: 0;
+  backdrop-filter: blur(16px);
 }
-.logo-text{
-  font-size:14px;font-weight:600;
-  letter-spacing:-0.02em;
-  color:#f2f2f2;
-}
-.logo-sep{
-  width:1px;height:16px;
-  background:rgba(255,255,255,0.12);
-  margin:0 14px;
-}
-.logo-sub{
-  font-size:12px;font-weight:400;
-  color:rgba(242,242,242,0.4);
-  letter-spacing:0;
-}
-.topbar-right{
-  margin-left:auto;
-  display:flex;align-items:center;gap:10px;
-}
-.status-dot{
-  display:flex;align-items:center;gap:5px;
-  font-size:11px;color:rgba(242,242,242,0.4);
-}
-.dot-circle{
-  width:6px;height:6px;border-radius:50%;
-  background:rgba(242,242,242,0.2);
-}
-.dot-circle.online{
-  background:#3ddc84;
-  box-shadow:0 0 0 2px rgba(61,220,132,0.2);
-  animation:blink 2s ease-in-out infinite;
-}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
 
-.role-select{
-  appearance:none;
-  background:#0d0d0d;
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:5px;
-  color:#f2f2f2;
-  font-family:'Inter',sans-serif;
-  font-size:12px;
-  padding:5px 28px 5px 10px;
-  cursor:pointer;outline:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(242,242,242,0.3)'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;
-  background-position:right 8px center;
+.logo-wordmark {
+  display: flex; align-items: center; gap: 8px;
 }
-.role-select:hover{border-color:rgba(255,255,255,0.18)}
-.role-select:focus{border-color:rgba(255,255,255,0.25)}
+.logo-text {
+  font-size: 13px; font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1a1917;
+}
+.logo-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #a8a29e;
+}
+.logo-sub {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 10px; font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #a8a29e;
+}
+.topbar-sep {
+  width: 1px; height: 18px;
+  background: #e8e5e0;
+  margin: 0 16px;
+}
+.topbar-right {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 10px;
+}
+
+/* status badge */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid #e8e5e0;
+  border-radius: 100px;
+  padding: 3px 10px 3px 8px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #a8a29e;
+  background: #ffffff;
+  transition: border-color .15s, color .15s;
+}
+.status-badge.online {
+  border-color: rgba(22,163,74,0.3);
+  color: #16a34a;
+}
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #d4d0cb;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+.status-dot.online {
+  background: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22,163,74,0.18);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+/* role selector */
+.role-select {
+  appearance: none;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-radius: 6px;
+  color: #1a1917;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  padding: 5px 28px 5px 10px;
+  cursor: pointer; outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a8a29e'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: border-color .12s;
+}
+.role-select:hover { border-color: #c7c3bc; }
+.role-select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 
 /* ── LAYOUT ─────────────────────────────────── */
-#layout{
-  display:flex;
-  height:100vh;
-  padding-top:48px;
+#layout {
+  display: flex;
+  height: 100vh;
+  padding-top: 48px;
 }
 
 /* ── SIDEBAR ────────────────────────────────── */
-#sidebar{
-  width:272px;
-  flex-shrink:0;
-  background:#0a0a0a;
-  border-right:1px solid rgba(255,255,255,0.07);
-  display:flex;flex-direction:column;
-  overflow:hidden;
+#sidebar {
+  width: 272px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border-right: 1px solid #e8e5e0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
 }
-.sb-head{
-  padding:16px 16px 12px;
-  border-bottom:1px solid rgba(255,255,255,0.06);
+.sb-head {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #e8e5e0;
 }
-.sb-title{
-  font-size:10px;font-weight:600;
-  letter-spacing:0.1em;text-transform:uppercase;
-  color:rgba(242,242,242,0.35);
-  display:flex;align-items:center;justify-content:space-between;
+.sb-title {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #a8a29e;
+  display: flex; align-items: center; justify-content: space-between;
 }
-.sb-count{
-  background:#ff4d4d;color:#fff;
-  border-radius:8px;padding:1px 6px;
-  font-size:10px;font-weight:700;
-  letter-spacing:0;text-transform:none;
+.sb-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 100px;
+  padding: 1px 7px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0; text-transform: none;
+  font-family: 'Inter', sans-serif;
+  min-width: 20px;
 }
-.sb-scroll{
-  flex:1;overflow-y:auto;padding:10px;
-  scrollbar-width:none;
+.sb-scroll {
+  flex: 1; overflow-y: auto; padding: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #e8e5e0 transparent;
 }
-.sb-scroll::-webkit-scrollbar{display:none}
-.sb-group{margin-bottom:12px}
-.sb-group-label{
-  font-size:10px;font-weight:500;
-  letter-spacing:0.06em;text-transform:uppercase;
-  padding:2px 6px 6px;
-  display:flex;align-items:center;gap:5px;
+.sb-scroll::-webkit-scrollbar { width: 3px; }
+.sb-scroll::-webkit-scrollbar-track { background: transparent; }
+.sb-scroll::-webkit-scrollbar-thumb { background: #e8e5e0; border-radius: 2px; }
+
+.sb-group { margin-bottom: 14px; }
+.sb-group-label {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 2px 6px 7px;
+  display: flex; align-items: center; gap: 5px;
 }
-.sb-item{
-  background:#000;
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:5px;
-  padding:9px 11px;margin-bottom:5px;
-  cursor:pointer;
-  transition:background .12s,border-color .12s;
+.sb-item {
+  background: #fafaf9;
+  border: 1px solid #e8e5e0;
+  border-radius: 8px;
+  padding: 9px 11px; margin-bottom: 5px;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, box-shadow .12s;
 }
-.sb-item:hover{
-  background:#0f0f0f;
-  border-color:rgba(255,255,255,0.12);
+.sb-item:hover {
+  background: #f5f4f2;
+  border-color: #c7c3bc;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
-.sb-item-id{
-  font-size:12px;font-weight:500;
-  margin-bottom:2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.sb-item-id {
+  font-size: 11.5px; font-weight: 500;
+  color: #1a1917;
+  margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.sb-item-desc{
-  font-size:11px;
-  color:rgba(242,242,242,0.4);
-  line-height:1.35;
+.sb-item-desc {
+  font-size: 10.5px;
+  color: #78716c;
+  line-height: 1.4;
 }
-.sb-foot{
-  padding:9px 16px;
-  border-top:1px solid rgba(255,255,255,0.06);
-  font-size:10px;
-  color:rgba(242,242,242,0.2);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.sb-foot {
+  padding: 8px 16px;
+  border-top: 1px solid #e8e5e0;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #a8a29e;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
 /* ── CHAT COLUMN ────────────────────────────── */
-#chat-col{
-  flex:1;
-  display:flex;flex-direction:column;
-  overflow:hidden;
-  background:#000;
-  min-width:0;
+#chat-col {
+  flex: 1;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  background: #fafaf9;
+  min-width: 0;
 }
 
 /* messages */
-#msgs{
-  flex:1;overflow-y:auto;
-  padding:32px 0;
-  display:flex;flex-direction:column;
-  gap:0;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(255,255,255,0.06) transparent;
+#msgs {
+  flex: 1; overflow-y: auto;
+  padding: 32px 0 8px;
+  display: flex; flex-direction: column;
+  gap: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #e8e5e0 transparent;
 }
-#msgs::-webkit-scrollbar{width:3px}
-#msgs::-webkit-scrollbar-track{background:transparent}
-#msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px}
+#msgs::-webkit-scrollbar { width: 3px; }
+#msgs::-webkit-scrollbar-track { background: transparent; }
+#msgs::-webkit-scrollbar-thumb { background: #e8e5e0; border-radius: 2px; }
 
 /* empty state */
-#empty{
-  margin:auto;
-  text-align:center;
-  padding:0 24px;
-  max-width:440px;
+#empty {
+  margin: auto;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 460px;
 }
-.empty-icon{
-  font-size:28px;
-  margin-bottom:16px;
-  opacity:.25;
+.empty-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin: 0 auto 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
-.empty-title{
-  font-size:17px;font-weight:500;
-  letter-spacing:-0.02em;
-  color:#f2f2f2;
-  margin-bottom:8px;
+.empty-title {
+  font-size: 16px; font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1a1917;
+  margin-bottom: 6px;
 }
-.empty-sub{
-  font-size:13px;
-  color:rgba(242,242,242,0.4);
-  line-height:1.6;
-  margin-bottom:24px;
+.empty-sub {
+  font-size: 13px;
+  color: #78716c;
+  line-height: 1.6;
+  margin-bottom: 24px;
 }
-.chips{
-  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+.chips {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
 }
-.chip{
-  background:#0d0d0d;
-  border:1px solid rgba(255,255,255,0.09);
-  border-radius:20px;
-  padding:6px 13px;
-  font-size:12px;
-  color:rgba(242,242,242,0.5);
-  cursor:pointer;
-  transition:all .12s;
+.chip {
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-radius: 100px;
+  padding: 5px 13px;
+  font-size: 12px;
+  color: #78716c;
+  cursor: pointer;
+  transition: all .12s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
-.chip:hover{
-  background:#141414;
-  border-color:rgba(255,255,255,0.16);
-  color:#f2f2f2;
+.chip:hover {
+  background: #f5f4f2;
+  border-color: #c7c3bc;
+  color: #1a1917;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
 /* message row */
-.msg-row{
-  padding:0 32px;
-  display:flex;
-  animation:fadein .14s ease-out both;
-  margin-bottom:4px;
+.msg-row {
+  padding: 0 32px;
+  display: flex;
+  animation: fadein .14s ease-out both;
+  margin-bottom: 4px;
 }
-@keyframes fadein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.msg-row.user{justify-content:flex-end}
-.msg-row.assistant{justify-content:flex-start}
+@keyframes fadein { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+.msg-row.user { justify-content: flex-end; }
+.msg-row.assistant { justify-content: flex-start; }
 
-.bubble{
-  max-width:680px;
-  padding:12px 16px;
-  border-radius:8px;
-  font-size:13.5px;
-  line-height:1.65;
-  word-break:break-word;
+.bubble {
+  max-width: 680px;
+  padding: 11px 15px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  word-break: break-word;
 }
-.bubble.user{
-  background:#141414;
-  border:1px solid rgba(255,255,255,0.1);
-  color:#f2f2f2;
+.bubble.user {
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  color: #1a1917;
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  font-size: 12.5px;
+  line-height: 1.55;
+  max-width: 88%;
 }
-.bubble.assistant{
-  background:#0a0a0a;
-  border:1px solid rgba(255,255,255,0.07);
-  color:#e8e8e8;
+.bubble.assistant {
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  color: #1a1917;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-.bubble.err{
-  background:rgba(255,77,77,0.05);
-  border:1px solid rgba(255,77,77,0.18);
-  color:#ff7070;
+.bubble.err {
+  background: rgba(220,38,38,0.04);
+  border: 1px solid rgba(220,38,38,0.2);
+  color: #dc2626;
 }
-.bubble.ok{
-  background:rgba(61,220,132,0.05);
-  border:1px solid rgba(61,220,132,0.18);
-  color:#3ddc84;
+.bubble.ok {
+  background: rgba(22,163,74,0.04);
+  border: 1px solid rgba(22,163,74,0.2);
+  color: #16a34a;
 }
 
-/* tool chips row */
-.tool-row{
-  padding:6px 32px 2px;
-  display:flex;flex-wrap:wrap;gap:5px;
-  animation:fadein .12s ease-out both;
+/* ── COMPASS CARD (CalQuity style) ─── */
+.compass-wrap {
+  padding: 4px 32px 6px;
+  animation: fadein .15s ease-out both;
 }
-.tcip{
-  display:inline-flex;align-items:center;gap:4px;
-  background:#0d0d0d;
-  border:1px solid rgba(255,255,255,0.09);
-  border-radius:4px;
-  padding:3px 8px;
-  font-size:11px;
-  font-family:'SF Mono','Fira Code','Fira Mono',monospace;
-  color:rgba(242,242,242,0.45);
-  letter-spacing:0;
+.workflow-card, .compass-card {
+  max-width: 680px;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-.tcip.running{
-  border-color:rgba(59,107,255,0.3);
-  color:rgba(140,170,255,0.9);
-  background:rgba(59,107,255,0.06);
+.compass-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  background: #fafaf9;
+  border-bottom: 1px solid #e8e5e0;
+}
+.compass-dots {
+  display: flex; align-items: center; gap: 5.5px;
+}
+.c-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+}
+.c-dot.red { background: #ef4444; opacity: 0.85; }
+.c-dot.amber { background: #f59e0b; opacity: 0.85; }
+.c-dot.green { background: #10b981; opacity: 0.85; }
+
+.compass-label {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: #78716c;
+}
+.compass-live {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: 100px;
+  padding: 2px 8px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: #059669;
+}
+.compass-live-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.2);
+  animation: blink 2s ease-in-out infinite;
+}
+
+.wf-header, .wf-status-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  background: #ffffff;
+  border-bottom: 1px solid #f0ede8;
+}
+.wf-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.wf-status .wf-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #2563eb;
+  flex-shrink: 0;
+}
+.wf-status.done { color: #2563eb; }
+.wf-status.running { color: #d97706; }
+.wf-status.running .wf-dot { background: #d97706; animation: blink 1s ease-in-out infinite; }
+.wf-label, .wf-tag {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #a8a29e;
+}
+.wf-steps { list-style: none; background: #ffffff; }
+.wf-step {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #f5f4f2;
+}
+.wf-step:last-child { border-bottom: none; }
+.wf-step-icon {
+  width: 15px; height: 15px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #2563eb;
+}
+.wf-step-icon svg { width: 15px; height: 15px; display: block; }
+.wf-step-name {
+  flex: 1; min-width: 0;
+  font-size: 12px; color: #1a1917;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.wf-step-time {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; color: #a8a29e;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.wf-step.running .wf-step-name { color: #44403c; font-weight: 500; }
+.wf-step.running .wf-step-icon { color: #d97706; }
+.wf-step.done .wf-step-icon { color: #2563eb; }
+.spin-icon {
+  animation: spin 0.85s linear infinite;
+  transform-origin: center center;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* tool chips row (legacy / inline) */
+.tool-row {
+  padding: 4px 32px 2px;
+  display: flex; flex-wrap: wrap; gap: 5px;
+  animation: fadein .12s ease-out both;
+}
+.tcip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  color: #78716c;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.tcip.running {
+  border-color: rgba(37,99,235,0.3);
+  color: #2563eb;
+  background: rgba(37,99,235,0.04);
 }
 
 /* citations */
-.cit{
-  display:inline-flex;
-  background:#111;
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:3px;
-  padding:1px 5px;
-  font-family:'SF Mono','Fira Code',monospace;
-  font-size:10.5px;
-  color:rgba(242,242,242,0.5);
-  vertical-align:middle;
-  cursor:default;
-  transition:color .1s,border-color .1s;
+.cit {
+  display: inline-flex;
+  background: rgba(37,99,235,0.06);
+  border: 1px solid rgba(37,99,235,0.25);
+  border-radius: 100px;
+  padding: 1px 8px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px; letter-spacing: 0.04em;
+  color: #2563eb;
+  vertical-align: middle;
+  cursor: default;
+  margin: 0 2px;
+  transition: background .1s, border-color .1s;
+  white-space: nowrap;
 }
-.cit:hover{color:#f2f2f2;border-color:rgba(255,255,255,0.2)}
+.cit::before { content: '↳ '; }
+.cit:hover {
+  background: rgba(37,99,235,0.12);
+  border-color: rgba(37,99,235,0.4);
+}
 
-/* confirm card */
-.confirm-wrap{
-  padding:0 32px;
-  margin-bottom:4px;
-  animation:fadein .15s ease-out both;
+.badge-code {
+  display: inline-block;
+  background: #f1f0ee;
+  border: 1px solid #dfdcce;
+  border-radius: 4px;
+  padding: 0 5px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #1a1917;
+  letter-spacing: 0.02em;
 }
-.confirm-card{
-  max-width:520px;
-  background:#0a0a0a;
-  border:1px solid rgba(255,255,255,0.1);
-  border-left:2px solid #3b6bff;
-  border-radius:8px;
-  padding:16px 18px;
-}
-.cc-label{
-  font-size:10px;font-weight:600;
-  letter-spacing:0.09em;text-transform:uppercase;
-  color:#3b6bff;margin-bottom:12px;
-}
-.cc-fields{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
-.cc-row{display:grid;grid-template-columns:88px 1fr;gap:8px;align-items:start}
-.cc-key{font-size:11px;color:rgba(242,242,242,0.38);padding-top:1px}
-.cc-val{font-size:12px;color:#f2f2f2}
-.cc-btns{display:flex;gap:7px}
-.cc-ok{
-  background:#f2f2f2;color:#000;
-  border:none;border-radius:5px;
-  padding:6px 18px;font-size:12px;font-weight:600;
-  font-family:inherit;cursor:pointer;
-  transition:all .12s;
-}
-.cc-ok:hover:not(:disabled){background:#fff;transform:translateY(-1px)}
-.cc-ok:disabled{opacity:.35;cursor:not-allowed;transform:none}
-.cc-cancel{
-  background:transparent;color:rgba(242,242,242,0.6);
-  border:1px solid rgba(255,255,255,0.1);border-radius:5px;
-  padding:6px 18px;font-size:12px;
-  font-family:inherit;cursor:pointer;
-  transition:all .12s;
-}
-.cc-cancel:hover:not(:disabled){border-color:rgba(255,255,255,0.2);color:#f2f2f2}
-.cc-cancel:disabled{opacity:.35;cursor:not-allowed}
-.cc-result{margin-top:10px;font-size:12px;display:none}
 
-/* thinking */
-#thinking{
-  padding:8px 32px;
-  display:none;
-  gap:4px;align-items:center;
+/* ── PROSE FORMATTING (Markdown output) ─── */
+.prose-p { margin-bottom: 8px; line-height: 1.65; }
+.prose-p:last-child { margin-bottom: 0; }
+.prose-ol { margin: 6px 0 10px 22px; padding: 0; list-style-type: decimal; }
+.prose-ul { margin: 6px 0 10px 20px; padding: 0; list-style-type: disc; }
+.prose-ol li, .prose-ul li { margin-bottom: 4px; line-height: 1.6; }
+.prose-h { font-size: 13.5px; font-weight: 600; color: #1a1917; margin: 12px 0 6px; letter-spacing: -0.01em; }
+.prose-hr { border: 0; border-top: 1px solid #e8e5e0; margin: 12px 0; }
+.prose-quote {
+  border-left: 3px solid #2563eb;
+  background: rgba(37,99,235,0.04);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 8px 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #334155;
 }
-#thinking.vis{display:flex}
-.td{
-  width:5px;height:5px;border-radius:50%;
-  background:rgba(242,242,242,0.25);
-  animation:tdot 1s ease-in-out infinite;
+.prose-code {
+  background: #f5f4f2;
+  border: 1px solid #e8e5e0;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 11px;
+  color: #0f172a;
 }
-.td:nth-child(2){animation-delay:.16s}
-.td:nth-child(3){animation-delay:.32s}
-@keyframes tdot{0%,80%,100%{transform:scale(.7);opacity:.3}40%{transform:scale(1);opacity:1}}
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 10px 0;
+  border: 1px solid #e8e5e0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+.prose-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  text-align: left;
+}
+.prose-table th {
+  background: #f5f4f2;
+  border-bottom: 1px solid #e8e5e0;
+  padding: 7px 12px;
+  font-weight: 600;
+  color: #1a1917;
+}
+.prose-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #f0ede8;
+  color: #334155;
+}
+.prose-table tr:last-child td { border-bottom: none; }
+
+
+/* ── CONFIRM CARD ────────────────────────────── */
+.confirm-wrap {
+  padding: 4px 32px;
+  margin-bottom: 4px;
+  animation: fadein .15s ease-out both;
+}
+.confirm-card {
+  max-width: 520px;
+  background: #ffffff;
+  border: 1px solid #e8e5e0;
+  border-left: 3px solid #2563eb;
+  border-radius: 12px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.cc-header {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 14px;
+}
+.cc-label {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #2563eb;
+}
+.cc-fields { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.cc-row { display: grid; grid-template-columns: 90px 1fr; gap: 8px; align-items: start; }
+.cc-key {
+  font-size: 11px; color: #a8a29e;
+  padding-top: 1px;
+}
+.cc-val { font-size: 12px; color: #1a1917; font-weight: 500; }
+.cc-btns { display: flex; gap: 7px; }
+.cc-ok {
+  background: #2563eb; color: #ffffff;
+  border: none; border-radius: 6px;
+  padding: 6px 18px; font-size: 12px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  transition: all .12s;
+}
+.cc-ok:hover:not(:disabled) { background: #1d4ed8; box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+.cc-ok:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+.cc-cancel {
+  background: transparent; color: #78716c;
+  border: 1px solid #e8e5e0; border-radius: 6px;
+  transition: all .12s;
+}
+.cc-cancel:hover:not(:disabled) { border-color: #c7c3bc; color: #1a1917; background: #fafaf9; }
+.cc-cancel:disabled { opacity: .4; cursor: not-allowed; }
+.cc-result { margin-top: 10px; font-size: 12px; display: none; }
+
+/* ── NEXT QUERY OPTIONS — CalQuity pill style ─── */
+.next-query-wrap {
+  margin: 8px 32px 16px 32px;
+  padding: 14px 16px;
+  background: rgba(250,250,249,0.6);
+  border: 1px solid #e8e5e0;
+  border-radius: 12px;
+  animation: fadein .18s ease-out both;
+}
+.next-query-title {
+  font-family: 'SF Mono','Fira Code','Fira Mono',monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #a8a29e;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.next-query-title::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #2563eb;
+  flex-shrink: 0;
+}
+.next-query-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+/* CalQuity pill chip — same style as source citation badges */
+.next-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid rgba(37,99,235,0.25);
+  border-radius: 100px;
+  padding: 5px 13px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, box-shadow .12s, transform .12s;
+  box-shadow: 0 1px 2px rgba(37,99,235,0.06);
+  white-space: nowrap;
+}
+.next-chip::before {
+  content: '→';
+  font-size: 11px;
+  opacity: 0.7;
+}
+.next-chip:hover {
+  background: rgba(37,99,235,0.07);
+  border-color: rgba(37,99,235,0.5);
+  color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(37,99,235,0.15);
+}
+.next-chip:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+/* Primary chip — filled accent */
+.next-chip.primary {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(37,99,235,0.25);
+}
+.next-chip.primary::before {
+  content: '⚡';
+  font-size: 11px;
+  opacity: 1;
+}
+.next-chip.primary:hover {
+  background: #1d4ed8;
+  border-color: #1e40af;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+}
+.next-chip.primary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(37,99,235,0.2);
+}
+
+/* ── THINKING INDICATOR ─────────────────────── */
+#thinking {
+  padding: 8px 32px;
+  display: none; gap: 4px; align-items: center;
+}
+#thinking.vis { display: flex; }
+.td {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #c7c3bc;
+  animation: tdot 1s ease-in-out infinite;
+}
+.td:nth-child(2) { animation-delay: .16s; }
+.td:nth-child(3) { animation-delay: .32s; }
+@keyframes tdot { 0%,80%,100%{transform:scale(.7);opacity:.4} 40%{transform:scale(1);opacity:1} }
 
 /* ── INPUT BAR ──────────────────────────────── */
-#ibar{
-  border-top:1px solid rgba(255,255,255,0.07);
-  padding:14px 32px 12px;
-  background:#000;
-  flex-shrink:0;
+#ibar {
+  border-top: 1px solid #e8e5e0;
+  padding: 12px 32px 10px;
+  background: #ffffff;
+  flex-shrink: 0;
 }
-.ibar-inner{
-  max-width:680px;
-  display:flex;gap:8px;align-items:flex-end;
+.ibar-inner {
+  max-width: 680px;
+  display: flex; gap: 8px; align-items: flex-end;
 }
-#inp{
-  flex:1;
-  background:#0d0d0d;
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:8px;
-  padding:10px 14px;
-  color:#f2f2f2;
-  font-family:'Inter',sans-serif;
-  font-size:14px;
-  line-height:1.5;
-  resize:none;
-  outline:none;
-  min-height:42px;max-height:110px;
-  overflow-y:auto;
-  transition:border-color .12s;
+#inp {
+  flex: 1;
+  background: #fafaf9;
+  border: 1px solid #e8e5e0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #1a1917;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none; outline: none;
+  min-height: 42px; max-height: 110px;
+  overflow-y: auto;
+  transition: border-color .12s, box-shadow .12s;
 }
-#inp::placeholder{color:rgba(242,242,242,0.2);font-size:14px}
-#inp:focus{border-color:rgba(255,255,255,0.18)}
-#inp:disabled{opacity:.4}
-#sbtn{
-  background:#f2f2f2;color:#000;
-  border:none;border-radius:8px;
-  height:42px;padding:0 20px;
-  font-family:'Inter',sans-serif;
-  font-size:13px;font-weight:600;
-  cursor:pointer;flex-shrink:0;
-  transition:all .12s;
+#inp::placeholder { color: #a8a29e; font-size: 13.5px; }
+#inp:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  background: #ffffff;
 }
-#sbtn:hover:not(:disabled){background:#fff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.4)}
-#sbtn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
-.hint{
-  max-width:680px;margin-top:5px;
-  font-size:10px;color:rgba(242,242,242,0.18);
+#inp:disabled { opacity: .5; }
+#sbtn {
+  background: #2563eb; color: #ffffff;
+  border: none; border-radius: 10px;
+  height: 42px; padding: 0 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; flex-shrink: 0;
+  transition: all .12s;
+}
+#sbtn:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+}
+#sbtn:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+.hint {
+  max-width: 680px; margin-top: 5px;
+  font-size: 10px; color: #a8a29e;
 }
 
 /* ── TOAST ──────────────────────────────────── */
-#toast{
-  position:fixed;bottom:20px;right:20px;z-index:999;
-  background:#141414;border:1px solid rgba(255,255,255,0.12);
-  border-radius:6px;padding:9px 14px;
-  font-size:12px;color:#f2f2f2;
-  opacity:0;pointer-events:none;
-  transition:opacity .18s,transform .18s;
-  transform:translateY(6px);
-  max-width:280px;
+#toast {
+  position: fixed; bottom: 20px; right: 20px; z-index: 999;
+  background: #1a1917;
+  border-radius: 8px; padding: 9px 14px;
+  font-size: 12px; color: #f5f4f2;
+  opacity: 0; pointer-events: none;
+  transition: opacity .18s, transform .18s;
+  transform: translateY(6px);
+  max-width: 280px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
-#toast.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+#toast.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
 /* ── DEMO BANNER ────────────────────────────── */
-#demo-banner{
-  position:fixed;bottom:0;left:0;right:0;z-index:200;
-  background:#0d0d0d;
-  border-top:1px solid rgba(255,255,255,0.08);
-  padding:7px 24px;
-  font-size:11px;color:rgba(242,242,242,0.4);
-  display:flex;align-items:center;gap:6px;
-  display:none;
+#demo-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: #fffbeb;
+  border-top: 1px solid rgba(217,119,6,0.2);
+  padding: 7px 24px;
+  font-size: 11px; color: #92400e;
+  display: none; align-items: center; gap: 6px;
 }
-#demo-banner.vis{display:flex}
+#demo-banner.vis { display: flex; }
+#demo-banner::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #d97706; flex-shrink: 0;
+}
+
+/* ── SCROLLBAR GLOBAL ───────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #e8e5e0 transparent;
+}
+*::-webkit-scrollbar { width: 4px; height: 4px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: #e8e5e0; border-radius: 2px; }
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <header id="topbar">
-  <span class="logo-text">ParcelPilot</span>
-  <div class="logo-sep"></div>
-  <span class="logo-sub">Internal Support Agent</span>
+  <div class="logo-wordmark">
+    <span class="logo-text">ParcelPilot</span>
+    <span class="logo-dot"></span>
+    <span class="logo-sub">Support Agent</span>
+  </div>
+  <div class="topbar-sep"></div>
   <div class="topbar-right">
-    <div class="status-dot">
-      <div class="dot-circle" id="status-dot"></div>
+    <div class="status-badge" id="status-badge">
+      <div class="status-dot" id="status-dot"></div>
       <span id="status-text">Connecting…</span>
     </div>
     <select class="role-select" id="role-sel" onchange="changeRole(this.value)">
@@ -472,7 +857,7 @@ body{
       </div>
     </div>
     <div class="sb-scroll" id="sb-scroll">
-      <div style="padding:20px 6px;font-size:11px;color:rgba(242,242,242,0.25);text-align:center">
+      <div style="padding:20px 6px;font-size:11px;color:#a8a29e;text-align:center">
         Loading…
       </div>
     </div>
@@ -482,28 +867,18 @@ body{
   <!-- CHAT COLUMN -->
   <div id="chat-col">
     <div id="msgs">
-      <!-- empty state -->
-      <div id="empty">
-        <div class="empty-icon">◎</div>
-        <div class="empty-title">Ask anything about ParcelPilot</div>
-        <div class="empty-sub">Policies, orders, tickets, contracts — every answer cited to the exact source.</div>
-        <div class="chips">
-          <div class="chip" onclick="fill('Can Northstar cancel ORD-1001 without a fee?')">Northstar cancellation</div>
-          <div class="chip" onclick="fill('What should I do about TKT-505?')">TKT-505 API key</div>
-          <div class="chip" onclick="fill('Is ORD-2002 eligible for a service credit?')">LumenWorks credit</div>
-          <div class="chip" onclick="fill('LumenWorks 4200-row CSV fails to upload')">Bulk upload limit</div>
-          <div class="chip" onclick="fill('TKT-504 shows BOOKED but driver already picked up')">SwiftShip delay</div>
-        </div>
-      </div>
+      <!-- empty state injected by JS -->
     </div>
 
     <!-- thinking -->
-    <div id="thinking"><div class="td"></div><div class="td"></div><div class="td"></div></div>
+    <div id="thinking">
+      <div class="td"></div><div class="td"></div><div class="td"></div>
+    </div>
 
     <!-- input -->
     <div id="ibar">
       <div class="ibar-inner">
-        <textarea id="inp" rows="1" placeholder="Ask a question…"
+        <textarea id="inp" rows="1" placeholder="Ask about a ticket, order, policy, or contract…"
           onkeydown="handleKey(event)" oninput="resize(this)"></textarea>
         <button id="sbtn" onclick="send()">Send</button>
       </div>
@@ -512,9 +887,9 @@ body{
   </div>
 </div>
 
-<!-- DEMO MODE BANNER -->
+<!-- DEMO BANNER -->
 <div id="demo-banner" class="vis">
-  ◎ Demo mode — showing simulated responses. Connect to a live backend to query real data.
+  Demo mode — simulated responses. Connect a live backend to query real data.
 </div>
 
 <!-- TOAST -->
@@ -525,123 +900,80 @@ body{
 // CONFIG
 // ═══════════════════════════════════════════
 const BACKEND = (() => {
-  const h = window.location.hostname;
+  const h    = window.location.hostname;
+  const prot = window.location.protocol;
+  // Opened as local file (file://) — point to localhost backend
+  if (prot === 'file:') return 'http://localhost:8000';
   if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:8000';
-  if (h.includes('railway.app')) return window.location.origin;
-  // opened as file:// — use Railway prod
+  if (h.includes('railway.app') || h.includes('render.com')) return window.location.origin;
   return 'https://parcelpilot-agent-production.up.railway.app';
 })();
 
-let sid       = uid();
-let role      = 'support_agent';
-let uname     = 'Rohit';
-let busy      = false;
-let liveMode  = false;  // true once backend responds
+let sid      = uid();
+let role     = 'support_agent';
+let uname    = 'Rohit';
+let busy     = false;
+let liveMode = false;
 
-function uid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:r&3|8).toString(16)}); }
+function uid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : r & 3 | 8).toString(16);
+  });
+}
 
 // ═══════════════════════════════════════════
 // BOOT — probe backend
 // ═══════════════════════════════════════════
 async function boot() {
+  renderEmptyState();
   try {
-    const r = await fetchWithTimeout(BACKEND+'/proactive',{},3000);
+    const r = await fetchWithTimeout(BACKEND + '/proactive', {}, 3000);
     if (r.ok) {
       liveMode = true;
       const data = await r.json();
-      renderSidebar(data.items||[], data.snapshot_time||'');
+      renderSidebar(data.items || [], data.snapshot_time || '');
       setStatus(true);
       document.getElementById('demo-banner').classList.remove('vis');
       return;
     }
-  } catch(e){}
-  // Backend unreachable — load demo data
+  } catch(e) {}
   setStatus(false);
   loadDemoSidebar();
 }
 
-function fetchWithTimeout(url,opts,ms){
+function fetchWithTimeout(url, opts, ms) {
   const ctrl = new AbortController();
-  const t = setTimeout(()=>ctrl.abort(), ms);
-  return fetch(url,{...opts,signal:ctrl.signal}).finally(()=>clearTimeout(t));
+  const t = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(t));
 }
 
-function setStatus(ok){
-  const dot = document.getElementById('status-dot');
-  const txt = document.getElementById('status-text');
-  if(ok){ dot.classList.add('online'); txt.textContent='Connected'; }
-  else  { dot.classList.remove('online'); txt.textContent='Demo mode'; }
-}
-
-// ═══════════════════════════════════════════
-// SIDEBAR RENDER
-// ═══════════════════════════════════════════
-const CAT = {
-  'SLA Breach':      {icon:'🚨',color:'#ff4d4d'},
-  'Approaching SLA': {icon:'⏰',color:'#ffb84d'},
-  'P1/P2 Open':      {icon:'🔴',color:'#ff4d4d'},
-  'Account Cluster': {icon:'👥',color:'#a78bfa'},
-  'KI-Linked':       {icon:'🐛',color:'#ffb84d'},
-};
-
-function renderSidebar(items, ts) {
-  const sc = document.getElementById('sb-scroll');
-  const ct = document.getElementById('sb-count');
-  const ft = document.getElementById('sb-foot');
-  ct.textContent = items.length||'0';
-  if(ts) ft.textContent = 'Snapshot: '+ts.replace('T',' ').slice(0,16)+' IST';
-  if(!items.length){
-    sc.innerHTML='<div style="padding:20px 6px;font-size:11px;color:rgba(242,242,242,0.25);text-align:center">✓ No active issues</div>';
-    return;
+function setStatus(ok) {
+  const dot   = document.getElementById('status-dot');
+  const txt   = document.getElementById('status-text');
+  const badge = document.getElementById('status-badge');
+  if (ok) {
+    dot.classList.add('online');
+    badge.classList.add('online');
+    txt.textContent = 'Connected';
+  } else {
+    dot.classList.remove('online');
+    badge.classList.remove('online');
+    txt.textContent = 'Demo mode';
   }
-  const grps={};
-  items.forEach(i=>{(grps[i.category]=grps[i.category]||[]).push(i)});
-  let h='';
-  for(const[cat,arr] of Object.entries(grps)){
-    const c=CAT[cat]||{icon:'•',color:'rgba(242,242,242,0.4)'};
-    h+=`<div class="sb-group"><div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${cat}</div>`;
-    arr.forEach(it=>{
-      const q=it.suggested_query||`Tell me about ${it.ticket_ids.join(', ')}`;
-      h+=`<div class="sb-item" onclick="fill(${JSON.stringify(q)})">
-        <div class="sb-item-id">${it.ticket_ids.join(', ')} — ${it.account_name}</div>
-        <div class="sb-item-desc">${it.recommended_action}</div>
-      </div>`;
-    });
-    h+='</div>';
-  }
-  sc.innerHTML=h;
-}
-
-function loadDemoSidebar(){
-  renderSidebar([
-    {category:'SLA Breach',ticket_ids:['TKT-505'],account_name:'Axis Labs',recommended_action:'P1 SLA breached — 2h 30m elapsed, target 30m',suggested_query:'What should I do about TKT-505?'},
-    {category:'SLA Breach',ticket_ids:['TKT-501'],account_name:'Northstar Logistics',recommended_action:'P1 SLA breached — 30m elapsed, target 15m',suggested_query:'Tell me about TKT-501'},
-    {category:'KI-Linked',ticket_ids:['TKT-502'],account_name:'LumenWorks',recommended_action:'Linked to KI-208: bulk upload failures above ~3,000 rows',suggested_query:'Is TKT-502 related to KI-208?'},
-    {category:'KI-Linked',ticket_ids:['TKT-504'],account_name:'Northstar Logistics',recommended_action:'Linked to KI-211: SwiftShip webhook delay up to 20 min',suggested_query:'TKT-504 shows BOOKED but driver already picked up'},
-    {category:'Account Cluster',ticket_ids:['TKT-501','TKT-504'],account_name:'Northstar Logistics',recommended_action:'2 open tickets from this account in 7 days',suggested_query:'What open tickets does Northstar Logistics have?'},
-  ], '2026-08-16T11:00:00+05:30');
 }
 
 // ═══════════════════════════════════════════
-// ROLE CHANGE
+// EMPTY STATE
 // ═══════════════════════════════════════════
-function changeRole(val){
-  const [r,...n]=val.split('|');
-  role=r; uname=n.join('|');
-  sid=uid();
-  clearMessages();
-  toast(`Signed in as ${uname}`);
-}
-
-// ═══════════════════════════════════════════
-// MESSAGES
-// ═══════════════════════════════════════════
-function clearMessages(){
-  const m=document.getElementById('msgs');
-  m.innerHTML='';
-  const e=document.createElement('div');
-  e.id='empty';e.className='';
-  e.innerHTML=`<div class="empty-icon">◎</div>
+function renderEmptyState() {
+  const m = document.getElementById('msgs');
+  m.innerHTML = '';
+  const e = document.createElement('div');
+  e.id = 'empty';
+  e.style.cssText = 'margin:auto;text-align:center;padding:0 24px;max-width:460px';
+  e.innerHTML = `
+    <div class="empty-icon">◎</div>
     <div class="empty-title">Ask anything about ParcelPilot</div>
     <div class="empty-sub">Policies, orders, tickets, contracts — every answer cited to the exact source.</div>
     <div class="chips">
@@ -649,77 +981,402 @@ function clearMessages(){
       <div class="chip" onclick="fill('What should I do about TKT-505?')">TKT-505 API key</div>
       <div class="chip" onclick="fill('Is ORD-2002 eligible for a service credit?')">LumenWorks credit</div>
       <div class="chip" onclick="fill('LumenWorks 4200-row CSV fails to upload')">Bulk upload limit</div>
+      <div class="chip" onclick="fill('TKT-504 shows BOOKED but driver already picked up')">SwiftShip delay</div>
     </div>`;
-  // re-add empty state styles
-  e.style.cssText='margin:auto;text-align:center;padding:0 24px;max-width:440px';
   m.appendChild(e);
 }
 
-function killEmpty(){const e=document.getElementById('empty');if(e)e.remove();}
+// ═══════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════
+const CAT = {
+  'SLA Breach':      { icon: '🚨', color: '#dc2626' },
+  'Approaching SLA': { icon: '⏰', color: '#d97706' },
+  'P1/P2 Open':      { icon: '🔴', color: '#dc2626' },
+  'Account Cluster': { icon: '👥', color: '#7c3aed' },
+  'KI-Linked':       { icon: '🐛', color: '#d97706' },
+};
 
-function addRow(type,html){
+function renderSidebar(items, ts) {
+  const sc = document.getElementById('sb-scroll');
+  const ct = document.getElementById('sb-count');
+  const ft = document.getElementById('sb-foot');
+  ct.textContent = items.length || '0';
+  if (ts) ft.textContent = 'Snapshot ' + ts.replace('T',' ').slice(0,16) + ' IST';
+  if (!items.length) {
+    sc.innerHTML = '<div style="padding:20px 6px;font-size:11px;color:#a8a29e;text-align:center">✓ No active issues</div>';
+    return;
+  }
+  sc.innerHTML = '';
+  const grps = {};
+  items.forEach(i => { (grps[i.category] = grps[i.category] || []).push(i); });
+  for (const [cat, arr] of Object.entries(grps)) {
+    const c = CAT[cat] || { icon: '•', color: '#a8a29e' };
+    const grp = document.createElement('div');
+    grp.className = 'sb-group';
+    grp.innerHTML = `<div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${esc(cat)}</div>`;
+    arr.forEach(it => {
+      const q = it.suggested_query || `Tell me about ${it.ticket_ids.join(', ')}`;
+      const itemEl = document.createElement('div');
+      itemEl.className = 'sb-item';
+      itemEl.tabIndex = 0;
+      itemEl.style.cursor = 'pointer';
+      itemEl.innerHTML = `
+        <div class="sb-item-id">${esc(it.ticket_ids.join(', '))} — ${esc(it.account_name)}</div>
+        <div class="sb-item-desc">${esc(it.recommended_action)}</div>`;
+      itemEl.addEventListener('click', () => fill(q));
+      itemEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          fill(q);
+        }
+      });
+      grp.appendChild(itemEl);
+    });
+    sc.appendChild(grp);
+  }
+}
+
+
+function loadDemoSidebar() {
+  renderSidebar([
+    { category:'SLA Breach',      ticket_ids:['TKT-505'], account_name:'Axis Labs',          recommended_action:'P1 SLA breached — 2h 30m elapsed, target 30m',          suggested_query:'What should I do about TKT-505?' },
+    { category:'SLA Breach',      ticket_ids:['TKT-501'], account_name:'Northstar Logistics', recommended_action:'P1 SLA breached — 30m elapsed, target 15m',              suggested_query:'Tell me about TKT-501' },
+    { category:'KI-Linked',       ticket_ids:['TKT-502'], account_name:'LumenWorks',          recommended_action:'Linked to KI-208: bulk upload failures above ~3,000 rows', suggested_query:'Is TKT-502 related to KI-208?' },
+    { category:'KI-Linked',       ticket_ids:['TKT-504'], account_name:'Northstar Logistics', recommended_action:'Linked to KI-211: SwiftShip webhook delay up to 20 min',   suggested_query:'TKT-504 shows BOOKED but driver already picked up' },
+    { category:'Account Cluster', ticket_ids:['TKT-501','TKT-504'], account_name:'Northstar Logistics', recommended_action:'2 open tickets from this account in 7 days', suggested_query:'What open tickets does Northstar Logistics have?' },
+  ], '2026-08-16T11:00:00+05:30');
+}
+
+// ═══════════════════════════════════════════
+// ROLE CHANGE
+// ═══════════════════════════════════════════
+function changeRole(val) {
+  const [r, ...n] = val.split('|');
+  role = r; uname = n.join('|');
+  sid = uid();
+  renderEmptyState();
+  toast(`Signed in as ${uname}`);
+}
+
+// ═══════════════════════════════════════════
+// MESSAGES
+// ═══════════════════════════════════════════
+function killEmpty() {
+  const e = document.getElementById('empty');
+  if (e) e.remove();
+}
+
+function addRow(type, html) {
   killEmpty();
-  const m=document.getElementById('msgs');
-  const row=document.createElement('div');
-  row.className='msg-row '+type;
-  const b=document.createElement('div');
-  b.className='bubble '+type;
-  b.innerHTML=html;
+  const m = document.getElementById('msgs');
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + type;
+  const b = document.createElement('div');
+  b.className = 'bubble ' + type;
+  b.innerHTML = html;
   row.appendChild(b);
   m.appendChild(row);
   scrollDown();
   return b;
 }
 
-function addToolRow(){
+/* ═══════════════════════════════════════════
+   CALQUITY COMPASS WIDGET
+   ═══════════════════════════════════════════ */
+const SVG_CHECK = `<svg viewBox="0 0 24 24" fill="none">
+  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+  <path d="M8 12.2l2.6 2.6L16 9.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+
+const SVG_SPIN = `<svg viewBox="0 0 24 24" fill="none" class="spin-icon">
+  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" opacity="0.2"/>
+  <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+</svg>`;
+
+const TOOL_NAMES = {
+  document_search: 'Search policy documents',
+  data_lookup:     'Query structured data',
+  escalate:        'Create escalation',
+};
+const TOOL_TIMES = {
+  document_search: '1.4s',
+  data_lookup:     '0.3s',
+  escalate:        '0.8s',
+};
+
+/* CalQuity Compass workflow card */
+function addWorkflowCard() {
   killEmpty();
-  const m=document.getElementById('msgs');
-  const row=document.createElement('div');
-  row.className='tool-row';
+  const m = document.getElementById('msgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'compass-wrap';
+  const card = document.createElement('div');
+  card.className = 'compass-card';
+  card.innerHTML = `
+    <div class="compass-topbar">
+      <div class="compass-dots">
+        <span class="c-dot red"></span>
+        <span class="c-dot amber"></span>
+        <span class="c-dot green"></span>
+      </div>
+      <div class="compass-label">ParcelPilot · Compass</div>
+      <div class="compass-live"><span class="compass-live-dot"></span>Live</div>
+    </div>
+    <div class="wf-status-bar">
+      <div class="wf-status running" id="wf-status-label">
+        <span class="wf-dot"></span>Running
+      </div>
+      <div class="wf-tag">Support Workflow</div>
+    </div>
+    <ul class="wf-steps" id="wf-steps"></ul>`;
+  wrap.appendChild(card);
+  m.appendChild(wrap);
+  scrollDown();
+  return { wrap, card };
+}
+
+function addWorkflowStep(stepsEl, toolName) {
+  // Mark any previous running steps as done with checkmark
+  stepsEl.querySelectorAll('.wf-step.running').forEach(s => {
+    s.classList.remove('running');
+    s.classList.add('done');
+    const icon = s.querySelector('.wf-step-icon');
+    if (icon) icon.innerHTML = SVG_CHECK;
+  });
+
+  const li = document.createElement('li');
+  li.className = 'wf-step running';
+  li.innerHTML = `
+    <span class="wf-step-icon">${SVG_SPIN}</span>
+    <span class="wf-step-name">${esc(TOOL_NAMES[toolName] || toolName)}</span>
+    <span class="wf-step-time">${esc(TOOL_TIMES[toolName] || '0.4s')}</span>`;
+  stepsEl.appendChild(li);
+  scrollDown();
+}
+
+function finaliseWorkflowCard(cardEl) {
+  const label = cardEl.querySelector('#wf-status-label');
+  if (label) {
+    label.className = 'wf-status done';
+    label.innerHTML = `<span class="wf-dot"></span>Workflow complete`;
+  }
+  cardEl.querySelectorAll('.wf-step').forEach(s => {
+    s.classList.remove('running');
+    s.classList.add('done');
+    const icon = s.querySelector('.wf-step-icon');
+    if (icon) icon.innerHTML = SVG_CHECK;
+  });
+}
+
+/* Legacy inline tool chip row (fallback) */
+function addToolRow() {
+  killEmpty();
+  const m = document.getElementById('msgs');
+  const row = document.createElement('div');
+  row.className = 'tool-row';
   m.appendChild(row);
   scrollDown();
   return row;
 }
 
-function addChip(row,name){
-  const icons={document_search:'🔍',data_lookup:'📊',escalate:'⚡'};
-  const c=document.createElement('span');
-  c.className='tcip running';
-  c.textContent=(icons[name]||'🔧')+' '+name;
+function addChip(row, name) {
+  const icons = { document_search: '🔍', data_lookup: '📊', escalate: '⚡' };
+  const c = document.createElement('span');
+  c.className = 'tcip running';
+  c.textContent = (icons[name] || '🔧') + ' ' + name;
   row.appendChild(c);
   scrollDown();
 }
 
-function scrollDown(){
-  const m=document.getElementById('msgs');
-  requestAnimationFrame(()=>{m.scrollTop=m.scrollHeight});
+function scrollDown() {
+  const m = document.getElementById('msgs');
+  requestAnimationFrame(() => { m.scrollTop = m.scrollHeight; });
 }
 
 // ═══════════════════════════════════════════
-// FORMAT TEXT — bold, citations, line breaks
+// FORMAT — rich Markdown, tables, citations, lists
 // ═══════════════════════════════════════════
-function fmt(t){
-  return esc(t)
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\[([\w_]+\.(pdf)[^\]]*)\]/gi,'<span class="cit">$1</span>')
-    .replace(/\[(orders|accounts|tickets):\s*([^\]]+)\]/gi,'<span class="cit mono">$1: $2</span>')
-    .replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+function fmtInline(s) {
+  // 1. Bracketed Citations with 【 ... 】 -> [ ... ]
+  s = s.replace(/【(.*?)】/g, '[$1]');
+  
+  // 2. Structured data citations [table: key]
+  s = s.replace(/\[(orders|accounts|tickets|credit_calc|sla_check):\s*([^\]]+)\]/gi, '<span class="cit">$1: $2</span>');
+  
+  // 3. Bracketed PDF citations [01_Support_Policy_v3_CURRENT.pdf, p.1]
+  s = s.replace(/\[([a-zA-Z0-9_\-]+\.pdf[^\]]*)\]/gi, '<span class="cit">$1</span>');
+  
+  // 4. Unbracketed PDF citations: 01_Support_Policy_v3_CURRENT.pdf, p.1 or 05_Northstar_Logistics_Enterprise_Agreement.pdf §2
+  s = s.replace(/(?<!["'>\w])(\b\d{2}_[a-zA-Z0-9_\-]+\.pdf(?:,?\s*(?:p(?:age|\.)?\s*\d+|§\s*\d+[^,;\n<)]*))?)/gi, function(match, cit) {
+    if (!cit || cit.includes('<span')) return match;
+    return '<span class="cit">' + cit.trim() + '</span>';
+  });
+
+  // 5. Bold **text**
+  s = s.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // 6. Italic *text* or _text_
+  s = s.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
+  
+  // 7. Inline code `code`
+  s = s.replace(/`([^`]+)`/g, '<code class="prose-code">$1</code>');
+  
+  // 8. Entity tags: TKT-505, ACCT-004, ORD-1001, KI-208
+  s = s.replace(/\b(TKT-\d+|ACCT-\d+|ORD-\d+|KI-\d+)\b/g, '<span class="badge-code">$1</span>');
+  
+  return s;
 }
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function mono(s){return`<span style="font-family:'SF Mono','Fira Code',monospace;font-size:11px">${esc(s)}</span>`}
+
+function fmt(t) {
+  if (!t) return '';
+  
+  // 1. Normalize special unicode spaces & hyphens
+  t = t.replace(/\u202f/g, ' ').replace(/\u00a0/g, ' ').replace(/\u2011/g, '-');
+  
+  const lines = t.split(/\r?\n/);
+  const out = [];
+  
+  let inTable = false;
+  let tableRows = [];
+  let inUl = false;
+  let inOl = false;
+  let inQuote = false;
+  let quoteLines = [];
+  
+  function flushTable() {
+    if (!inTable || tableRows.length === 0) { inTable = false; return; }
+    let html = '<div class="table-wrap"><table class="prose-table">';
+    let bodyRows = tableRows;
+    if (tableRows.length >= 2 && /^\s*\|?\s*[-:]+[-| :]*\|?\s*$/.test(tableRows[1])) {
+      const headers = tableRows[0].replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+      html += '<thead><tr>' + headers.map(h => `<th>${fmtInline(esc(h))}</th>`).join('') + '</tr></thead>';
+      bodyRows = tableRows.slice(2);
+    }
+    html += '<tbody>';
+    for (const r of bodyRows) {
+      if (/^\s*\|?\s*[-:]+[-| :]*\|?\s*$/.test(r)) continue;
+      const cells = r.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+      html += '<tr>' + cells.map(c => `<td>${fmtInline(esc(c))}</td>`).join('') + '</tr>';
+    }
+    html += '</tbody></table></div>';
+    out.push(html);
+    tableRows = [];
+    inTable = false;
+  }
+  
+  function flushList() {
+    if (inUl) { out.push('</ul>'); inUl = false; }
+    if (inOl) { out.push('</ol>'); inOl = false; }
+  }
+  
+  function flushQuote() {
+    if (inQuote) {
+      out.push(`<blockquote class="prose-quote">${fmtInline(esc(quoteLines.join(' ')))}</blockquote>`);
+      inQuote = false;
+      quoteLines = [];
+    }
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i];
+    const trimmed = raw.trim();
+    
+    // Horizontal Rule
+    if (/^[-*_]{3,}$/.test(trimmed)) {
+      flushTable(); flushList(); flushQuote();
+      out.push('<hr class="prose-hr"/>');
+      continue;
+    }
+    
+    // Table Row
+    if (trimmed.includes('|') && (trimmed.startsWith('|') || /[^|]+\|[^|]+/.test(trimmed))) {
+      flushList(); flushQuote();
+      inTable = true;
+      tableRows.push(trimmed);
+      continue;
+    } else if (inTable) {
+      flushTable();
+    }
+    
+    // Blockquote
+    if (trimmed.startsWith('>')) {
+      flushTable(); flushList();
+      inQuote = true;
+      quoteLines.push(trimmed.replace(/^>\s*/, ''));
+      continue;
+    } else if (inQuote) {
+      flushQuote();
+    }
+    
+    // Headings
+    const hMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+    if (hMatch) {
+      flushTable(); flushList(); flushQuote();
+      const lvl = Math.min(hMatch[1].length + 1, 6);
+      out.push(`<h${lvl} class="prose-h">${fmtInline(esc(hMatch[2]))}</h${lvl}>`);
+      continue;
+    }
+    
+    // Ordered list (1. item)
+    const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+    if (olMatch) {
+      flushTable();
+      if (inUl) flushList();
+      if (!inOl) { out.push('<ol class="prose-ol">'); inOl = true; }
+      out.push(`<li>${fmtInline(esc(olMatch[2]))}</li>`);
+      continue;
+    }
+    
+    // Unordered list (- item or * item)
+    const ulMatch = trimmed.match(/^[-*•]\s+(.*)$/);
+    if (ulMatch) {
+      flushTable();
+      if (inOl) flushList();
+      if (!inUl) { out.push('<ul class="prose-ul">'); inUl = true; }
+      out.push(`<li>${fmtInline(esc(ulMatch[1]))}</li>`);
+      continue;
+    }
+    
+    // Empty line
+    if (!trimmed) {
+      flushTable(); flushList(); flushQuote();
+      continue;
+    }
+    
+    // Regular paragraph
+    flushTable(); flushList(); flushQuote();
+    out.push(`<p class="prose-p">${fmtInline(esc(trimmed))}</p>`);
+  }
+  
+  flushTable(); flushList(); flushQuote();
+  return out.join('');
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
 
 // ═══════════════════════════════════════════
 // CONFIRMATION CARD
 // ═══════════════════════════════════════════
-function buildCard(display, payload){
-  const wrap=document.createElement('div');
-  wrap.className='confirm-wrap';
-  let fields='';
-  for(const[k,v] of Object.entries(display||{})){
-    fields+=`<div class="cc-row"><span class="cc-key">${esc(k)}</span><span class="cc-val">${esc(String(v||''))}</span></div>`;
+function buildCard(display, payload) {
+  const wrap = document.createElement('div');
+  wrap.className = 'confirm-wrap';
+  let fields = '';
+  for (const [k, v] of Object.entries(display || {})) {
+    fields += `<div class="cc-row">
+      <span class="cc-key">${esc(k)}</span>
+      <span class="cc-val">${esc(String(v || ''))}</span>
+    </div>`;
   }
-  wrap.innerHTML=`<div class="confirm-card">
-    <div class="cc-label">⚡ Confirm Action</div>
+  wrap.innerHTML = `<div class="confirm-card">
+    <div class="cc-header">
+      <div class="cc-label">⚡ Confirm Action</div>
+    </div>
     <div class="cc-fields">${fields}</div>
     <div class="cc-btns">
       <button class="cc-ok" id="cc-ok">Confirm</button>
@@ -728,207 +1385,386 @@ function buildCard(display, payload){
     <div class="cc-result" id="cc-result"></div>
   </div>`;
 
-  const ok=wrap.querySelector('#cc-ok');
-  const cx=wrap.querySelector('#cc-cancel');
-  const rs=wrap.querySelector('#cc-result');
+  const ok = wrap.querySelector('#cc-ok');
+  const cx = wrap.querySelector('#cc-cancel');
+  const rs = wrap.querySelector('#cc-result');
 
-  ok.onclick=async()=>{
-    ok.disabled=cx.disabled=true; ok.textContent='Creating…';
-    if(liveMode){
-      try{
-        const r=await fetch(BACKEND+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sid,confirm:true,payload})});
-        const d=await r.json();
-        rs.style.cssText='display:block;color:#3ddc84';
-        rs.textContent='✓ Escalation created: '+(d.escalation_id||'ESC-'+Date.now());
-        ok.textContent='✓ Confirmed';
-      }catch(e){
-        ok.disabled=cx.disabled=false; ok.textContent='Confirm';
-        rs.style.cssText='display:block;color:#ff4d4d';
-        rs.textContent='Error: '+e.message;
+  ok.onclick = async () => {
+    ok.disabled = cx.disabled = true;
+    ok.textContent = 'Creating…';
+    if (liveMode) {
+      try {
+        const r = await fetch(BACKEND + '/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sid, confirm: true, payload }),
+        });
+        const d = await r.json();
+        rs.style.cssText = 'display:block;color:#16a34a;font-size:12px;margin-top:10px';
+        rs.textContent = '✓ Escalation created: ' + (d.escalation_id || 'ESC-' + Date.now());
+        ok.textContent = '✓ Confirmed';
+      } catch(e) {
+        ok.disabled = cx.disabled = false;
+        ok.textContent = 'Confirm';
+        rs.style.cssText = 'display:block;color:#dc2626;font-size:12px;margin-top:10px';
+        rs.textContent = 'Error: ' + e.message;
       }
     } else {
-      // demo mode
-      rs.style.cssText='display:block;color:#3ddc84';
-      rs.textContent='✓ Escalation created: ESC-20260816-0001 (demo)';
-      ok.textContent='✓ Confirmed';
+      rs.style.cssText = 'display:block;color:#16a34a;font-size:12px;margin-top:10px';
+      rs.textContent = '✓ Escalation created: ESC-20260816-0001 (demo)';
+      ok.textContent = '✓ Confirmed';
     }
   };
-  cx.onclick=async()=>{
-    ok.disabled=cx.disabled=true;
-    if(liveMode) await fetch(BACKEND+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sid,confirm:false})}).catch(()=>{});
-    rs.style.cssText='display:block;color:rgba(242,242,242,0.35)';
-    rs.textContent='Action cancelled.';
-    cx.textContent='Cancelled';
+
+  cx.onclick = async () => {
+    ok.disabled = cx.disabled = true;
+    if (liveMode) {
+      await fetch(BACKEND + '/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sid, confirm: false }),
+      }).catch(() => {});
+    }
+    rs.style.cssText = 'display:block;color:#a8a29e;font-size:12px;margin-top:10px';
+    rs.textContent = 'Action cancelled.';
+    cx.textContent = 'Cancelled';
   };
+
   return wrap;
 }
 
 // ═══════════════════════════════════════════
-// DEMO RESPONSES (offline / file:// mode)
+// DEMO RESPONSES
 // ═══════════════════════════════════════════
 const DEMO = {
-  'northstar':  async function*(q){
-    yield {t:'tool',v:'data_lookup'};
-    yield {t:'tool',v:'document_search'};
-    yield {t:'text',v:'**Yes — Northstar can cancel ORD-1001 with no cancellation fee.**\n\nORD-1001 is currently **BOOKED** and has not been picked up [orders: ORD-1001]. The Northstar Enterprise Agreement §2 explicitly waives all cancellation fees for any BOOKED-before-pickup shipment, regardless of how long ago it was booked [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].\n\nNote: A previous agent resolution (TKT-450) incorrectly stated an INR 250 fee applied after 30 minutes. That historical record is overridden by the current authoritative agreement [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].'};
+  northstar: async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'**Yes — Northstar can cancel ORD-1001 with no cancellation fee.**\n\nORD-1001 is currently **BOOKED** and has not been picked up [orders: ORD-1001]. The Northstar Enterprise Agreement §2 explicitly waives all cancellation fees for any BOOKED-before-pickup shipment, regardless of how long ago it was booked [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].\n\nNote: A previous agent resolution (TKT-450) incorrectly stated an INR 250 fee applied after 30 minutes. That historical record is overridden by the current authoritative agreement [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2 §2].' };
   },
-  'tkt-505':   async function*(q){
-    yield {t:'tool',v:'data_lookup'};
-    yield {t:'tool',v:'document_search'};
-    yield {t:'confirm',display:{Action:'Create Escalation',Ticket:'TKT-505',Account:'Axis Labs (ACCT-004)',Severity:'P1',Assigned:'Rohit',Reason:'API key exposure — P1, SLA breached 2h 30m'},payload:{ticket_id:'TKT-505',account_id:'ACCT-004',severity:'P1',reason:'Suspected API key exposure — P1 security incident',assigned_to:uname,created_by:uname+' ('+role+')',summary:'TKT-505 API key exposure, P1, SLA breached by 2h 30m'}};
+  'tkt-505': async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'confirm',
+      display: { Action:'Create Escalation', Ticket:'TKT-505', Account:'Axis Labs (ACCT-004)', Severity:'P1', 'Assigned to':uname, Reason:'API key exposure — P1, SLA breached 2h 30m' },
+      payload: { ticket_id:'TKT-505', account_id:'ACCT-004', severity:'P1', reason:'Suspected API key exposure — P1 security incident', assigned_to:uname, created_by:uname+' ('+role+')', summary:'TKT-505 API key exposure, P1, SLA breached by 2h 30m' }
+    };
   },
-  'lumenworks': async function*(q){
-    yield {t:'tool',v:'data_lookup'};
-    yield {t:'tool',v:'document_search'};
-    yield {t:'text',v:'**ORD-2002 is eligible for a service credit of INR 300.**\n\nThe pickup window ended at 06:30; at the dataset snapshot (11:00 IST) the delay is **4h 30m** — which exceeds LumenWorks\'s 4-hour threshold [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. Carrier fault is confirmed and there is no customer fault [orders: ORD-2002].\n\nThe LumenWorks agreement replaces the SOP default (2h threshold, INR 500/10% formula) with a fixed INR 300 credit [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. No manager approval required (INR 300 < INR 1,000).'};
+  lumenworks: async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'**ORD-2002 is eligible for a service credit of INR 300.**\n\nThe pickup window ended at 06:30; at the dataset snapshot (11:00 IST) the delay is **4h 30m** — which exceeds LumenWorks\'s 4-hour threshold [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. Carrier fault is confirmed and there is no customer fault [orders: ORD-2002].\n\nThe LumenWorks agreement replaces the SOP default (2h threshold, INR 500/10% formula) with a fixed INR 300 credit [06_LumenWorks_Service_Agreement.pdf, p.2 §3]. No manager approval required (INR 300 < INR 1,000).' };
   },
-  'bulk':      async function*(q){
-    yield {t:'tool',v:'document_search'};
-    yield {t:'text',v:'The supported product limit for Bulk Upload is **5,000 rows per CSV** [04_Product_Operations_Guide_and_Known_Issues.pdf, p.1 §1]. This applies to Growth and Enterprise plans.\n\nHowever, **KI-208** (opened 10 August 2026, status: Investigating) documents intermittent failures above approximately 3,000 rows [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2]. The recommended workaround is to split uploads into files below 3,000 rows. Individual shipment creation is unaffected.\n\nNote: A previous agent response (TKT-451) incorrectly stated the plan limit is 3,000 rows — that is the KI-208 workaround threshold, not the product specification.'};
+  bulk: async function*(q) {
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'The supported product limit for Bulk Upload is **5,000 rows per CSV** [04_Product_Operations_Guide_and_Known_Issues.pdf, p.1 §1]. This applies to Growth and Enterprise plans.\n\nHowever, **KI-208** (opened 10 August 2026, status: Investigating) documents intermittent failures above approximately 3,000 rows [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2]. The recommended workaround is to split uploads into files below 3,000 rows. Individual shipment creation is unaffected.\n\nNote: A previous agent response (TKT-451) incorrectly stated the plan limit is 3,000 rows — that is the KI-208 workaround threshold, not the product specification.' };
   },
-  'swiftship': async function*(q){
-    yield {t:'tool',v:'data_lookup'};
-    yield {t:'tool',v:'document_search'};
-    yield {t:'text',v:'TKT-504 reports ORD-1001 still shows **BOOKED** status approximately 10 minutes after the driver collected the parcel [tickets: TKT-504].\n\n**Do not tell the customer that pickup did not occur.** This is consistent with **KI-211** (opened 12 August 2026, status: Monitoring): SwiftShip pickup confirmation webhooks can arrive up to 20 minutes late, meaning a parcel may be physically collected while ParcelPilot still shows BOOKED [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2].\n\n**Recommended action:** Advise the customer to verify carrier status directly with SwiftShip, or wait through the 20-minute known delay window before concluding that pickup did not occur.'};
+  swiftship: async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'TKT-504 reports ORD-1001 still shows **BOOKED** status approximately 10 minutes after the driver collected the parcel [tickets: TKT-504].\n\n**Do not tell the customer that pickup did not occur.** This is consistent with **KI-211** (opened 12 August 2026, status: Monitoring): SwiftShip pickup confirmation webhooks can arrive up to 20 minutes late [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2].\n\n**Recommended action:** Advise the customer to verify carrier status directly with SwiftShip, or wait through the 20-minute known delay window before concluding that pickup did not occur.' };
   },
-  'default':   async function*(q){
-    yield {t:'tool',v:'document_search'};
-    yield {t:'text',v:'I searched the available ParcelPilot source documents and data for your question. In demo mode, only pre-built scenarios are available with full cited answers.\n\nTry one of the suggested queries below, or connect to the live backend at **parcelpilot-agent-production.up.railway.app** to query real data with full multi-step reasoning.'};
+  'tkt-501': async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'**🚨 P1 SLA Breached — Immediate Escalation Required.**\n\n**Ticket Analysis [tickets: TKT-501]:**\n- **Account:** Northstar Logistics (ACCT-001)\n- **Issue:** Webhook signature verification failure on all automated dispatches (P1 Incident)\n- **Timeline:** Created at 10:30 IST; dataset snapshot time is 11:00 IST (**30 minutes elapsed**)\n\n**SLA Evaluation:**\nUnder the Level 1 signed *Northstar Logistics Enterprise Agreement §4*, P1 incidents require an initial response within **15 minutes** [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.3 §4].\n\n➡ **Status:** SLA has been **breached by 15 minutes**.\n➡ **Action:** Creating priority escalation to Lead Integrations Engineer.' };
+    yield { t:'confirm',
+      display: { Action:'Create Escalation', Ticket:'TKT-501', Account:'Northstar Logistics (ACCT-001)', Severity:'P1', 'Assigned to':'Lead Integrations Engineer', Reason:'P1 webhook verification outage — Northstar 15-min SLA breached by 15m' },
+      payload: { ticket_id:'TKT-501', account_id:'ACCT-001', severity:'P1', reason:'Webhook signature verification failure — P1 incident. Northstar 15-min SLA breached (30m elapsed).', assigned_to:'Lead Integrations Engineer', created_by:uname+' ('+role+')', summary:'Northstar TKT-501 P1 webhook failure. Breached agreement §4 15-min SLA. Requires immediate escalation.' }
+    };
+  },
+  'tkt-502': async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'**Ticket TKT-502 (LumenWorks) is directly linked to Known Issue KI-208.**\n\n**Investigation Findings [tickets: TKT-502]:**\n- LumenWorks attempted to upload a CSV file with **4,200 shipment rows** and received a 504 gateway timeout.\n- **Product Specification:** Standard bulk upload limit is **5,000 rows per CSV** [04_Product_Operations_Guide_and_Known_Issues.pdf, p.1 §1].\n- **Known Issue:** **KI-208** (opened 10 Aug 2026, status: Investigating) causes intermittent timeouts on bulk uploads above ~3,000 rows [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2 §2].\n\n**Customer Guidance:**\n1. Explain that engineering is actively deploying a fix for KI-208.\n2. Provide the immediate workaround: split their CSV file into two batches of ~2,100 rows each.\n3. ⚠ *Do not claim the limit is 3,000 rows* (correcting legacy error in TKT-451).' };
+  },
+  cluster: async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'**Account Cluster Analysis: Northstar Logistics (ACCT-001)**\n\nNorthstar currently has **2 active open tickets** within the 7-day window [tickets: TKT-501, TKT-504]:\n\n1. **TKT-501 (P1):** Outbound webhook signature verification failures on automated dispatch requests (created 10:30, SLA breached).\n2. **TKT-504 (P2):** Shipment ORD-1001 tracking status lag — shows BOOKED after physical pickup (linked to SwiftShip webhook delay KI-211).\n\n**Root Cause Pattern:**\nBoth tickets indicate an asynchronous communication breakdown between Northstar\'s ERP, ParcelPilot\'s webhook listener, and SwiftShip carrier relays. Recommend cross-assigning TKT-501 and TKT-504 to the same Integration Specialist.' };
+  },
+  sweep: async function*(q) {
+    yield { t:'tool', v:'data_lookup' };
+    yield { t:'text', v:'**⚡ Proactive Sweep Results (Snapshot: 2026-08-16 11:00 IST)**\n\nThe system identified **5 high-priority issues** requiring immediate attention:\n\n| Category | Tickets | Account | Status & Recommendation |\n| :--- | :--- | :--- | :--- |\n| **SLA Breach** | `TKT-505` | Axis Labs | **P1 SLA Breached** (2h 30m elapsed vs 30m target). Escalate immediately. |\n| **SLA Breach** | `TKT-501` | Northstar | **P1 SLA Breached** (30m elapsed vs 15m agreement SLA). Escalate to engineering. |\n| **KI-Linked** | `TKT-502` | LumenWorks | Linked to **KI-208** (bulk upload >3,000 rows). Advise split batch workaround. |\n| **KI-Linked** | `TKT-504` | Northstar | Linked to **KI-211** (SwiftShip 20m webhook latency). Do not mark as failed pickup. |\n| **Account Cluster** | `TKT-501`, `TKT-504` | Northstar | 2 open tickets in 7 days indicating integration sync degradation. |\n\nClick any item in the **Live Issues** sidebar to initiate an instant deep dive.' };
+  },
+  default: async function*(q) {
+    yield { t:'tool', v:'document_search' };
+    yield { t:'text', v:'I searched the available ParcelPilot source documents and data for your question. In demo mode, only pre-built scenarios return full cited answers.\n\nTry one of the suggested queries, or connect to the live backend to query real data with full multi-step reasoning.' };
   },
 };
 
-function matchDemo(q){
-  const lq=q.toLowerCase();
-  if(lq.includes('northstar')||lq.includes('ord-1001')||lq.includes('cancel')) return 'northstar';
-  if(lq.includes('tkt-505')||lq.includes('api key')||lq.includes('credential')) return 'tkt-505';
-  if(lq.includes('lumenworks')||lq.includes('ord-2002')||lq.includes('credit')) return 'lumenworks';
-  if(lq.includes('bulk')||lq.includes('csv')||lq.includes('upload')||lq.includes('row')) return 'bulk';
-  if(lq.includes('swiftship')||lq.includes('tkt-504')||lq.includes('booked')||lq.includes('webhook')) return 'swiftship';
+function matchDemo(q) {
+  const lq = q.toLowerCase();
+  if (lq.includes('sweep') || lq.includes('proactive')) return 'sweep';
+  if (lq.includes('tkt-501') || (lq.includes('northstar') && lq.includes('501'))) return 'tkt-501';
+  if (lq.includes('tkt-502') || (lq.includes('lumenworks') && lq.includes('502')) || lq.includes('ki-208')) return 'tkt-502';
+  if (lq.includes('tkt-505') || lq.includes('api key') || lq.includes('credential')) return 'tkt-505';
+  if (lq.includes('cluster') || lq.includes('pattern') || (lq.includes('open tickets') && lq.includes('northstar'))) return 'cluster';
+  if (lq.includes('northstar') || lq.includes('ord-1001') || lq.includes('cancel')) return 'northstar';
+  if (lq.includes('lumenworks') || lq.includes('ord-2002') || lq.includes('credit')) return 'lumenworks';
+  if (lq.includes('bulk') || lq.includes('csv') || lq.includes('upload') || lq.includes('row')) return 'bulk';
+  if (lq.includes('swiftship') || lq.includes('tkt-504') || lq.includes('booked') || lq.includes('webhook') || lq.includes('ki-211')) return 'swiftship';
   return 'default';
 }
+
 
 // ═══════════════════════════════════════════
 // SEND
 // ═══════════════════════════════════════════
-async function send(){
-  const el=document.getElementById('inp');
-  const q=el.value.trim();
-  if(!q||busy) return;
-  el.value=''; resize(el);
+async function send() {
+  const el = document.getElementById('inp');
+  const q  = el.value.trim();
+  if (!q || busy) return;
+  el.value = ''; resize(el);
   setBusy(true);
-  addRow('user',esc(q));
-
-  if(liveMode){
-    await sendLive(q);
-  } else {
-    await sendDemo(q);
-  }
+  addRow('user', esc(q));
+  if (liveMode) await sendLive(q);
+  else          await sendDemo(q);
   setBusy(false);
 }
 
-async function sendLive(q){
-  let toolRow=null, aBubble=null, aText='';
-  try{
-    const res=await fetchWithTimeout(BACKEND+'/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:q,session_id:sid,role,user_name:uname}),
-    },30000);
-    if(!res.ok){ addRow('err','Backend returned '+res.status); return; }
-    const reader=res.body.getReader();
-    const dec=new TextDecoder();
-    let buf='';
-    while(true){
-      const {done,value}=await reader.read();
-      if(done) break;
-      buf+=dec.decode(value,{stream:true});
-      const blocks=buf.split('\n\n');
-      buf=blocks.pop()||'';
-      for(const blk of blocks){
-        if(!blk.trim()) continue;
-        let ev='message',ds='';
-        for(const ln of blk.split('\n')){
-          if(ln.startsWith('event: ')) ev=ln.slice(7).trim();
-          else if(ln.startsWith('data: ')) ds=ln.slice(6);
+async function sendLive(q) {
+  let wfCard = null, stepsEl = null, aBubble = null, aText = '', wfFinalised = false;
+  let _renderPending = false;
+  try {
+    const res = await fetchWithTimeout(BACKEND + '/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: q, session_id: sid, role, user_name: uname }),
+    }, 60000);
+    if (!res.ok) { addRow('assistant err', 'Backend returned ' + res.status); return; }
+    const reader = res.body.getReader();
+    const dec    = new TextDecoder();
+    let buf = '';
+    let streamDone = false;   // ← flag visible to the outer while loop
+
+    function processBlock(blk) {
+      if (!blk.trim()) return false;
+      // Collect ALL data: lines (handles multi-line data fields)
+      let ev = 'message';
+      const dataLines = [];
+      for (const ln of blk.split(/\r?\n/)) {
+        if (ln.startsWith('event: '))      ev = ln.slice(7).trim();
+        else if (ln.startsWith('data: '))  dataLines.push(ln.slice(6));
+        else if (ln.startsWith('data:'))   dataLines.push(ln.slice(5));
+      }
+      const ds = dataLines.join('\n');
+      let d = {};
+      try { d = JSON.parse(ds); } catch { d = { text: ds }; }
+
+      if (ev === 'tool_chip') {
+        if (!wfCard) {
+          const resWf = addWorkflowCard();
+          wfCard = resWf.card;
+          stepsEl = wfCard.querySelector('#wf-steps');
         }
-        let d={};
-        try{d=JSON.parse(ds)}catch{}
-        if(ev==='tool_chip'){
-          if(!toolRow) toolRow=addToolRow();
-          addChip(toolRow,d.tool||ds);
-        }else if(ev==='token'){
-          if(!aBubble) aBubble=addRow('assistant','');
-          aText+=(d.text||'');
-          aBubble.innerHTML='<p>'+fmt(aText)+'</p>';
-          scrollDown();
-        }else if(ev==='pending_confirmation'){
-          const card=buildCard(d.display||{},d.payload||d);
-          document.getElementById('msgs').appendChild(card);
-          scrollDown();
-        }else if(ev==='error'){
-          addRow('err','⚠ '+(d.message||ds));
-        }else if(ev==='done') break;
+        addWorkflowStep(stepsEl, d.tool || ds);
+
+      } else if (ev === 'token') {
+        // Finalise workflow card on first token
+        if (wfCard && !wfFinalised) { finaliseWorkflowCard(wfCard); wfFinalised = true; }
+        if (!aBubble) aBubble = addRow('assistant', '');
+        // Preserve whitespace exactly — do NOT trim tokens
+        const tok = (d.text !== undefined ? d.text : ds);
+        aText += tok;
+        // Batch DOM updates: only re-render on animation frames to avoid layout thrashing
+        if (!_renderPending) {
+          _renderPending = true;
+          requestAnimationFrame(() => {
+            _renderPending = false;
+            if (aBubble) { aBubble.innerHTML = fmt(aText); scrollDown(); }
+          });
+        }
+
+      } else if (ev === 'pending_confirmation') {
+        if (wfCard && !wfFinalised) { finaliseWorkflowCard(wfCard); wfFinalised = true; }
+        const card = buildCard(d.display || {}, d.payload || d);
+        document.getElementById('msgs').appendChild(card);
+        scrollDown();
+
+      } else if (ev === 'error') {
+        if (wfCard && !wfFinalised) { finaliseWorkflowCard(wfCard); wfFinalised = true; }
+        addRow('assistant err', '⚠ ' + (d.message || ds));
+
+      } else if (ev === 'done') {
+        if (wfCard && !wfFinalised) { finaliseWorkflowCard(wfCard); wfFinalised = true; }
+        return true;  // signal outer loop to stop
+      }
+      return false;
+    }
+
+    // ── Read loop ────────────────────────────────────────────────────────────
+    while (!streamDone) {
+      const { done, value } = await reader.read();
+      if (value) buf += dec.decode(value, { stream: true });
+      const blocks = buf.split(/\r?\n\r?\n/);
+      buf = blocks.pop() || '';
+      for (const blk of blocks) {
+        if (processBlock(blk)) {
+          streamDone = true;   // ← break outer while, not just inner for
+          break;
+        }
+      }
+      if (done) {
+        if (buf.trim()) processBlock(buf);
+        break;
       }
     }
-  }catch(e){
-    // fallback to demo on fetch error
-    liveMode=false;
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // Final flush — ensure the last tokens are rendered
+    if (aBubble && aText) { aBubble.innerHTML = fmt(aText); scrollDown(); }
+    renderNextQueryOptions(q);
+  } catch(e) {
+    console.error('Live chat stream error:', e);
+    liveMode = false;
     setStatus(false);
     document.getElementById('demo-banner').classList.add('vis');
     await sendDemo(q);
   }
 }
 
-async function sendDemo(q){
-  const key=matchDemo(q);
-  const gen=DEMO[key](q);
-  let toolRow=null, aBubble=null;
-  for await(const ev of gen){
-    if(ev.t==='tool'){
-      if(!toolRow) toolRow=addToolRow();
-      addChip(toolRow,ev.v);
-      await sleep(280);
-    }else if(ev.t==='text'){
-      aBubble=addRow('assistant','');
-      // simulate streaming word by word
-      const words=ev.v.split(' ');
-      let acc='';
-      for(const w of words){
-        acc+=w+' ';
-        aBubble.innerHTML='<p>'+fmt(acc.trimEnd())+'</p>';
-        scrollDown();
-        await sleep(18);
-      }
-    }else if(ev.t==='confirm'){
-      // add brief text first
-      addRow('assistant','<p>⚠ <strong>P1 — SLA already breached. Escalate immediately.</strong></p><p>TKT-505 involves suspected API key exposure <span class="cit">tickets: TKT-505</span>. Classified <strong>P1</strong> per <span class="cit">01_Support_Policy_v3_CURRENT.pdf §2</span>. Axis Labs has no custom agreement — standard Enterprise SLA applies: P1 = 30 min 24×7 <span class="cit">01_Support_Policy_v3_CURRENT.pdf §3</span>. SLA breached by 2h 30m (created 08:30, snapshot 11:00).</p>');
-      await sleep(200);
-      const card=buildCard(ev.display,ev.payload);
+async function sendDemo(q) {
+  const key = matchDemo(q);
+  const gen = DEMO[key](q);
+  const { wrap: wfWrap, card: wfCard } = addWorkflowCard();
+  const stepsEl = wfCard.querySelector('#wf-steps');
+  let aBubble = null;
+
+  for await (const ev of gen) {
+    if (ev.t === 'tool') {
+      addWorkflowStep(stepsEl, ev.v);
+      // Brief pause so the spinning step icon is visible before the next one appears
+      await sleep(30);
+    } else if (ev.t === 'text') {
+      finaliseWorkflowCard(wfCard);
+      // Render the full answer immediately — no word-by-word delay
+      aBubble = addRow('assistant', '');
+      aBubble.innerHTML = fmt(ev.v);
+      scrollDown();
+    } else if (ev.t === 'confirm') {
+      finaliseWorkflowCard(wfCard);
+      addRow('assistant', '<p>⚠ <strong>P1 — SLA already breached. Escalate immediately.</strong></p><p>TKT-505 involves suspected API key exposure <span class="cit">tickets: TKT-505</span>. Classified <strong>P1</strong> per <span class="cit">01_Support_Policy_v3_CURRENT.pdf §2</span>. Axis Labs has no custom agreement — standard Enterprise SLA applies: P1 = 30 min 24×7 <span class="cit">01_Support_Policy_v3_CURRENT.pdf §3</span>. SLA breached by 2h 30m (created 08:30, snapshot 11:00).</p>');
+      const card = buildCard(ev.display, ev.payload);
       document.getElementById('msgs').appendChild(card);
       scrollDown();
     }
   }
+  renderNextQueryOptions(q);
 }
 
-function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+function renderNextQueryOptions(lastQuery) {
+  const lq = (lastQuery || '').toLowerCase();
+  let suggestions = [];
+
+  if (lq.includes('northstar') || lq.includes('ord-1001') || lq.includes('cancel')) {
+    suggestions = [
+      { primary: true,  label: 'Investigate TKT-505 API Key Exposure (P1)',  q: 'What should I do about TKT-505?' },
+      { primary: false, label: 'Calculate ORD-2002 Service Credit',            q: 'Is ORD-2002 eligible for a service credit?' },
+      { primary: false, label: 'What are Northstar Agreement SLAs?',           q: 'What are Northstar Logistics SLA terms in their agreement?' },
+    ];
+  } else if (lq.includes('tkt-505') || lq.includes('api key') || lq.includes('credential') || lq.includes('axis')) {
+    suggestions = [
+      { primary: true,  label: 'Escalate TKT-505 Immediately (P1)',           q: 'Please escalate ticket TKT-505 immediately as a P1 incident.' },
+      { primary: false, label: 'Check LumenWorks Bulk CSV Upload Bug',         q: 'LumenWorks 4200-row CSV fails to upload' },
+      { primary: false, label: 'Axis Labs P1 SLA Policy',                     q: 'What is the P1 response SLA for Axis Labs (ACCT-004)?' },
+    ];
+  } else if (lq.includes('lumenworks') || lq.includes('ord-2002') || lq.includes('credit')) {
+    suggestions = [
+      { primary: true,  label: 'Check SwiftShip Webhook Delay (TKT-504)',     q: 'TKT-504 shows BOOKED but driver already picked up' },
+      { primary: false, label: 'Run Proactive Issue Sweep',                    q: 'Run a proactive sweep of all open tickets and SLA breaches.' },
+      { primary: false, label: 'Calculate Credit on INR 15,000 Order',        q: 'Calculate service credit for a 6-hour delay on a 15000 INR shipment for Beacon Retail.' },
+    ];
+  } else if (lq.includes('bulk') || lq.includes('csv') || lq.includes('upload') || lq.includes('ki-208')) {
+    suggestions = [
+      { primary: true,  label: 'Check SwiftShip Webhook Delay (TKT-504)',     q: 'TKT-504 shows BOOKED but driver already picked up' },
+      { primary: false, label: 'Can Northstar Cancel ORD-1001 Without Fee?',  q: 'Can Northstar cancel ORD-1001 without a fee?' },
+      { primary: false, label: 'Support Policy v2 Deprecation',               q: 'What does Support Policy v2 say about standard cancellation fees?' },
+    ];
+  } else if (lq.includes('swiftship') || lq.includes('tkt-504') || lq.includes('ki-211')) {
+    suggestions = [
+      { primary: true,  label: 'Check Axis Labs P1 SLA Breach (TKT-505)',    q: 'What should I do about TKT-505?' },
+      { primary: false, label: 'Show Account Profile ACCT-001',              q: 'Show me the account profile for ACCT-001' },
+      { primary: false, label: 'Support Policy v2 Deprecation',              q: 'What does Support Policy v2 say about standard cancellation fees?' },
+    ];
+  } else {
+    suggestions = [
+      { primary: true,  label: 'Can Northstar cancel ORD-1001 without fee?', q: 'Can Northstar cancel ORD-1001 without a fee?' },
+      { primary: false, label: 'What should I do about TKT-505?',            q: 'What should I do about TKT-505?' },
+      { primary: false, label: 'Is ORD-2002 eligible for a service credit?', q: 'Is ORD-2002 eligible for a service credit?' },
+    ];
+  }
+
+  // Remove old next-query containers
+  document.querySelectorAll('.next-query-wrap').forEach(w => w.remove());
+
+  const m = document.getElementById('msgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'next-query-wrap';
+
+  const title = document.createElement('div');
+  title.className = 'next-query-title';
+  title.textContent = 'Next query to solve';
+  wrap.appendChild(title);
+
+  const chipsRow = document.createElement('div');
+  chipsRow.className = 'next-query-chips';
+
+  suggestions.forEach(s => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'next-chip' + (s.primary ? ' primary' : '');
+    btn.textContent = s.label;
+    // Use addEventListener — avoids inline onclick double-quote escaping issues
+    btn.addEventListener('click', () => runDirectly(s.q));
+    chipsRow.appendChild(btn);
+  });
+
+  wrap.appendChild(chipsRow);
+  m.appendChild(wrap);
+  scrollDown();
+}
+
+function runDirectly(q) {
+  if (busy) return;
+  const el = document.getElementById('inp');
+  if (!el) return;
+  el.value = q;
+  resize(el);
+  send();
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ═══════════════════════════════════════════
 // UI HELPERS
 // ═══════════════════════════════════════════
-function setBusy(v){
-  busy=v;
-  document.getElementById('sbtn').disabled=v;
-  document.getElementById('inp').disabled=v;
-  const th=document.getElementById('thinking');
-  th.classList[v?'add':'remove']('vis');
+function setBusy(v) {
+  busy = v;
+  document.getElementById('sbtn').disabled = v;
+  document.getElementById('inp').disabled  = v;
+  const th = document.getElementById('thinking');
+  th.classList[v ? 'add' : 'remove']('vis');
 }
-function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
-function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
-function fill(t){document.getElementById('inp').value=t;resize(document.getElementById('inp'));document.getElementById('inp').focus();}
-function toast(msg,ms=2200){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),ms);
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+}
+function resize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+}
+function fill(t) {
+  if (busy) return;
+  document.getElementById('inp').value = t;
+  resize(document.getElementById('inp'));
+  send();
+}
+function toast(msg, ms = 2200) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms);
 }
 
 // ═══════════════════════════════════════════
@@ -939,3 +1775,4 @@ document.getElementById('inp').focus();
 </script>
 </body>
 </html>
+
