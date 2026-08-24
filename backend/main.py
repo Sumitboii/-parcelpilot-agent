@@ -19,9 +19,10 @@ from typing import Any
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
+
 
 from backend.agent import run_agent
 from backend.confirmation_gate import confirm as gate_confirm, cancel as gate_cancel
@@ -43,8 +44,8 @@ _HERE         = Path(__file__).parent
 _PROJECT_ROOT = _HERE.parent
 SOURCES_DIR   = _PROJECT_ROOT / "sources"
 XLSX_PATH     = SOURCES_DIR / "ParcelPilot_Assessment_Data.xlsx"
-FRONTEND_DIST = _PROJECT_ROOT / "frontend" / "dist"
 ESCALATIONS_PATH = _PROJECT_ROOT / "data" / "escalations.jsonl"
+
 
 # ── Application state (populated at startup) ──────────────────────────────────
 _collection: Any = None
@@ -207,16 +208,13 @@ async def proactive_endpoint() -> dict:
     }
 
 
-# ── Static files (must be last — catches all unmatched routes) ────────────────
-if FRONTEND_DIST.exists():
-    app.mount("/", StaticFiles(directory=str(FRONTEND_DIST), html=True), name="static")
-else:
-    from fastapi.responses import FileResponse
-    @app.get("/")
-    async def root_fallback():
-        showcase_path = _PROJECT_ROOT / "PRODUCT_SHOWCASE.html"
-        if showcase_path.exists():
-            return FileResponse(str(showcase_path), media_type="text/html")
-        return {"status": "ok", "app": "ParcelPilot Agent Backend"}
-    logger.info("Serving PRODUCT_SHOWCASE.html as root UI fallback.")
+# ── Root / UI routes — always serve PRODUCT_SHOWCASE.html ────────────────────
+# We serve PRODUCT_SHOWCASE.html directly rather than mounting frontend/dist,
+# so Railway always gets the latest file instead of a cached stale build artifact.
 
+@app.get("/")
+async def root_ui():
+    showcase_path = _PROJECT_ROOT / "PRODUCT_SHOWCASE.html"
+    if showcase_path.exists():
+        return FileResponse(str(showcase_path), media_type="text/html")
+    return {"status": "ok", "app": "ParcelPilot Agent Backend"}
