@@ -17,8 +17,8 @@ import logging
 import os
 from typing import Any, AsyncGenerator
 
-import chromadb
 from groq import AsyncGroq, RateLimitError
+
 
 from backend.confirmation_gate import intercept as gate_intercept
 from backend.data_loader import DataStore, SNAPSHOT_TIME

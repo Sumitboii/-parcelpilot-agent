@@ -14,9 +14,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import chromadb
-
 from backend import vector_store as vs
+
 
 logger = logging.getLogger(__name__)
 
