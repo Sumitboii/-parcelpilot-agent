@@ -1,52 +1,51 @@
-# 🎙️ ParcelPilot AI Support Copilot — Voice-Over Video Recording Script (Screen-Only Demo)
+# 🎙️ ParcelPilot AI Support Copilot — Complete Voice-Over Video Recording Guide (`script.md`)
 
-> **Recording Mode:** Screen-Share + Voice-Over (No Face Camera Required)  
-> **Target Duration:** 8 to 10 Minutes  
+> **Recording Mode:** Screen-Share + Microphone Voice-Over (No Face Camera Needed)  
+> **Target Video Duration:** 8 to 10 Minutes  
 > **Production Live URL:** [https://parcelpilot-agent-05e4.onrender.com](https://parcelpilot-agent-05e4.onrender.com)  
 > **Backup URL:** [https://parcelpilot-agent-production.up.railway.app](https://parcelpilot-agent-production.up.railway.app)  
 > **GitHub Repo:** [https://github.com/Sumitboii/-parcelpilot-agent](https://github.com/Sumitboii/-parcelpilot-agent)
 
 ---
 
-## 🎬 How to Use This Script While Recording:
-1. **[ACTION]** ➔ Exact mouse movement or click to perform on your screen.
-2. **[SPEAK]** ➔ Read these words aloud clearly in your natural voice.
-3. Keep your browser open to full screen (`F11` or maximize window).
-4. Watch the top-left sidebar count tick down from **5 ➔ 4 ➔ 3 ➔ 2 ➔ 1 ➔ 0** as you go through the queries!
+## ⚠️ Important Rules While Recording:
+* 🖱️ **`[ON-SCREEN ACTION]`**: What you click with your mouse or type into the search box.
+* 🗣️ **`[WHAT TO SPEAK INTO YOUR MIC]`**: Read these words out loud with your voice. **Do NOT type these sentences into the chatbot!**
+* 📉 **Live Counter**: Watch the top-left sidebar count tick down from **`5 ➔ 4 ➔ 3 ➔ 2 ➔ 1 ➔ 0`** as you resolve each live issue.
 
 ---
 
-## ⏱️ Scene-by-Scene Recording Walkthrough
+## ⏱️ Step-by-Step Recording Walkthrough
 
 ---
 
 ### 📍 Scene 1: Introduction & System Overview `[00:00 – 01:15]`
 
-**[ACTION]:**
-* Show full browser screen at `https://parcelpilot-agent-05e4.onrender.com`.
-* Move mouse cursor slowly across the top header: hover over the green **`Connected`** status badge and the role indicator **`Rohit — Support Agent`**.
-* Move mouse to the left sidebar: point at the red **`Live Issues`** badge showing **`5`**.
-* Hover over the center empty state with the suggestion chips.
+#### 🖱️ [ON-SCREEN ACTION]:
+1. Open your browser in full screen (`F11`) at: `https://parcelpilot-agent-05e4.onrender.com`.
+2. Move your mouse slowly across the top header: hover over the green **`Connected`** badge and the active user **`Rohit — Support Agent`**.
+3. Move your mouse to the left sidebar: point at the red **`Live Issues`** badge showing **`5`**.
+4. Hover your mouse over the suggestion chips in the center of the screen.
 
-**[SPEAK]:**
-> "Hello everyone! Welcome to this walkthrough of the **ParcelPilot AI Support Copilot** — an operational AI assistant purpose-built for freight and parcel logistics operations.
+#### 🗣️ [WHAT TO SPEAK INTO YOUR MIC]:
+> "Hello everyone! Welcome to this demonstration of the **ParcelPilot AI Support Copilot** — an operational AI platform purpose-built for freight and parcel logistics support.
 > 
-> In parcel logistics, support teams handle hundreds of urgent inquiries daily: order tracking delays, cancellation disputes, API outages, and SLA breach calculations.
+> In logistics, support teams process hundreds of complex queries daily: order tracking delays, fee disputes, API outages, and SLA calculations.
 > 
-> The core challenge in this domain is **authority and trust**. Signed enterprise contracts override standard policies, old SOPs get deprecated, rate-limits disrupt automated tooling, and historical tickets often contain human mistakes.
+> The core challenge in this domain is **authority and trust**. Signed enterprise contracts override standard policies, old SOPs get deprecated, rate-limits disrupt automated tools, and historical tickets often contain human errors.
 > 
-> We built ParcelPilot to solve those exact problems: delivering cited, sub-second answers while enforcing a locked 4-tier source authority hierarchy and keeping human agents strictly in control of critical actions.
+> We built ParcelPilot to solve these exact problems: delivering cited, sub-second answers while enforcing a locked 4-tier source authority hierarchy and keeping human agents strictly in control of critical actions.
 > 
-> Notice on the top-left sidebar: our proactive scanner has identified **5 Live Issues** that need immediate attention. Let’s look at the engine and resolve every single one of them."
+> Notice on the top-left sidebar: our proactive scanner has automatically detected **5 Live Issues** that need immediate attention. Let’s look at the engine and resolve every single one of them."
 
 ---
 
 ### 📍 Scene 2: Architecture & Multi-Key Health Pool `[01:15 – 02:30]`
 
-**[ACTION]:**
-* Keep the main chat interface on screen. Move mouse slightly to the tool execution area or open developer console briefly if desired.
+#### 🖱️ [ON-SCREEN ACTION]:
+1. Keep the main chat interface on screen. Move your mouse cursor slightly over the message area.
 
-**[SPEAK]:**
+#### 🗣️ [WHAT TO SPEAK INTO YOUR MIC]:
 > "Before running our queries, let's look at the architecture behind this platform.
 > 
 > First, **Multi-Key Health Step Function**: To guarantee zero downtime on cloud instances, we built an in-memory `GroqKeyPoolManager`. It automatically discovers all active API keys, routes queries with zero-latency Least-Recently-Used rotation, and includes an automated step function that fails over in milliseconds if a 429 rate limit occurs. A background worker continuously probes key health every 30 seconds.
@@ -64,13 +63,12 @@
 
 ### 📍 Scene 3: Foundational Query — Contract Precedence & Cancellation `[02:30 – 03:45]`
 
-**[ACTION]:**
-* In the central chat area, click the suggestion chip: **`Northstar cancellation`** (or type: *"Can Northstar cancel ORD-1001 without a fee? Explain why."*).
-* Press **Enter** / click **Send**.
-* Point the mouse at the animated **`ParcelPilot · Compass`** workflow card showing `data_lookup (0.3s)` and `document_search (1.4s)`.
-* Highlight the formatted response, the clickable citation badges, and the rejection of legacy ticket `TKT-450`.
+#### 🖱️ [ON-SCREEN ACTION]:
+1. In the central chat area, click the suggestion chip: **`Northstar cancellation`** *(or type: `Can Northstar cancel ORD-1001 without a fee? Explain why.` into the input box and press Enter)*.
+2. Point your mouse at the animated **`ParcelPilot · Compass`** workflow card showing `data_lookup (0.3s)` and `document_search (1.4s)`.
+3. Highlight the formatted response, the clickable citation badges, and the rejection of legacy ticket `TKT-450`.
 
-**[SPEAK]:**
+#### 🗣️ [WHAT TO SPEAK INTO YOUR MIC]:
 > "Let’s start with a classic contract conflict scenario.
 > 
 > I’ll ask: *'Can Northstar cancel ORD-1001 without a fee? Explain why.'*
@@ -88,18 +86,18 @@
 ---
 
 ### 📍 Scene 4: Live Issue 1 — TKT-505 Axis Labs P1 SLA Breach `[03:45 – 05:00]`
-*(Live Issues Count: 5 ➔ 4)*
+*(Live Issues Counter: Drops from 5 ➔ 4)*
 
-**[ACTION]:**
-* Point mouse at the left sidebar showing **`5`** in the counter.
-* Click the top sidebar item: **`TKT-505 — Axis Labs`** (or click chip `TKT-505 API key`).
-* Watch the agent stream the analysis and render the blue **⚡ Confirm Action** card.
-* Hover over the fields on the confirmation card: Ticket `TKT-505`, Severity `P1`, Reason, Assignee.
-* Click the **`Confirm`** button.
-* Watch the card change to `✓ Confirmed` with ID `ESC-20260816-XXXX`.
-* **Point mouse to the top-left sidebar**: Highlight that **`TKT-505` is now green with `✓ RESOLVED`**, and the **counter decremented from 5 to 4**.
+#### 🖱️ [ON-SCREEN ACTION]:
+1. Move your mouse to the left sidebar: point at the counter showing **`5`**.
+2. Click the top sidebar item: **`TKT-505 — Axis Labs`** *(or click chip `TKT-505 API key`)*.
+3. Watch the agent stream the analysis and render the blue **⚡ Confirm Action** card.
+4. Hover over the fields on the confirmation card: Ticket `TKT-505`, Severity `P1`, Reason, Assignee.
+5. Click the blue **`Confirm`** button.
+6. Watch the card change to `✓ Confirmed` with ID `ESC-20260816-XXXX`.
+7. **Point your mouse to the top-left sidebar**: Show that **`TKT-505` is now green with `✓ RESOLVED`**, and the **counter decremented from 5 to 4**.
 
-**[SPEAK]:**
+#### 🗣️ [WHAT TO SPEAK INTO YOUR MIC]:
 > "Now let's resolve our first live issue on the sidebar: **TKT-505 for Axis Labs**.
 > 
 > I’ll click **`TKT-505`** directly on the left sidebar.
@@ -120,16 +118,16 @@
 ---
 
 ### 📍 Scene 5: Live Issue 2 — TKT-501 Northstar P1 SLA Breach `[05:00 – 06:15]`
-*(Live Issues Count: 4 ➔ 3)*
+*(Live Issues Counter: Drops from 4 ➔ 3)*
 
-**[ACTION]:**
-* On the left sidebar, click the next item: **`TKT-501 — Northstar Logistics`**.
-* Watch the agent retrieve Northstar’s contract and detect the expedited 15-min SLA.
-* Observe the rendered **⚡ Confirm Action** escalation card assigned to *Lead Integrations Engineer*.
-* Click **`Confirm`**.
-* **Point mouse to the top-left sidebar**: Show that **`TKT-501` is marked `✓ RESOLVED`** and the **counter decremented from 4 to 3**.
+#### 🖱️ [ON-SCREEN ACTION]:
+1. On the left sidebar, click the next item: **`TKT-501 — Northstar Logistics`**.
+2. Watch the agent retrieve Northstar’s contract and detect the expedited 15-min SLA.
+3. Observe the rendered **⚡ Confirm Action** escalation card assigned to *Lead Integrations Engineer*.
+4. Click the blue **`Confirm`** button.
+5. **Point your mouse to the top-left sidebar**: Show that **`TKT-501` is marked `✓ RESOLVED`** and the **counter decremented from 4 to 3**.
 
-**[SPEAK]:**
+#### 🗣️ [WHAT TO SPEAK INTO YOUR MIC]:
 > "Let’s resolve our second live issue: **TKT-501 for Northstar Logistics**.
 > 
 > I’ll click **`TKT-501`** on the sidebar.
@@ -148,15 +146,15 @@
 ---
 
 ### 📍 Scene 6: Live Issue 3 — TKT-502 LumenWorks KI-208 Workaround `[06:15 – 07:15]`
-*(Live Issues Count: 3 ➔ 2)*
+*(Live Issues Counter: Drops from 3 ➔ 2)*
 
-**[ACTION]:**
-* On the left sidebar, click **`TKT-502 — LumenWorks`** (or click chip `Bulk upload limit`).
-* Watch the agent run `data_lookup` and `document_search`.
-* Hover over the explanation differentiating the **5,000-row product limit** from the **KI-208 bug workaround**.
-* **Point mouse to the top-left sidebar**: Show that **`TKT-502` is marked `✓ RESOLVED`** and the **counter decremented from 3 to 2**.
+#### 🖱️ [ON-SCREEN ACTION]:
+1. On the left sidebar, click **`TKT-502 — LumenWorks`** *(or click chip `Bulk upload limit`)*.
+2. Watch the agent run `data_lookup` and `document_search`.
+3. Hover over the explanation differentiating the **5,000-row product limit** from the **KI-208 bug workaround**.
+4. **Point your mouse to the top-left sidebar**: Show that **`TKT-502` is marked `✓ RESOLVED`** and the **counter decremented from 3 to 2**.
 
-**[SPEAK]:**
+#### 🗣️ [WHAT TO SPEAK INTO YOUR MIC]:
 > "Now let’s look at our third issue: **TKT-502 for LumenWorks**, reporting a bulk upload failure on a 4,200-row CSV.
 > 
 > I’ll click **`TKT-502`** on the sidebar.
@@ -172,15 +170,15 @@
 ---
 
 ### 📍 Scene 7: Live Issue 4 — TKT-504 SwiftShip Pickup Lag (KI-211) `[07:15 – 08:15]`
-*(Live Issues Count: 2 ➔ 1)*
+*(Live Issues Counter: Drops from 2 ➔ 1)*
 
-**[ACTION]:**
-* On the left sidebar, click **`TKT-504 — Northstar Logistics`** (SwiftShip pickup lag).
-* Watch the agent evaluate `ORD-1001` and retrieve Known Issue **KI-211**.
-* Hover over the guardrail instruction: *Do not tell the customer pickup failed*.
-* **Point mouse to the top-left sidebar**: Show that **`TKT-504` is marked `✓ RESOLVED`** and the **counter decremented from 2 to 1**.
+#### 🖱️ [ON-SCREEN ACTION]:
+1. On the left sidebar, click **`TKT-504 — Northstar Logistics`** *(SwiftShip pickup lag)*.
+2. Watch the agent evaluate `ORD-1001` and retrieve Known Issue **KI-211**.
+3. Hover over the guardrail instruction: *Do not tell the customer pickup failed*.
+4. **Point your mouse to the top-left sidebar**: Show that **`TKT-504` is marked `✓ RESOLVED`** and the **counter decremented from 2 to 1**.
 
-**[SPEAK]:**
+#### 🗣️ [WHAT TO SPEAK INTO YOUR MIC]:
 > "Our fourth live issue is **TKT-504**: a customer reports that the SwiftShip driver collected their parcel 10 minutes ago, but the portal still shows `BOOKED`.
 > 
 > I’ll click **`TKT-504`** on the sidebar.
@@ -195,14 +193,14 @@
 ---
 
 ### 📍 Scene 8: Live Issue 5 — Northstar Account Cluster Pattern `[08:15 – 09:15]`
-*(Live Issues Count: 1 ➔ 0 — All Issues Solved!)*
+*(Live Issues Counter: Drops from 1 ➔ 0 — All 5 Live Issues Resolved!)*
 
-**[ACTION]:**
-* On the left sidebar, click the final item: **`Account Cluster — Northstar Logistics`**.
-* Watch the agent correlate `TKT-501` and `TKT-504` into an integrated root cause summary table.
-* **Point mouse to the top-left sidebar**: Show that **Account Cluster is marked `✓ RESOLVED`**, the counter badge displays **`0`** in bright green, and the celebratory toast appears: `🎉 All 5 Live Issues Resolved!`.
+#### 🖱️ [ON-SCREEN ACTION]:
+1. On the left sidebar, click the final item: **`Account Cluster — Northstar Logistics`**.
+2. Watch the agent correlate `TKT-501` and `TKT-504` into an integrated root cause summary table.
+3. **Point your mouse to the top-left sidebar**: Show that **Account Cluster is marked `✓ RESOLVED`**, the counter badge displays **`0`** in bright green, and the celebratory toast appears: `🎉 All 5 Live Issues Resolved!`.
 
-**[SPEAK]:**
+#### 🗣️ [WHAT TO SPEAK INTO YOUR MIC]:
 > "Now let's resolve our final live issue: **Account Cluster for Northstar Logistics**.
 > 
 > I’ll click **`Account Cluster`** on the sidebar.
@@ -219,20 +217,20 @@
 
 ### 📍 Scene 9: Service Credit Calculation & Conclusion `[09:15 – 10:00]`
 
-**[ACTION]:**
-* In the input box, type: `"Is ORD-2002 eligible for a service credit?"` and click Send.
-* Point at the fixed **INR 300** credit calculation under LumenWorks Agreement §3.
-* Switch the role dropdown in the top right to **`Priya Mehta — CSM / Escalation Manager`** to show Role-Based Access Control.
-* Scroll up smoothly through the clean conversation transcript.
+#### 🖱️ [ON-SCREEN ACTION]:
+1. In the input box at the bottom, type: **`Is ORD-2002 eligible for a service credit?`** and click **Send** *(or press Enter)*.
+2. Watch the agent calculate the delay of 4h 30m and award the **fixed INR 300 credit** under LumenWorks Agreement §3.
+3. In the top right header, click the user dropdown and switch from `Rohit — Support Agent` to **`Priya Mehta — CSM / Escalation Manager`** to demonstrate Role-Based Access Control.
+4. Scroll up smoothly through the clean conversation transcript on your screen.
 
-**[SPEAK]:**
+#### 🗣️ [WHAT TO SPEAK INTO YOUR MIC] *(Speak out loud — do NOT type this in chat!)*:
 > "Finally, let’s test mathematical contract overrides with: *'Is ORD-2002 eligible for a service credit?'*
 > 
 > - The agent calculates the delay: **4 hours and 30 minutes**.
 > - It applies Section 3 of the **LumenWorks Service Agreement**, which overrides the SOP percentage formula with a **fixed INR 300 credit**.
 > - It verifies that because ₹300 is under ₹1,000, no manager pre-approval is required.
 > 
-> To wrap up what we’ve demonstrated:
+> To wrap up what we’ve demonstrated today:
 > - **100% Grounded Citations** with zero hallucination.
 > - **Multi-Key Groq Key Pool** with zero-latency failover and sub-40MB memory footprint.
 > - **Human Confirmation Gates** for critical operational state changes.
