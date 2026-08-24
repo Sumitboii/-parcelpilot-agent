@@ -26,8 +26,11 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
 COPY backend/ ./backend/
 COPY sources/ ./sources/
 COPY data/ ./data/
+COPY frontend/ ./frontend/
+COPY showcase/ ./showcase/
 COPY PRODUCT_SHOWCASE.html .
 COPY .env.example .
+
 
 # Expose port
 EXPOSE 8000
