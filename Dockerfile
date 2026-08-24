@@ -27,10 +27,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-download SentenceTransformer model weights to cache them in the Docker image
-RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
-
 # Copy application files
+
 COPY backend/ ./backend/
 COPY sources/ ./sources/
 COPY frontend/ ./frontend/
