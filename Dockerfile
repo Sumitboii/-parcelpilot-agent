@@ -29,11 +29,12 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
 # Copy application files
 COPY backend/ ./backend/
 COPY sources/ ./sources/
-COPY data/ ./data/
 COPY frontend/ ./frontend/
 COPY showcase/ ./showcase/
 COPY PRODUCT_SHOWCASE.html .
 COPY .env.example .
+RUN mkdir -p data
+
 
 
 # Expose port
