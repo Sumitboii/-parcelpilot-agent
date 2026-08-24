@@ -1,6 +1,9 @@
 # Multi-stage / lightweight Python 3.11 container for ParcelPilot Agent
 FROM python:3.11-slim
 
+# Force cache-bust: update this timestamp to invalidate Railway's snapshot cache
+ARG CACHE_BUST=2026-08-24-v5
+
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -8,6 +11,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # Set working directory
 WORKDIR /app
+
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
