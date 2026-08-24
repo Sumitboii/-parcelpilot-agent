@@ -7,10 +7,14 @@ ARG CACHE_BUST=2026-08-24-v5
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
+    OMP_NUM_THREADS=1 \
+    MKL_NUM_THREADS=1 \
+    TORCH_NUM_THREADS=1 \
     PORT=8000
 
 # Set working directory
 WORKDIR /app
+
 
 
 # Install system dependencies

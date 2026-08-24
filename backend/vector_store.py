@@ -40,9 +40,21 @@ _OVERLAP_CHARS    = 200    # ≈ 50 tokens overlap
 
 @lru_cache(maxsize=1)
 def _get_model() -> SentenceTransformer:
-    """Load all-MiniLM-L6-v2 once and cache it for the process lifetime."""
+    """Load all-MiniLM-L6-v2 once and cache it for the process lifetime.
+
+    Uses local_files_only=True so the startup event loop never triggers an
+    httpx download (the model is already cached by sentence-transformers).
+    Falls back to a normal load if the local cache is absent (first cold start).
+    """
     logger.info("Loading sentence-transformers/all-MiniLM-L6-v2 …")
-    return SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+    try:
+        return SentenceTransformer(
+            "sentence-transformers/all-MiniLM-L6-v2",
+            local_files_only=True,
+        )
+    except Exception:
+        logger.warning("Local model cache not found — downloading (first run only) …")
+        return SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 
 # ── PDF chunking ──────────────────────────────────────────────────────────────
@@ -152,9 +164,13 @@ def init_vector_store(sources_dir: Path) -> chromadb.Collection:
         )
         logger.info("  → added %d chunks", len(raw_chunks))
 
+    import gc
+    gc.collect()
+
     total = collection.count()
     logger.info("Vector store ready: %d total chunks across all documents", total)
     return collection
+
 
 
 # ── Query ──────────────────────────────────────────────────────────────────────
