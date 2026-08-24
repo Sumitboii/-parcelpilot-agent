@@ -32,14 +32,14 @@ COPY sources/ ./sources/
 COPY frontend/ ./frontend/
 COPY showcase/ ./showcase/
 COPY PRODUCT_SHOWCASE.html .
+COPY start.py .
 COPY .env.example .
 RUN mkdir -p data
-
-
 
 # Expose port
 EXPOSE 8000
 
-# Start FastAPI application
-CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Start application via Python runner
+CMD ["python", "start.py"]
+
 
