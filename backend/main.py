@@ -30,7 +30,7 @@ from backend.confirmation_gate import confirm as gate_confirm, cancel as gate_ca
 from backend.data_loader import load_data, DataStore
 from backend.key_manager import key_pool
 from backend.tools.data_lookup import lookup as data_lookup_fn
-from backend.vector_store import init_vector_store
+from backend.vector_store import init_vector_store, _get_model
 from backend._showcase_html import get_showcase_html as _get_showcase_html
 
 
@@ -67,33 +67,44 @@ app.add_middleware(
 )
 
 
+async def _async_init() -> None:
+    global _collection, _data_store
+    try:
+        # Pre-warm embedding model in a thread (avoids httpx event-loop conflict)
+        await asyncio.to_thread(_get_model)
+
+        # Load structured data
+        logger.info("Loading structured data from %s …", XLSX_PATH)
+        _data_store = load_data(XLSX_PATH)
+        logger.info(
+            "DataStore ready: %d accounts, %d orders, %d tickets",
+            len(_data_store.accounts),
+            len(_data_store.orders),
+            len(_data_store.tickets),
+        )
+
+        # Build vector store
+        logger.info("Initialising vector store from %s …", SOURCES_DIR)
+        _collection = init_vector_store(SOURCES_DIR)
+        logger.info("Vector store ready: %d chunks", _collection.count())
+
+        # Start background key health worker and initial non-blocking probe
+        asyncio.create_task(key_pool.start_background_monitor(interval_seconds=30.0))
+        asyncio.create_task(key_pool.check_all_keys_health())
+    except Exception as e:
+        logger.error("Async background initialization error: %s", e)
+
+
 @app.on_event("startup")
 async def startup() -> None:
-    global _collection, _data_store
-
     # Ensure escalations log file exists
     ESCALATIONS_PATH.parent.mkdir(parents=True, exist_ok=True)
     if not ESCALATIONS_PATH.exists():
         ESCALATIONS_PATH.touch()
 
-    # Load structured data
-    logger.info("Loading structured data from %s …", XLSX_PATH)
-    _data_store = load_data(XLSX_PATH)
-    logger.info(
-        "DataStore ready: %d accounts, %d orders, %d tickets",
-        len(_data_store.accounts),
-        len(_data_store.orders),
-        len(_data_store.tickets),
-    )
+    # Launch background state loader so server binds port and answers /health immediately
+    asyncio.create_task(_async_init())
 
-    # Build vector store
-    logger.info("Initialising vector store from %s …", SOURCES_DIR)
-    _collection = init_vector_store(SOURCES_DIR)
-    logger.info("Vector store ready: %d chunks", _collection.count())
-
-    # Start background key health worker and initial non-blocking probe
-    asyncio.create_task(key_pool.start_background_monitor(interval_seconds=30.0))
-    asyncio.create_task(key_pool.check_all_keys_health())
 
 
 

@@ -7,9 +7,8 @@ services:
     region: oregon
     healthCheckPath: /health
     envVars:
-      - key: PORT
-        value: 8000
       - key: GROQ_API_KEYS
         sync: false
       - key: GROQ_API_KEY
         sync: false
+
