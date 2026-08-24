@@ -19,7 +19,8 @@ from typing import Any
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
+
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
@@ -182,14 +183,6 @@ async def keys_health_check_step_function() -> dict:
 
 
 
-@app.get("/showcase")
-async def showcase_endpoint():
-    """Serve PRODUCT_SHOWCASE.html directly (avoids file:// CORS issues)."""
-    from fastapi.responses import FileResponse
-    showcase_path = _PROJECT_ROOT / "PRODUCT_SHOWCASE.html"
-    if showcase_path.exists():
-        return FileResponse(str(showcase_path), media_type="text/html")
-    return {"error": "showcase not found"}
 
 
 @app.get("/proactive")
@@ -209,12 +202,116 @@ async def proactive_endpoint() -> dict:
 
 
 # ── Root / UI routes — always serve PRODUCT_SHOWCASE.html ────────────────────
-# We serve PRODUCT_SHOWCASE.html directly rather than mounting frontend/dist,
-# so Railway always gets the latest file instead of a cached stale build artifact.
+# IMPORTANT: The HTML is patched at runtime in Python to fix the renderSidebar
+# onclick bug (broken JSON.stringify interpolation), so this works regardless
+# of which version of PRODUCT_SHOWCASE.html is baked into the container image.
+
+
+
+def _load_patched_showcase() -> str:
+    """Read PRODUCT_SHOWCASE.html and patch any broken onclick handlers."""
+    showcase_path = _PROJECT_ROOT / "PRODUCT_SHOWCASE.html"
+    if not showcase_path.exists():
+        # Last-resort fallback: check frontend/dist
+        for fallback in [
+            _PROJECT_ROOT / "frontend" / "dist" / "index.html",
+            _PROJECT_ROOT / "frontend" / "public" / "showcase.html",
+        ]:
+            if fallback.exists():
+                showcase_path = fallback
+                break
+        else:
+            return "<h1>ParcelPilot Agent</h1>"
+
+    html = showcase_path.read_text(encoding="utf-8")
+
+    # ── Patch 1: Fix broken sidebar onclick string-interpolation ──────────────
+    # OLD (broken):  onclick="fill(${JSON.stringify(q)})"
+    # NEW (safe):    data-q attribute + addEventListener in renderSidebar
+    if 'onclick="fill(${JSON.stringify(q)})"' in html:
+        # Replace the entire renderSidebar function with a safe DOM-based version
+        old_fn = '''function renderSidebar(items, ts) {
+  const sc = document.getElementById('sb-scroll');
+  const ct = document.getElementById('sb-count');
+  const ft = document.getElementById('sb-foot');
+  ct.textContent = items.length || '0';
+  if (ts) ft.textContent = 'Snapshot ' + ts.replace('T',' ').slice(0,16) + ' IST';
+  if (!items.length) {
+    sc.innerHTML = '<div style="padding:20px 6px;font-size:11px;color:#a8a29e;text-align:center">✓ No active issues</div>';
+    return;
+  }
+  const grps = {};
+  items.forEach(i => { (grps[i.category] = grps[i.category] || []).push(i); });
+  let h = '';
+  for (const [cat, arr] of Object.entries(grps)) {
+    const c = CAT[cat] || { icon: '•', color: '#a8a29e' };
+    h += `<div class="sb-group">
+      <div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${cat}</div>`;
+    arr.forEach(it => {
+      const q = it.suggested_query || `Tell me about ${it.ticket_ids.join(', ')}`;
+      h += `<div class="sb-item" onclick="fill(${JSON.stringify(q)})">
+        <div class="sb-item-id">${it.ticket_ids.join(', ')} — ${it.account_name}</div>
+        <div class="sb-item-desc">${it.recommended_action}</div>
+      </div>`;
+    });
+    h += '</div>';
+  }
+  sc.innerHTML = h;
+}'''
+        new_fn = '''function renderSidebar(items, ts) {
+  const sc = document.getElementById('sb-scroll');
+  const ct = document.getElementById('sb-count');
+  const ft = document.getElementById('sb-foot');
+  ct.textContent = items.length || '0';
+  if (ts) ft.textContent = 'Snapshot ' + ts.replace('T',' ').slice(0,16) + ' IST';
+  if (!items.length) {
+    sc.innerHTML = '<div style="padding:20px 6px;font-size:11px;color:#a8a29e;text-align:center">\\u2713 No active issues</div>';
+    return;
+  }
+  sc.innerHTML = '';
+  const grps = {};
+  items.forEach(i => { (grps[i.category] = grps[i.category] || []).push(i); });
+  for (const [cat, arr] of Object.entries(grps)) {
+    const c = CAT[cat] || { icon: '\\u2022', color: '#a8a29e' };
+    const grpEl = document.createElement('div');
+    grpEl.className = 'sb-group';
+    const lbl = document.createElement('div');
+    lbl.className = 'sb-group-label';
+    lbl.style.color = c.color;
+    lbl.textContent = c.icon + '\\u2002' + cat;
+    grpEl.appendChild(lbl);
+    arr.forEach(it => {
+      const q = it.suggested_query || 'Tell me about ' + it.ticket_ids.join(', ');
+      const itemEl = document.createElement('div');
+      itemEl.className = 'sb-item';
+      itemEl.style.cursor = 'pointer';
+      const idDiv = document.createElement('div');
+      idDiv.className = 'sb-item-id';
+      idDiv.textContent = it.ticket_ids.join(', ') + ' \\u2014 ' + it.account_name;
+      const descDiv = document.createElement('div');
+      descDiv.className = 'sb-item-desc';
+      descDiv.textContent = it.recommended_action;
+      itemEl.appendChild(idDiv);
+      itemEl.appendChild(descDiv);
+      itemEl.addEventListener('click', function() { fill(q); });
+      grpEl.appendChild(itemEl);
+    });
+    sc.appendChild(grpEl);
+  }
+}'''
+        html = html.replace(old_fn, new_fn)
+        logger.info("Patched renderSidebar onclick in served HTML")
+
+    return html
+
 
 @app.get("/")
 async def root_ui():
-    showcase_path = _PROJECT_ROOT / "PRODUCT_SHOWCASE.html"
-    if showcase_path.exists():
-        return FileResponse(str(showcase_path), media_type="text/html")
-    return {"status": "ok", "app": "ParcelPilot Agent Backend"}
+    return HTMLResponse(content=_load_patched_showcase())
+
+
+@app.get("/showcase")
+async def showcase_patched():
+    """Serve PRODUCT_SHOWCASE.html with runtime patches applied."""
+    return HTMLResponse(content=_load_patched_showcase())
+
