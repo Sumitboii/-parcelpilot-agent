@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: parcelpilot-agent
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: GROQ_API_KEYS
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
