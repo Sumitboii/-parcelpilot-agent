@@ -499,18 +499,27 @@ function renderNextQueryOptions(lastQuery) {
   const wrap = document.createElement('div');
   wrap.className = 'next-query-wrap';
   
-  let buttons = '';
+  const title = document.createElement('div');
+  title.className = 'next-query-title';
+  title.textContent = '👉 Next Query to Solve (Click button to run):';
+  wrap.appendChild(title);
+
+  const chipsContainer = document.createElement('div');
+  chipsContainer.className = 'next-query-chips';
+
   suggestions.forEach(s => {
-    buttons += `<button class="next-chip ${s.primary ? 'primary' : ''}" onclick="runDirectly(${JSON.stringify(s.q)})">${escHtml(s.label)}</button>`;
+    const btn = document.createElement('button');
+    btn.className = `next-chip ${s.primary ? 'primary' : ''}`;
+    btn.textContent = s.label;
+    btn.addEventListener('click', () => runDirectly(s.q));
+    chipsContainer.appendChild(btn);
   });
 
-  wrap.innerHTML = `
-    <div class="next-query-title">👉 Next Query to Solve (Click button to run):</div>
-    <div class="next-query-chips">${buttons}</div>
-  `;
+  wrap.appendChild(chipsContainer);
   list.appendChild(wrap);
   scrollBottom();
 }
+
 
 function runDirectly(q) {
   if (AppState.busy) return;

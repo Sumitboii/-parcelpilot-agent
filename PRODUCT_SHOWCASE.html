@@ -1007,24 +1007,36 @@ function renderSidebar(items, ts) {
     sc.innerHTML = '<div style="padding:20px 6px;font-size:11px;color:#a8a29e;text-align:center">✓ No active issues</div>';
     return;
   }
+  sc.innerHTML = '';
   const grps = {};
   items.forEach(i => { (grps[i.category] = grps[i.category] || []).push(i); });
-  let h = '';
   for (const [cat, arr] of Object.entries(grps)) {
     const c = CAT[cat] || { icon: '•', color: '#a8a29e' };
-    h += `<div class="sb-group">
-      <div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${cat}</div>`;
+    const grp = document.createElement('div');
+    grp.className = 'sb-group';
+    grp.innerHTML = `<div class="sb-group-label" style="color:${c.color}">${c.icon}&ensp;${esc(cat)}</div>`;
     arr.forEach(it => {
       const q = it.suggested_query || `Tell me about ${it.ticket_ids.join(', ')}`;
-      h += `<div class="sb-item" onclick="fill(${JSON.stringify(q)})">
-        <div class="sb-item-id">${it.ticket_ids.join(', ')} — ${it.account_name}</div>
-        <div class="sb-item-desc">${it.recommended_action}</div>
-      </div>`;
+      const itemEl = document.createElement('div');
+      itemEl.className = 'sb-item';
+      itemEl.tabIndex = 0;
+      itemEl.style.cursor = 'pointer';
+      itemEl.innerHTML = `
+        <div class="sb-item-id">${esc(it.ticket_ids.join(', '))} — ${esc(it.account_name)}</div>
+        <div class="sb-item-desc">${esc(it.recommended_action)}</div>`;
+      itemEl.addEventListener('click', () => fill(q));
+      itemEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          fill(q);
+        }
+      });
+      grp.appendChild(itemEl);
     });
-    h += '</div>';
+    sc.appendChild(grp);
   }
-  sc.innerHTML = h;
 }
+
 
 function loadDemoSidebar() {
   renderSidebar([
