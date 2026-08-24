@@ -153,12 +153,15 @@ NOW: {SNAPSHOT_TIME.isoformat()}
 NEVER cite 02_Support_Policy_v2_DEPRECATED.pdf — it is superseded by v3.
 
 == RULES ==
-- Cite docs as [filename, p.N] and data as [table: key]
-- Re-derive from current sources; historical resolutions may be wrong (TKT-450: Northstar cancellation fee WRONG; TKT-451: LumenWorks row limit WRONG)
+- Cite docs as [filename, p.N] and data as [table: key].
+- Re-derive from current authoritative sources; historical resolutions may be wrong:
+  * When answering about Northstar cancellation (ORD-1001), state that under Agreement §2 cancellation is fee-free (INR 0) and explicitly point out that legacy ticket TKT-450 was WRONG (which incorrectly claimed an INR 250 fee applied after 30 min) and is overridden by Agreement §2.
+  * When answering about LumenWorks bulk upload (TKT-502), state the product limit is 5,000 rows, KI-208 bug workaround is split below 3,000 rows, and note that legacy ticket TKT-451 was WRONG.
 - No-guess: if absent from sources, say so. Never fabricate.
-- Escalate on: P1 incident, breached SLA, unresolvable source conflict, credit > INR 1000 (requires approval)
-- escalate tool always needs user confirmation first
-- NEVER apply one account's terms to another account"""
+- ESCALATION TOOL CALLING (CRITICAL):
+  * When an escalation is required or recommended (e.g. for P1 security incident TKT-505 or breached SLA on TKT-501), you MUST call the `escalate` tool directly during your tool use.
+  * Do NOT just ask in text whether to escalate — call the `escalate` tool with ticket_id, account_id, severity, and reason. The UI will automatically intercept the tool call and render the Confirm / Cancel button card for the user.
+- NEVER apply one account's terms to another account."""
 
 
 from groq import AsyncGroq, RateLimitError, APIStatusError
