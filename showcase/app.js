@@ -50,16 +50,21 @@ function generateUUID() {
   });
 }
 
-/** Prefill the chat input and focus it */
-function prefillInput(text) {
+/** Prefill the chat input and auto-send query */
+function prefillInput(text, autoSend = true) {
   const el = document.getElementById('msg-input');
   el.value = text;
   resizeTextarea(el);
-  el.focus();
+  if (autoSend && typeof sendMessage === 'function' && !AppState.busy) {
+    sendMessage();
+  } else {
+    el.focus();
+  }
 }
 
-// Alias used by the suggestion chips in HTML
-function prefill(text) { prefillInput(text); }
+// Alias used by suggestion chips in HTML
+function prefill(text) { prefillInput(text, true); }
+
 
 /** Auto-resize textarea height */
 function resizeTextarea(el) {

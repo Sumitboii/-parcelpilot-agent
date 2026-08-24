@@ -112,6 +112,95 @@ const DEMO_RESPONSES = {
     };
   },
 
+  tkt501: async function* () {
+    yield { type: 'tool', name: 'data_lookup' };
+    yield { type: 'tool', name: 'document_search' };
+    yield {
+      type: 'text',
+      content:
+        '**🚨 P1 SLA Breached — Immediate Escalation Required.**\n\n' +
+        '**Ticket Analysis [tickets: TKT-501]:**\n' +
+        '- **Account:** Northstar Logistics (ACCT-001)\n' +
+        '- **Issue:** Webhook signature verification failure on all outbound dispatch payloads (P1 Outage)\n' +
+        '- **Timeline:** Created at 10:30 IST; dataset snapshot time is 11:00 IST (**30 minutes elapsed**)\n\n' +
+        '**SLA Evaluation:**\n' +
+        'Under the Level 1 signed *Northstar Logistics Enterprise Agreement §4*, P1 incidents require an initial response within **15 minutes** [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.3 §4].\n\n' +
+        '➡ **Status:** SLA has been **breached by 15 minutes**.\n' +
+        '➡ **Action:** Creating P1 priority escalation to Senior Integrations Lead on-call.',
+    };
+    yield {
+      type: 'confirm',
+      display: {
+        Action:       'Create Escalation',
+        Ticket:       'TKT-501',
+        Account:      'Northstar Logistics (ACCT-001)',
+        Severity:     'P1',
+        'Assigned to': 'Lead Integrations Engineer',
+        Reason:       'P1 webhook verification outage — Northstar 15-min SLA breached by 15m.',
+      },
+      payload: {
+        ticket_id:   'TKT-501',
+        account_id:  'ACCT-001',
+        severity:    'P1',
+        reason:      'Webhook signature verification failure — P1 incident. Northstar 15-min SLA breached (30m elapsed).',
+        assigned_to: 'Lead Integrations Engineer',
+        created_by:  'Rohit (support_agent)',
+        summary:     'Northstar TKT-501 P1 webhook signature failure. Breached agreement §4 15-min SLA. Requires immediate escalation.',
+      },
+    };
+  },
+
+  tkt502: async function* () {
+    yield { type: 'tool', name: 'data_lookup' };
+    yield { type: 'tool', name: 'document_search' };
+    yield {
+      type: 'text',
+      content:
+        '**Ticket TKT-502 (LumenWorks) is directly linked to Known Issue KI-208.**\n\n' +
+        '**Investigation Findings [tickets: TKT-502]:**\n' +
+        '- LumenWorks attempted to upload a CSV file with **4,200 shipment rows** and received a 504 gateway timeout.\n' +
+        '- **Product Specification:** Standard bulk upload limit is **5,000 rows per CSV** [04_Product_Operations_Guide_and_Known_Issues.pdf, p.1 §1].\n' +
+        '- **Known Issue:** **KI-208** (opened 10 Aug 2026, status: Investigating) causes intermittent timeouts on bulk uploads above ~3,000 rows [04_Product_Operations_Guide_and_Known_Issues.pdf, p.2 §2].\n\n' +
+        '**Customer Guidance:**\n' +
+        '1. Explain that engineering is actively deploying a fix for KI-208.\n' +
+        '2. Provide the immediate workaround: split their CSV file into two batches of ~2,100 rows each.\n' +
+        '3. ⚠ *Do not claim the limit is 3,000 rows* (correcting legacy error in TKT-451).',
+    };
+  },
+
+  cluster: async function* () {
+    yield { type: 'tool', name: 'data_lookup' };
+    yield { type: 'tool', name: 'document_search' };
+    yield {
+      type: 'text',
+      content:
+        '**Account Cluster Analysis: Northstar Logistics (ACCT-001)**\n\n' +
+        'Northstar currently has **2 active open tickets** within the 7-day window [tickets: TKT-501, TKT-504]:\n\n' +
+        '1. **TKT-501 (P1):** Outbound webhook signature verification failures on automated dispatch requests (created 10:30, SLA breached).\n' +
+        '2. **TKT-504 (P2):** Shipment ORD-1001 tracking status lag — shows BOOKED after physical pickup (linked to SwiftShip webhook delay KI-211).\n\n' +
+        '**Root Cause Pattern:**\n' +
+        'Both tickets indicate an asynchronous communication breakdown between Northstar\'s ERP, ParcelPilot\'s webhook listener, and SwiftShip carrier relays. Recommend cross-assigning TKT-501 and TKT-504 to the same Integration Specialist.',
+    };
+  },
+
+  sweep: async function* () {
+    yield { type: 'tool', name: 'data_lookup' };
+    yield {
+      type: 'text',
+      content:
+        '**⚡ Proactive Sweep Results (Snapshot: 2026-08-16 11:00 IST)**\n\n' +
+        'The system identified **5 high-priority issues** requiring immediate attention:\n\n' +
+        '| Category | Tickets | Account | Status & Recommendation |\n' +
+        '| :--- | :--- | :--- | :--- |\n' +
+        '| **SLA Breach** | `TKT-505` | Axis Labs | **P1 SLA Breached** (2h 30m elapsed vs 30m target). Escalate immediately. |\n' +
+        '| **SLA Breach** | `TKT-501` | Northstar | **P1 SLA Breached** (30m elapsed vs 15m agreement SLA). Escalate to engineering. |\n' +
+        '| **KI-Linked** | `TKT-502` | LumenWorks | Linked to **KI-208** (bulk upload >3,000 rows). Advise split batch workaround. |\n' +
+        '| **KI-Linked** | `TKT-504` | Northstar | Linked to **KI-211** (SwiftShip 20m webhook latency). Do not mark as failed pickup. |\n' +
+        '| **Account Cluster** | `TKT-501`, `TKT-504` | Northstar | 2 open tickets in 7 days indicating integration sync degradation. |\n\n' +
+        'Select any item from the **Live Issues** sidebar to start an investigation.',
+    };
+  },
+
   default: async function* (query) {
     yield { type: 'tool', name: 'document_search' };
     yield {
@@ -132,14 +221,18 @@ const DEMO_RESPONSES = {
  */
 function matchDemoScenario(query) {
   const q = query.toLowerCase();
+  if (q.includes('sweep') || q.includes('proactive')) return 'sweep';
+  if (q.includes('tkt-501') || (q.includes('northstar') && q.includes('501'))) return 'tkt501';
+  if (q.includes('tkt-502') || (q.includes('lumenworks') && q.includes('502')) || q.includes('ki-208')) return 'tkt502';
+  if (q.includes('tkt-505') || q.includes('api key') || q.includes('credential')) return 'tkt505';
+  if (q.includes('cluster') || q.includes('pattern') || (q.includes('open tickets') && q.includes('northstar'))) return 'cluster';
   if (q.includes('northstar') || q.includes('ord-1001') || q.includes('cancel')) return 'northstar';
-  if (q.includes('tkt-505') || q.includes('api key') || q.includes('credential') || q.includes('credential')) return 'tkt505';
-  if (q.includes('lumenworks') && (q.includes('credit') || q.includes('ord-2002'))) return 'lumenworks_credit';
   if (q.includes('lumenworks') || q.includes('ord-2002') || q.includes('credit')) return 'lumenworks_credit';
   if (q.includes('bulk') || q.includes('csv') || q.includes('upload') || q.includes('row')) return 'bulk_upload';
-  if (q.includes('swiftship') || q.includes('tkt-504') || q.includes('booked') || q.includes('webhook')) return 'swiftship';
+  if (q.includes('swiftship') || q.includes('tkt-504') || q.includes('booked') || q.includes('webhook') || q.includes('ki-211')) return 'swiftship';
   return 'default';
 }
+
 
 const DEMO_SIDEBAR_ITEMS = [
   {

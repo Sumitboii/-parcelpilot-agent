@@ -161,6 +161,8 @@ NEVER cite 02_Support_Policy_v2_DEPRECATED.pdf — it is superseded by v3.
 - NEVER apply one account's terms to another account"""
 
 
+from groq import AsyncGroq, RateLimitError, APIStatusError
+
 # ── Rate-limit backoff stream helper with Dynamic Key Health & Rotation ────────
 
 async def _create_groq_stream(
@@ -171,11 +173,12 @@ async def _create_groq_stream(
     """
     Create Groq streaming completion with automatic key health selection and instant failover.
     Zero latency: Picks an in-memory healthy key (LRU balanced) immediately.
-    On 429 rate limit: Marks key with cooldown and immediately steps to the next available healthy key.
+    On 429 or 413 (TPM limit): Marks key with cooldown and immediately steps to the next available healthy key.
     """
     excluded_keys: set[str] = set()
     max_attempts = max(key_pool.total_keys * 2, 8)
     last_exc: Exception | None = None
+    target_max_tokens = 1024
 
     for attempt in range(max_attempts):
         client, key_info = key_pool.get_healthy_client(exclude_keys=excluded_keys)
@@ -185,7 +188,7 @@ async def _create_groq_stream(
                 "model": model,
                 "messages": messages,
                 "stream": True,
-                "max_tokens": 2048,
+                "max_tokens": target_max_tokens,
                 "temperature": 0.3,
             }
             if tools:
@@ -195,19 +198,32 @@ async def _create_groq_stream(
             latency_ms = (asyncio.get_event_loop().time() - t0) * 1000.0
             key_pool.mark_success(key_info.api_key, latency_ms=latency_ms)
             return stream_result
-        except RateLimitError as exc:
+        except (RateLimitError, APIStatusError) as exc:
             last_exc = exc
-            excluded_keys.add(key_info.api_key)
-            key_pool.mark_rate_limited(key_info.api_key, error_msg=str(exc))
-            # If all discovered keys have been tried in this request attempt, sleep briefly
-            if len(excluded_keys) >= key_pool.total_keys:
-                logger.warning("All %d Groq API keys rate-limited in pool — brief pause 1.5s...", key_pool.total_keys)
-                excluded_keys.clear()
-                await asyncio.sleep(1.5)
+            is_rate_or_tpm = isinstance(exc, RateLimitError) or (
+                isinstance(exc, APIStatusError) and (
+                    exc.status_code in (429, 413) or "rate_limit" in str(exc).lower() or "tpm" in str(exc).lower()
+                )
+            )
+            if is_rate_or_tpm:
+                excluded_keys.add(key_info.api_key)
+                key_pool.mark_rate_limited(key_info.api_key, error_msg=str(exc))
+                # If we hit 413 TPM limit, reduce requested max_tokens to fit budget
+                if "413" in str(exc) or "tpm" in str(exc).lower():
+                    target_max_tokens = 512
+                # If all discovered keys have been tried in this request attempt, sleep briefly
+                if len(excluded_keys) >= key_pool.total_keys:
+                    logger.warning("All %d Groq API keys rate-limited in pool — brief pause 1.5s...", key_pool.total_keys)
+                    excluded_keys.clear()
+                    await asyncio.sleep(1.5)
+            else:
+                key_pool.mark_error(key_info.api_key, str(exc))
+                raise
         except Exception as exc:
             key_pool.mark_error(key_info.api_key, str(exc))
             raise
     raise last_exc  # type: ignore[misc]
+
 
 
 
