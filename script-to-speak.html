@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ParcelPilot Support Agent — 10-Minute Video Demo Script</title>
+<style>
+  @page {
+    size: A4;
+    margin: 16mm 14mm 16mm 14mm;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.5;
+    font-size: 12.5px;
+    background: #fff;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: 19px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 10px;
+  }
+  .links-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .links-box a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 16px 0 8px 0;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4px;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 14px 0 6px 0;
+    page-break-after: avoid;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .time-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px 0;
+    font-size: 11.5px;
+    page-break-inside: avoid;
+  }
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 5px 8px;
+    text-align: left;
+  }
+  th {
+    background: #f1f5f9;
+    font-weight: 700;
+    color: #334155;
+  }
+  tr:nth-child(even) {
+    background: #f8fafc;
+  }
+  .segment-card {
+    page-break-inside: avoid;
+    margin-bottom: 14px;
+  }
+  .action-box {
+    background: #faf5ff;
+    border-left: 3.5px solid #9333ea;
+    border-radius: 0 6px 6px 0;
+    padding: 6px 10px;
+    margin: 4px 0 6px 0;
+    font-size: 11.5px;
+  }
+  .action-title {
+    font-weight: 700;
+    color: #7e22ce;
+    margin-bottom: 3px;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+  }
+  .action-box ul {
+    margin: 0;
+    padding-left: 16px;
+  }
+  .action-box li {
+    margin-bottom: 2px;
+  }
+  .speech-box {
+    background: #f0f9ff;
+    border-left: 3.5px solid #0284c7;
+    border-radius: 0 6px 6px 0;
+    padding: 8px 12px;
+    margin: 4px 0 10px 0;
+    font-size: 12px;
+    color: #0f172a;
+  }
+  .speech-title {
+    font-weight: 700;
+    color: #0369a1;
+    margin-bottom: 4px;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+  }
+  .speech-box p {
+    margin: 0 0 5px 0;
+  }
+  .speech-box p:last-child {
+    margin-bottom: 0;
+  }
+  .speech-box ol, .speech-box ul {
+    margin: 3px 0;
+    padding-left: 16px;
+  }
+  .speech-box li {
+    margin-bottom: 2px;
+  }
+  code {
+    background: #f1f5f9;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #0f172a;
+  }
+  strong {
+    color: #0f172a;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎙️ ParcelPilot Support Agent — 10-Minute Video Demo Script</h1>
+  <div class="subtitle">Production Evaluation Walkthrough &bull; Exact Speech Prompts &bull; On-Screen Actions</div>
+  <div class="links-box">
+    <div><strong>Primary Production URL (Render):</strong> <a href="https://parcelpilot-agent-05e4.onrender.com">https://parcelpilot-agent-05e4.onrender.com</a></div>
+    <div><strong>Secondary Production URL (Railway):</strong> <a href="https://parcelpilot-agent-production.up.railway.app">https://parcelpilot-agent-production.up.railway.app</a></div>
+    <div><strong>GitHub Repository:</strong> <a href="https://github.com/Sumitboii/-parcelpilot-agent">https://github.com/Sumitboii/-parcelpilot-agent</a></div>
+  </div>
+</div>
+
+<h2>⏱️ Timeline &amp; Agenda Overview</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 17%;">Timecode</th>
+      <th style="width: 33%;">Segment</th>
+      <th>Core Topic Demonstrated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>00:00 – 01:15</strong></td><td><strong>1. Introduction &amp; Context</strong></td><td>Overview of ParcelPilot, support bottlenecks, and core objectives</td></tr>
+    <tr><td><strong>01:15 – 02:30</strong></td><td><strong>2. Architecture &amp; Multi-Key Pool</strong></td><td>Plain Python tool router, multi-key health step function, zero-latency LRU</td></tr>
+    <tr><td><strong>02:30 – 04:15</strong></td><td><strong>3. Demo 1: Source Hierarchy</strong></td><td>Northstar cancellation query (Agreement §2 overrides Policy &amp; bad TKT-450)</td></tr>
+    <tr><td><strong>04:15 – 05:45</strong></td><td><strong>4. Demo 2: Confirmation Gate</strong></td><td>TKT-505 P1 incident (SLA breach check + interactive confirmation card)</td></tr>
+    <tr><td><strong>05:45 – 07:00</strong></td><td><strong>5. Demo 3: Service Credit</strong></td><td>LumenWorks delay credit (Custom agreement ₹300 fixed override)</td></tr>
+    <tr><td><strong>07:00 – 08:15</strong></td><td><strong>6. Demo 4: Known Issues</strong></td><td>KI-208 bulk upload limit vs bug workaround &amp; Policy v2 refusal</td></tr>
+    <tr><td><strong>08:15 – 09:15</strong></td><td><strong>7. Demo 5: Live Issues Radar</strong></td><td>Live issues sidebar (SLA breaches, KI clusters, account surges with 1-click trigger)</td></tr>
+    <tr><td><strong>09:15 – 10:00</strong></td><td><strong>8. Trust, Metrics &amp; Wrap-Up</strong></td><td>Grounded citations, 66/66 test suite, hallucination prevention</td></tr>
+  </tbody>
+</table>
+
+<h2>🎬 Detailed Script: Words to Speak &amp; Screen Actions</h2>
+
+<div class="segment-card">
+  <h3>Segment 1: Introduction &amp; Context <span class="time-badge">00:00 – 01:15</span></h3>
+  <div class="action-box">
+    <div class="action-title">🖥️ ON-SCREEN ACTIONS:</div>
+    <ul>
+      <li>Share screen showing the clean <strong>ParcelPilot Support Agent</strong> UI (<code>https://parcelpilot-agent-05e4.onrender.com</code>).</li>
+      <li>Highlight the top bar with active user role (<code>Rohit — Support Agent</code>), the central conversation area, and the left <strong>Live Issues</strong> sidebar.</li>
+    </ul>
+  </div>
+  <div class="speech-box">
+    <div class="speech-title">🗣️ WORDS TO SPEAK:</div>
+    <p>&ldquo;Hello everyone! Today I’m excited to present the <strong>ParcelPilot AI Support Agent</strong> — an intelligent operational copilot built for ParcelPilot’s support and customer operations teams.</p>
+    <p>ParcelPilot coordinates logistics across multiple carriers, processing hundreds of complex enterprise queries every day. Today, support agents lose hours manually cross-referencing PDFs, custom enterprise contracts, order databases, and ticketing systems.</p>
+    <p>The core challenge isn’t just fetching data — it’s handling <strong>conflicts, speed, and trust</strong>. Customer agreements override standard policies, old policies get deprecated, rate limits can cause unexpected downtime, and historical ticket resolutions often contain errors.</p>
+    <p>We built this production system to solve that exact problem: delivering sub-second, trustworthy, cited answers with automated multi-key failover while keeping humans strictly in control of critical business actions.&rdquo;</p>
+  </div>
+</div>
+
+<div class="segment-card">
+  <h3>Segment 2: Architecture &amp; Multi-Key Health Step Function <span class="time-badge">01:15 – 02:30</span></h3>
+  <div class="action-box">
+    <div class="action-title">🖥️ ON-SCREEN ACTIONS:</div>
+    <ul>
+      <li>Briefly show the top-right role selector, the clean streaming message area, and point out the sub-second streaming responsiveness.</li>
+      <li>Open the <code>/docs</code> or mention the <code>/keys/health</code> endpoint briefly.</li>
+    </ul>
+  </div>
+  <div class="speech-box">
+    <div class="speech-title">🗣️ WORDS TO SPEAK:</div>
+    <p>&ldquo;Let’s take a look at the architecture under the hood.</p>
+    <p>First, <strong>Multi-Key Health Step Function</strong>: To guarantee zero downtime and eliminate rate-limit disruptions, we built a custom <code>GroqKeyPoolManager</code>. It automatically discovers all available Groq API keys, dispatches requests with zero added latency using an in-memory Least-Recently-Used rotation, and includes an automated step function that fails over to a backup key in milliseconds if a 429 rate limit or 413 token limit occurs. A background worker continuously probes key health every 30 seconds.</p>
+    <p>Second, <strong>Strict Source Authority Hierarchy</strong>: The agent is hard-wired with a deterministic hierarchy:</p>
+    <ol>
+      <li>Signed customer agreements always take top priority.</li>
+      <li>Current support policies (Policy v3 CURRENT) come second.</li>
+      <li>Standard SOPs and operations guides come third.</li>
+      <li>Historical ticket resolutions are treated strictly as unverified context.</li>
+      <li>Any deprecated documents — such as Support Policy v2 — are completely filtered out.</li>
+    </ol>
+    <p>Third, <strong>Safety &amp; Privacy</strong>: Every data query passes through an in-memory data store with Role-Based Access Control, and state-changing actions like escalations are intercepted by an interactive confirmation gate.&rdquo;</p>
+  </div>
+</div>
+
+<div class="segment-card">
+  <h3>Segment 3: Scenario 1 — Source Authority &amp; Contract Override <span class="time-badge">02:30 – 04:15</span></h3>
+  <div class="action-box">
+    <div class="action-title">🖥️ ON-SCREEN ACTIONS:</div>
+    <ul>
+      <li>Click the suggestion chip: <strong>Northstar cancellation</strong> (or type: <em>'Can Northstar cancel ORD-1001 without a fee? Explain why.'</em>)</li>
+      <li>Press <strong>Send</strong>.</li>
+      <li>Point out the tool chips appearing (<code>data_lookup</code>, <code>document_search</code>) and the rapid token streaming.</li>
+    </ul>
+  </div>
+  <div class="speech-box">
+    <div class="speech-title">🗣️ WORDS TO SPEAK:</div>
+    <p>&ldquo;Let’s test our first scenario: a contract conflict and a known bad historical record.</p>
+    <p>I’ll ask: <em>'Can Northstar cancel ORD-1001 without a fee?'</em></p>
+    <p>Notice what happened:</p>
+    <ol>
+      <li>The agent immediately called <code>data_lookup</code> to check <code>ORD-1001</code>. It saw the order is still in <code>BOOKED</code> status.</li>
+      <li>It then queried <code>document_search</code> for Northstar’s specific enterprise agreement.</li>
+    </ol>
+    <p>Look at the answer:</p>
+    <ul>
+      <li>The agent confirms: <strong>Yes, Northstar can cancel with zero fee.</strong></li>
+      <li>It cites <strong>Section 2 of Northstar’s Enterprise Agreement</strong>, which explicitly waives all cancellation fees for shipments cancelled before pickup.</li>
+      <li>Most importantly, it actively highlights that a past ticket resolution — <strong>TKT-450</strong> — incorrectly told the customer they owed ₹250. The agent correctly rejected that historical mistake in favor of the authoritative contract.</li>
+      <li>Every single claim is backed by a clickable citation badge.&rdquo;</li>
+    </ul>
+  </div>
+</div>
+
+<div class="segment-card">
+  <h3>Segment 4: Scenario 2 — Human-in-the-Loop Confirmation Gate <span class="time-badge">04:15 – 05:45</span></h3>
+  <div class="action-box">
+    <div class="action-title">🖥️ ON-SCREEN ACTIONS:</div>
+    <ul>
+      <li>Click the suggestion chip: <strong>TKT-505 API key</strong> (or type: <em>'What should I do about TKT-505?'</em>)</li>
+      <li>Press <strong>Send</strong>.</li>
+      <li>Show the tool chips, the policy check, and then the interactive <strong>⚡ Confirm Action</strong> card rendered on screen.</li>
+      <li>Click <strong>Confirm</strong> button and show the generated escalation ID (<code>ESC-20260816-XXXX</code>).</li>
+    </ul>
+  </div>
+  <div class="speech-box">
+    <div class="speech-title">🗣️ WORDS TO SPEAK:</div>
+    <p>&ldquo;Now let’s look at a critical operational safety requirement: <strong>The Confirmation Gate</strong>.</p>
+    <p>I’m asking about <strong>TKT-505</strong>, a ticket reporting possible API key exposure for Axis Labs.</p>
+    <p>Notice how the agent reasons through this:</p>
+    <ol>
+      <li>It checks the ticket: Opened at 08:30, snapshot is 11:00 — so 2 hours and 30 minutes have elapsed.</li>
+      <li>It checks policy: Axis Labs is Enterprise with no custom agreement, so Standard Policy v3 applies. P1 target is 30 minutes.</li>
+      <li>The SLA is breached by 2 hours. Because suspected credential leak is classified as <strong>P1</strong>, policy mandates immediate escalation.</li>
+    </ol>
+    <p>But instead of executing the escalation silently in the background, look at the screen: The agent rendered an interactive <strong>Confirmation Card</strong> with pre-filled metadata: Ticket ID, Severity, Reason, and Assignee.</p>
+    <p>Until I click 'Confirm', nothing is written to our audit database. When I click <strong>Confirm</strong>, it formally logs the escalation and returns a permanent tracking ID.&rdquo;</p>
+  </div>
+</div>
+
+<div class="segment-card">
+  <h3>Segment 5: Scenario 3 — Service Credit Calculations <span class="time-badge">05:45 – 07:00</span></h3>
+  <div class="action-box">
+    <div class="action-title">🖥️ ON-SCREEN ACTIONS:</div>
+    <ul>
+      <li>Click the suggestion chip: <strong>LumenWorks credit</strong> (or type: <em>'Is ORD-2002 eligible for a service credit?'</em>)</li>
+      <li>Press <strong>Send</strong>.</li>
+      <li>Highlight the calculation breakdown, delay duration, and contract override.</li>
+    </ul>
+  </div>
+  <div class="speech-box">
+    <div class="speech-title">🗣️ WORDS TO SPEAK:</div>
+    <p>&ldquo;Next, let’s test mathematical calculation and custom SLA terms with <strong>ORD-2002</strong> for LumenWorks.</p>
+    <p>The standard ParcelPilot SOP specifies that a credit is eligible after a 2-hour delay using a 10% formula.</p>
+    <p>But watch what the agent does:</p>
+    <ol>
+      <li>It looks up <code>ORD-2002</code>: the pickup window closed at 06:30, making the delay <strong>4 hours and 30 minutes</strong> due to carrier fault.</li>
+      <li>It retrieves LumenWorks’s Service Agreement.</li>
+      <li>It applies LumenWorks’s custom contract clause: their threshold is 4 hours, and instead of a variable percentage, it awards a <strong>fixed ₹300 credit</strong>.</li>
+      <li>It also confirms that because ₹300 is below the ₹1,000 policy threshold, manager pre-approval is not required.&rdquo;</li>
+    </ol>
+  </div>
+</div>
+
+<div class="segment-card">
+  <h3>Segment 6: Scenario 4 — Known Issues &amp; Guardrails <span class="time-badge">07:00 – 08:15</span></h3>
+  <div class="action-box">
+    <div class="action-title">🖥️ ON-SCREEN ACTIONS:</div>
+    <ul>
+      <li>Click the suggestion chip: <strong>Bulk upload limit</strong> (or type: <em>'LumenWorks 4200-row CSV fails to upload'</em>)</li>
+      <li>Press <strong>Send</strong>.</li>
+      <li>Show how the agent distinguishes product specs from workaround limits.</li>
+    </ul>
+  </div>
+  <div class="speech-box">
+    <div class="speech-title">🗣️ WORDS TO SPEAK:</div>
+    <p>&ldquo;Let’s look at how the agent handles product bugs versus real specifications.</p>
+    <p>When LumenWorks asks why their 4,200-row CSV upload failed:</p>
+    <ul>
+      <li>The agent clarifies that the official product specification is <strong>5,000 rows</strong>.</li>
+      <li>But it detects known bug <strong>KI-208</strong>, which causes intermittent failures above 3,000 rows.</li>
+      <li>It provides the exact operational workaround: split the file into smaller batches under 3,000 rows while engineering deploys a fix.</li>
+      <li>Again, it flags that old ticket <strong>TKT-451</strong> incorrectly told the customer 3,000 was the plan limit, setting the record straight.&rdquo;</li>
+    </ul>
+  </div>
+</div>
+
+<div class="segment-card">
+  <h3>Segment 7: Scenario 5 — Interactive Live Issues Radar <span class="time-badge">08:15 – 09:15</span></h3>
+  <div class="action-box">
+    <div class="action-title">🖥️ ON-SCREEN ACTIONS:</div>
+    <ul>
+      <li>Move the cursor to the left <strong>Live Issues</strong> sidebar.</li>
+      <li>Click on <strong>TKT-504</strong> or <strong>Account Cluster (Northstar)</strong> directly from the sidebar.</li>
+      <li>Point out that clicking the item immediately triggers the live investigation with full AI streaming and tool chips without manual typing.</li>
+    </ul>
+  </div>
+  <div class="speech-box">
+    <div class="speech-title">🗣️ WORDS TO SPEAK:</div>
+    <p>&ldquo;Now let’s look at <strong>Proactive Issue Detection &amp; Investigation</strong>.</p>
+    <p>Reactive chat only helps after a human asks. Operations teams need to know what’s on fire <em>before</em> customers escalate.</p>
+    <p>On the left sidebar, our backend runs a continuous proactive sweep across all active orders and tickets:</p>
+    <ul>
+      <li><strong>🚨 SLA Breaches:</strong> Instantly surfaces breached tickets like TKT-505 and TKT-501 with exact elapsed times.</li>
+      <li><strong>🐛 Known Issue Clusters:</strong> Groups tickets linked to active bugs like KI-208 and KI-211.</li>
+      <li><strong>👥 Account Clusters:</strong> Detects when a single enterprise account has multiple complaints within 7 days.</li>
+    </ul>
+    <p>Watch this: I can simply click <strong>TKT-504</strong> or <strong>Account Cluster</strong> directly on the sidebar. The UI immediately begins the investigation, runs the tools, and explains the correlation between the orders in real time.&rdquo;</p>
+  </div>
+</div>
+
+<div class="segment-card">
+  <h3>Segment 8: Trust, Evaluation Metrics &amp; Wrap-Up <span class="time-badge">09:15 – 10:00</span></h3>
+  <div class="action-box">
+    <div class="action-title">🖥️ ON-SCREEN ACTIONS:</div>
+    <ul>
+      <li>Scroll up through the chat transcript showing clean Markdown tables, citation badges, and confirmation records.</li>
+      <li>Switch user role to <code>Priya Mehta — CSM</code> to demonstrate role-based session isolation.</li>
+      <li>Show the test suite passing summary (66/66 tests passed).</li>
+    </ul>
+  </div>
+  <div class="speech-box">
+    <div class="speech-title">🗣️ WORDS TO SPEAK:</div>
+    <p>&ldquo;To wrap up:</p>
+    <ul>
+      <li><strong>Trust &amp; Grounding:</strong> Every single factual statement cites an authoritative document or database key. The agent never hallucinates.</li>
+      <li><strong>Speed &amp; Resilience:</strong> Powered by a multi-key Groq pool with zero-latency failover and a lightweight, memory-efficient in-memory vector store (&lt; 40MB RAM).</li>
+      <li><strong>Verified Quality:</strong> 66 out of 66 automated tests pass across unit tests, key rotation, and full evaluation scenarios.</li>
+      <li><strong>Primary North Star Metric:</strong> We measure <strong>Resolution Accuracy &amp; Groundedness (% of responses with zero hallucinations and verified source hierarchy resolution)</strong>.</li>
+    </ul>
+    <p>Thank you for your time, and I look forward to your questions!&rdquo;</p>
+  </div>
+</div>
+
+</body>
+</html>
