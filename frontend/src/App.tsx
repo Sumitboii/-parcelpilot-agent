@@ -19,15 +19,14 @@ export default function App() {
   const [userName, setUserName] = useState(defaultRole.userName);
   const [roleLabel, setRoleLabel] = useState(defaultRole.label);
   const [sessionId, setSessionId] = useState(generateSessionId);
-  const [prePopulatedInput, setPrePopulatedInput] = useState("");
+  const [autoSendQuery, setAutoSendQuery] = useState("");
 
   const handleRoleChange = (newRole: Role, newUserName: string, newLabel: string) => {
     setRole(newRole);
     setUserName(newUserName);
     setRoleLabel(newLabel);
     setSessionId(generateSessionId());
-    // Clear any pre-populated input on role change
-    setPrePopulatedInput("");
+    setAutoSendQuery("");
   };
 
   return (
@@ -59,7 +58,7 @@ export default function App() {
       <div className="flex flex-1 min-h-0">
         {/* Proactive sidebar */}
         <div className="shrink-0 w-80">
-          <ProactivePanel onPrePopulate={setPrePopulatedInput} />
+          <ProactivePanel onPrePopulate={setAutoSendQuery} />
         </div>
 
         {/* Chat main area — centered, max-width 780px */}
@@ -69,8 +68,8 @@ export default function App() {
               sessionId={sessionId}
               role={role}
               userName={userName}
-              prePopulatedInput={prePopulatedInput}
-              onClearPrePopulated={() => setPrePopulatedInput("")}
+              autoSendQuery={autoSendQuery}
+              onClearAutoSend={() => setAutoSendQuery("")}
             />
           </div>
         </main>

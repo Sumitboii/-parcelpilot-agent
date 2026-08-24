@@ -1,0 +1,1 @@
+{"id": "ESC-20260816-0001", "timestamp": "2026-08-16T11:00:00+05:30", "ticket_id": "TKT-505", "account_id": "ACCT-004", "severity": "P1", "reason": "Suspected API key exposure", "assigned_to": "Security Lead", "created_by": "Rohit (support_agent)", "summary": "P1 SLA breached"}

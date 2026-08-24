@@ -17,8 +17,9 @@ from backend.vector_store import init_vector_store
 from backend.tools.document_search import search
 from backend.tools.data_lookup import lookup, _credit_calc
 
-ds = load_data(Path("sources/ParcelPilot_Assessment_Data.xlsx"))
-col = init_vector_store(Path("sources"))
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+ds = load_data(_PROJECT_ROOT / "sources" / "ParcelPilot_Assessment_Data.xlsx")
+col = init_vector_store(_PROJECT_ROOT / "sources")
 
 errors = []
 

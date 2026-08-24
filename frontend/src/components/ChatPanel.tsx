@@ -11,16 +11,16 @@ interface ChatPanelProps {
   sessionId: string;
   role: string;
   userName: string;
-  prePopulatedInput: string;
-  onClearPrePopulated: () => void;
+  autoSendQuery: string;
+  onClearAutoSend: () => void;
 }
 
 export function ChatPanel({
   sessionId,
   role,
   userName,
-  prePopulatedInput,
-  onClearPrePopulated,
+  autoSendQuery,
+  onClearAutoSend,
 }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -28,14 +28,44 @@ export function ChatPanel({
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Apply pre-populated query from ProactivePanel
+  // Auto-send query from ProactivePanel (skip input box, send directly)
   useEffect(() => {
-    if (prePopulatedInput) {
-      setInput(prePopulatedInput);
-      onClearPrePopulated();
-      inputRef.current?.focus();
+    if (autoSendQuery && !streaming) {
+      onClearAutoSend();
+      // Build the request inline to send immediately
+      (async () => {
+        setStreaming(true);
+        addMessage("user", autoSendQuery);
+        try {
+          for await (const event of streamSSE("/chat", {
+            message: autoSendQuery,
+            session_id: sessionId,
+            role,
+            user_name: userName,
+          })) {
+            if (event.event === "tool_chip") {
+              const d = event.data as { tool: string };
+              addMessage("tool_chip", d.tool);
+            } else if (event.event === "token") {
+              const d = event.data as { text: string };
+              updateLastAssistant(d.text);
+            } else if (event.event === "pending_confirmation") {
+              addMessage("confirmation", event.data as PendingAction);
+            } else if (event.event === "error") {
+              const d = event.data as { message: string };
+              addMessage("error", d.message);
+            } else if (event.event === "done") {
+              break;
+            }
+          }
+        } catch {
+          addMessage("error", "Connection error. Please retry.");
+        } finally {
+          setStreaming(false);
+        }
+      })();
     }
-  }, [prePopulatedInput, onClearPrePopulated]);
+  }, [autoSendQuery, onClearAutoSend, sessionId, role, userName, streaming]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {

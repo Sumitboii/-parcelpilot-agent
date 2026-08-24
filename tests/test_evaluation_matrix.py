@@ -15,15 +15,18 @@ from backend.tools.data_lookup import lookup as data_lookup_fn, _credit_calc
 from backend.confirmation_gate import intercept, confirm, cancel
 
 
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
 @pytest.fixture(scope="session")
 def data_store():
-    xlsx_path = Path("sources/ParcelPilot_Assessment_Data.xlsx")
+    xlsx_path = _PROJECT_ROOT / "sources" / "ParcelPilot_Assessment_Data.xlsx"
     return load_data(xlsx_path)
 
 
 @pytest.fixture(scope="session")
 def vector_collection():
-    sources_dir = Path("sources")
+    sources_dir = _PROJECT_ROOT / "sources"
     return init_vector_store(sources_dir)
 
 

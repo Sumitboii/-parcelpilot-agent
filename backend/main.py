@@ -10,6 +10,7 @@ Endpoints:
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
 from pathlib import Path
@@ -25,8 +26,10 @@ from sse_starlette.sse import EventSourceResponse
 from backend.agent import run_agent
 from backend.confirmation_gate import confirm as gate_confirm, cancel as gate_cancel
 from backend.data_loader import load_data, DataStore
+from backend.key_manager import key_pool
 from backend.tools.data_lookup import lookup as data_lookup_fn
 from backend.vector_store import init_vector_store
+
 
 # Load .env if present (override=True so uploaded .env updates runtime env)
 load_dotenv(override=True)
@@ -84,6 +87,11 @@ async def startup() -> None:
     logger.info("Initialising vector store from %s …", SOURCES_DIR)
     _collection = init_vector_store(SOURCES_DIR)
     logger.info("Vector store ready: %d chunks", _collection.count())
+
+    # Start background key health worker and initial non-blocking probe
+    asyncio.create_task(key_pool.start_background_monitor(interval_seconds=30.0))
+    asyncio.create_task(key_pool.check_all_keys_health())
+
 
 
 # ── Request / Response models ─────────────────────────────────────────────────
@@ -151,6 +159,26 @@ async def confirm_endpoint(req: ConfirmRequest) -> dict:
 async def health_endpoint() -> dict:
     """Lightweight health check — no dependency on startup state."""
     return {"status": "ok"}
+
+
+@app.get("/keys/health")
+@app.get("/api/keys")
+async def keys_health_endpoint() -> dict:
+    """Return real-time health status, load distribution, and cooldowns for all Groq API keys."""
+    return key_pool.get_status_report()
+
+
+@app.post("/keys/health/check")
+async def keys_health_check_step_function() -> dict:
+    """
+    On-demand step function to immediately probe the health of all keys concurrently
+    and return the updated health report.
+    """
+    check_results = await key_pool.check_all_keys_health()
+    report = key_pool.get_status_report()
+    report["check_results"] = check_results
+    return report
+
 
 
 @app.get("/showcase")

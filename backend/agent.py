@@ -27,49 +27,28 @@ from backend.tools.document_search import search as doc_search_fn
 
 logger = logging.getLogger(__name__)
 
+from backend.key_manager import key_pool, KeyHealthInfo
+
 # ── Model config ──────────────────────────────────────────────────────────────
 PRIMARY_MODEL  = "openai/gpt-oss-20b"    # Fast model available on this Groq account
 FALLBACK_MODEL = "openai/gpt-oss-120b"   # Heavy fallback model
 
-# ── API Key Pool & Dynamic Key Rotator ────────────────────────────────────────
-_current_key_idx: int = 0
-_clients: dict[str, AsyncGroq] = {}
-
+# ── API Key Pool & Dynamic Key Rotator (backed by key_manager) ────────────────
 def _get_all_groq_keys() -> list[str]:
     """Retrieve all distinct valid Groq API keys from environment."""
-    keys: list[str] = []
-    env_keys = os.environ.get("GROQ_API_KEYS", "") or os.environ.get("GROQ_API_KEY", "")
-    for k in env_keys.split(","):
-        k = k.strip()
-        if k and k not in keys:
-            keys.append(k)
-    backup_env = os.environ.get("BACKUP_GROQ_API_KEYS", "")
-    for k in backup_env.split(","):
-        k = k.strip()
-        if k and k not in keys:
-            keys.append(k)
-    return keys
+    return [k.api_key for k in key_pool._keys]
 
 def get_current_client() -> tuple[AsyncGroq, str]:
-    """Return the currently active AsyncGroq client and its masked key identifier."""
-    global _current_key_idx
-    keys = _get_all_groq_keys()
-    if not keys:
-        raise RuntimeError("No Groq API keys configured")
-    idx = _current_key_idx % len(keys)
-    key = keys[idx]
-    if key not in _clients:
-        _clients[key] = AsyncGroq(api_key=key, max_retries=0, timeout=30.0)
-    return _clients[key], f"key #{idx+1} ({key[:10]}...)"
+    """Return an active healthy AsyncGroq client and its masked key identifier."""
+    client, info = key_pool.get_healthy_client()
+    return client, f"key #{info.key_index} ({info.masked_key})"
 
 def rotate_to_next_key() -> tuple[AsyncGroq, str]:
-    """Rotate to the next API key in the pool upon encountering a 429 rate limit."""
-    global _current_key_idx
-    keys = _get_all_groq_keys()
-    _current_key_idx = (_current_key_idx + 1) % len(keys)
-    client, key_desc = get_current_client()
-    logger.warning("🔄 Groq rate limit hit — switching to backup %s (Total pool: %d keys)", key_desc, len(keys))
-    return client, key_desc
+    """Rotate to the next API key in the pool."""
+    client, info = key_pool.get_healthy_client()
+    logger.warning("🔄 Groq key rotated — using %s (Total pool: %d keys)", info.masked_key, key_pool.total_keys)
+    return client, f"key #{info.key_index} ({info.masked_key})"
+
 
 # ── Tool schemas (registered with Groq function-calling API) ──────────────────
 TOOL_SCHEMAS = [
@@ -158,55 +137,31 @@ TOOL_SCHEMAS = [
 ]
 
 # ── System prompt ─────────────────────────────────────────────────────────────
-SYSTEM_PROMPT = f"""You are an internal support agent for ParcelPilot, a B2B logistics platform.
-You help authorised ParcelPilot staff investigate customer issues, answer support questions, and take actions on operational data.
+SYSTEM_PROMPT = f"""You are ParcelPilot's internal support agent (B2B logistics). Help staff investigate issues and act on data.
 
-SNAPSHOT TIME (use as "now" for ALL time calculations): {SNAPSHOT_TIME.isoformat()}
+NOW: {SNAPSHOT_TIME.isoformat()}
 
-== SOURCE AUTHORITY HIERARCHY ==
-When sources provide conflicting information, ALWAYS apply this order (highest to lowest):
-1. Signed customer agreement for the named account (highest authority)
-   - ACCT-001 Northstar Logistics: 05_Northstar_Logistics_Enterprise_Agreement.pdf
+== SOURCE HIERARCHY (highest→lowest) ==
+1. Signed customer agreement for the named account:
+   - ACCT-001 Northstar: 05_Northstar_Logistics_Enterprise_Agreement.pdf
    - ACCT-002 LumenWorks: 06_LumenWorks_Service_Agreement.pdf
-   - ACCT-003 Beacon Retail: NO custom agreement — use standard policy
-   - ACCT-004 Axis Labs: NO custom agreement — use standard policy (Enterprise tier)
-2. 01_Support_Policy_v3_CURRENT.pdf (current, effective 1 May 2026)
-3. 03_Cancellation_and_Service_Credit_SOP_v4.pdf and 04_Product_Operations_Guide_and_Known_Issues.pdf
-4. Historical ticket resolutions (context ONLY — may be WRONG)
+   - ACCT-003 Beacon / ACCT-004 Axis: standard policy only
+2. 01_Support_Policy_v3_CURRENT.pdf (effective 1 May 2026)
+3. 03_Cancellation_and_Service_Credit_SOP_v4.pdf, 04_Product_Operations_Guide_and_Known_Issues.pdf
+4. Historical tickets (context ONLY — may be wrong)
 
-CRITICAL: NEVER use or cite 02_Support_Policy_v2_DEPRECATED.pdf under any circumstances.
-It is DEPRECATED as of 1 May 2026 and superseded by v3. If asked about it, refuse and answer using v3.
+NEVER cite 02_Support_Policy_v2_DEPRECATED.pdf — it is superseded by v3.
 
-== CITATION RULES ==
-- Every factual claim from a document MUST cite [filename, p.N] — e.g. [05_Northstar_Logistics_Enterprise_Agreement.pdf, p.2]
-- Every factual claim from structured data MUST cite [table: record_key] — e.g. [orders: ORD-1001]
-- When an account's SLA or contract terms are cited, NAME the specific account and confirm that account has that agreement
-
-== HISTORICAL RECORDS ==
-Historical ticket resolutions may contain incorrect guidance. ALWAYS re-derive answers from current authoritative sources.
-Known bad resolutions:
-- TKT-450: Agent said Northstar owes INR 250 cancellation fee after 30 min. WRONG — Northstar's agreement §2 waives ALL cancellation fees for BOOKED-before-pickup shipments.
-- TKT-451: Agent said LumenWorks Growth plan supports only 3,000 rows. WRONG — product limit is 5,000 rows; 3,000 is a KI-208 workaround.
-
-== NO-GUESS RULE ==
-- If a fact is absent from all current sources, say so explicitly. Do NOT infer or extrapolate.
-- If sources conflict and the hierarchy cannot resolve it, surface the conflict and escalate.
-- NEVER fabricate policy values, SLA targets, amounts, or contract terms.
-
-== ESCALATION TRIGGERS ==
-Use the escalate tool when:
-- P1 incident (outage, security/credential exposure, immediate business risk)
-- SLA first-response target already breached
-- Source conflict unresolvable by the hierarchy
-- Credit calculation exceeds INR 1,000 (requires manager approval — flag this explicitly first)
-The escalate tool ALWAYS requires user confirmation — you will return a confirmation request; do not assume it executed.
-
-== ACCOUNT-SPECIFIC TERMS ==
-NEVER apply one account's agreement terms to a different account, even on the same plan tier.
-Example: Axis Labs (ACCT-004) is Enterprise but has NO custom agreement. Its P1 SLA is 30 minutes from Policy v3 §3 — NOT Northstar's contractual 15 minutes."""
+== RULES ==
+- Cite docs as [filename, p.N] and data as [table: key]
+- Re-derive from current sources; historical resolutions may be wrong (TKT-450: Northstar cancellation fee WRONG; TKT-451: LumenWorks row limit WRONG)
+- No-guess: if absent from sources, say so. Never fabricate.
+- Escalate on: P1 incident, breached SLA, unresolvable source conflict, credit > INR 1000 (requires approval)
+- escalate tool always needs user confirmation first
+- NEVER apply one account's terms to another account"""
 
 
-# ── Rate-limit backoff stream helper with Dynamic Key Rotation ───────────────
+# ── Rate-limit backoff stream helper with Dynamic Key Health & Rotation ────────
 
 async def _create_groq_stream(
     messages: list[dict],
@@ -214,37 +169,46 @@ async def _create_groq_stream(
     model: str,
 ) -> Any:
     """
-    Create Groq streaming completion with automatic key rotation on 429 rate limits.
-    Cycles through all configured backup API keys before sleeping.
+    Create Groq streaming completion with automatic key health selection and instant failover.
+    Zero latency: Picks an in-memory healthy key (LRU balanced) immediately.
+    On 429 rate limit: Marks key with cooldown and immediately steps to the next available healthy key.
     """
-    keys = _get_all_groq_keys()
-    max_attempts = max(len(keys) * 2, 8)
+    excluded_keys: set[str] = set()
+    max_attempts = max(key_pool.total_keys * 2, 8)
     last_exc: Exception | None = None
 
     for attempt in range(max_attempts):
-        client, key_desc = get_current_client()
+        client, key_info = key_pool.get_healthy_client(exclude_keys=excluded_keys)
+        t0 = asyncio.get_event_loop().time()
         try:
             kwargs: dict[str, Any] = {
                 "model": model,
                 "messages": messages,
                 "stream": True,
-                "max_tokens": 4096,
+                "max_tokens": 2048,
+                "temperature": 0.3,
             }
             if tools:
                 kwargs["tools"] = tools
                 kwargs["tool_choice"] = "auto"
-            return await client.chat.completions.create(**kwargs)
+            stream_result = await client.chat.completions.create(**kwargs)
+            latency_ms = (asyncio.get_event_loop().time() - t0) * 1000.0
+            key_pool.mark_success(key_info.api_key, latency_ms=latency_ms)
+            return stream_result
         except RateLimitError as exc:
             last_exc = exc
-            # Immediately rotate to the next backup key in the pool
-            rotate_to_next_key()
-            # If we completed a full cycle across all backup keys, pause briefly
-            if (attempt + 1) % len(keys) == 0:
-                logger.warning("All %d Groq API keys rate-limited — waiting 2.0s...", len(keys))
-                await asyncio.sleep(2.0)
-        except Exception:
+            excluded_keys.add(key_info.api_key)
+            key_pool.mark_rate_limited(key_info.api_key, error_msg=str(exc))
+            # If all discovered keys have been tried in this request attempt, sleep briefly
+            if len(excluded_keys) >= key_pool.total_keys:
+                logger.warning("All %d Groq API keys rate-limited in pool — brief pause 1.5s...", key_pool.total_keys)
+                excluded_keys.clear()
+                await asyncio.sleep(1.5)
+        except Exception as exc:
+            key_pool.mark_error(key_info.api_key, str(exc))
             raise
     raise last_exc  # type: ignore[misc]
+
 
 
 # ── Main agent loop ───────────────────────────────────────────────────────────

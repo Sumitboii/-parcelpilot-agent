@@ -1485,6 +1485,7 @@ async function send() {
 
 async function sendLive(q) {
   let wfCard = null, stepsEl = null, aBubble = null, aText = '', wfFinalised = false;
+  let _renderPending = false;
   try {
     const res = await fetchWithTimeout(BACKEND + '/chat', {
       method: 'POST',
@@ -1526,8 +1527,14 @@ async function sendLive(q) {
         // Preserve whitespace exactly — do NOT trim tokens
         const tok = (d.text !== undefined ? d.text : ds);
         aText += tok;
-        aBubble.innerHTML = fmt(aText);
-        scrollDown();
+        // Batch DOM updates: only re-render on animation frames to avoid layout thrashing
+        if (!_renderPending) {
+          _renderPending = true;
+          requestAnimationFrame(() => {
+            _renderPending = false;
+            if (aBubble) { aBubble.innerHTML = fmt(aText); scrollDown(); }
+          });
+        }
 
       } else if (ev === 'pending_confirmation') {
         if (wfCard && !wfFinalised) { finaliseWorkflowCard(wfCard); wfFinalised = true; }
@@ -1565,6 +1572,8 @@ async function sendLive(q) {
     }
     // ─────────────────────────────────────────────────────────────────────────
 
+    // Final flush — ensure the last tokens are rendered
+    if (aBubble && aText) { aBubble.innerHTML = fmt(aText); scrollDown(); }
     renderNextQueryOptions(q);
   } catch(e) {
     console.error('Live chat stream error:', e);
@@ -1585,25 +1594,17 @@ async function sendDemo(q) {
   for await (const ev of gen) {
     if (ev.t === 'tool') {
       addWorkflowStep(stepsEl, ev.v);
-      await sleep(70);
+      // Brief pause so the spinning step icon is visible before the next one appears
+      await sleep(30);
     } else if (ev.t === 'text') {
       finaliseWorkflowCard(wfCard);
-      await sleep(20);
+      // Render the full answer immediately — no word-by-word delay
       aBubble = addRow('assistant', '');
-      // Fast simulated streaming
-      const words = ev.v.split(' ');
-      let acc = '';
-      for (let i = 0; i < words.length; i += 2) {
-        acc += (words[i] || '') + ' ' + (words[i+1] ? words[i+1] + ' ' : '');
-        aBubble.innerHTML = '<p>' + fmt(acc.trimEnd()) + '</p>';
-        scrollDown();
-        await sleep(4);
-      }
+      aBubble.innerHTML = fmt(ev.v);
+      scrollDown();
     } else if (ev.t === 'confirm') {
       finaliseWorkflowCard(wfCard);
-      await sleep(30);
       addRow('assistant', '<p>⚠ <strong>P1 — SLA already breached. Escalate immediately.</strong></p><p>TKT-505 involves suspected API key exposure <span class="cit">tickets: TKT-505</span>. Classified <strong>P1</strong> per <span class="cit">01_Support_Policy_v3_CURRENT.pdf §2</span>. Axis Labs has no custom agreement — standard Enterprise SLA applies: P1 = 30 min 24×7 <span class="cit">01_Support_Policy_v3_CURRENT.pdf §3</span>. SLA breached by 2h 30m (created 08:30, snapshot 11:00).</p>');
-      await sleep(50);
       const card = buildCard(ev.display, ev.payload);
       document.getElementById('msgs').appendChild(card);
       scrollDown();
@@ -1714,9 +1715,10 @@ function resize(el) {
   el.style.height = Math.min(el.scrollHeight, 110) + 'px';
 }
 function fill(t) {
+  if (busy) return;
   document.getElementById('inp').value = t;
   resize(document.getElementById('inp'));
-  document.getElementById('inp').focus();
+  send();
 }
 function toast(msg, ms = 2200) {
   const t = document.getElementById('toast');
