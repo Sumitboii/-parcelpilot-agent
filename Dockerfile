@@ -2,7 +2,7 @@
 FROM python:3.11-slim
 
 # Force cache-bust: update this timestamp to invalidate Railway's snapshot cache
-ARG CACHE_BUST=2026-08-24-v5
+ARG CACHE_BUST=2026-08-26-clean
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
