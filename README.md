@@ -3,15 +3,13 @@
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Render Deployed](https://img.shields.io/badge/Render-Live_Demo-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://parcelpilot-agent-05e4.onrender.com)
-[![Railway Deployed](https://img.shields.io/badge/Railway-Live_Demo-0B0D0E?style=for-the-badge&logo=railway)](https://parcelpilot-agent-production.up.railway.app)
 [![Test Suite](https://img.shields.io/badge/pytest-66%2F66_Passing-brightgreen?style=for-the-badge&logo=pytest)](https://docs.pytest.org)
 
 ---
 
-## 🌐 **Live Interactive Demos**
+## 🌐 **Live Interactive Demo**
 
-* **Primary Production URL (Render):** [https://parcelpilot-agent-05e4.onrender.com](https://parcelpilot-agent-05e4.onrender.com)
-* **Secondary Production URL (Railway):** [https://parcelpilot-agent-production.up.railway.app](https://parcelpilot-agent-production.up.railway.app)
+* **Production Live URL (Render):** [https://parcelpilot-agent-05e4.onrender.com](https://parcelpilot-agent-05e4.onrender.com)
 
 > **Role Switching Support:** Seamlessly test as **Support Agent** (sanitised data layer) or **CSM / Escalation Manager** (full visibility into SLA targets, internal notes, and tier contracts).
 
